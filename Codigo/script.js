@@ -1,14 +1,4 @@
-// Datos de ejemplo para el proyecto INFUNI
-const ciudades = [
-    { nombre: "Granada", presupuesto: 400, ambiente: "fiesta", seguridad: 5, ocio: 5 },
-    { nombre: "Madrid", presupuesto: 900, ambiente: "fiesta", seguridad: 4, ocio: 5 },
-    { nombre: "Salamanca", presupuesto: 500, ambiente: "tranquilo", seguridad: 5, ocio: 4 },
-    { nombre: "Bolonia", presupuesto: 750, ambiente: "fiesta", seguridad: 4, ocio: 4 },
-    { nombre: "Cracovia", presupuesto: 350, ambiente: "tranquilo", seguridad: 4, ocio: 4 },
-    { nombre: "Barcelona", presupuesto: 950, ambiente: "fiesta", seguridad: 3, ocio: 5 }
-];
-
-// Selección de elementos
+// Selección de elementos (Mantengo tus constantes)
 const contenedor = document.getElementById('contenedorCiudades');
 const slider = document.getElementById('rangoPresupuesto');
 const etiquetaPrecio = document.getElementById('valorPresupuesto');
@@ -16,17 +6,29 @@ const selectorAmbiente = document.getElementById('selectAmbiente');
 const inputBusqueda = document.getElementById('inputBusqueda');
 const btnBuscar = document.getElementById('btnBuscar');
 
-// Función para pintar las tarjetas en el HTML
+let ciudades = []; // Empezamos con el array vacío
+
+// --- NUEVA FUNCIÓN PARA TRAER LOS DATOS ---
+async function cargarDatos() {
+    try {
+        const respuesta = await fetch('http://localhost:3000/api/ciudades');
+        ciudades = await respuesta.json();
+        renderizarCiudades(ciudades); // Primera carga
+    } catch (error) {
+        console.error("Error al cargar datos de MongoDB:", error);
+        contenedor.innerHTML = "<p>Error al conectar con la base de datos.</p>";
+    }
+}
+
+// Función para pintar las tarjetas (Igual a la tuya, con una mejora en seguridad)
 function renderizarCiudades(datos) {
     contenedor.innerHTML = "";
-    
     if (datos.length === 0) {
-        contenedor.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 2rem;'>No se encontraron ciudades con esos criterios.</p>";
+        contenedor.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 2rem;'>No se encontraron resultados.</p>";
         return;
     }
 
     datos.forEach(ciudad => {
-        // Usamos backticks `` para el template string
         const tarjeta = `
             <article class="card">
                 <h3>${ciudad.nombre}</h3>
@@ -40,7 +42,8 @@ function renderizarCiudades(datos) {
         contenedor.innerHTML += tarjeta;
     });
 }
-// Función maestra de filtrado
+
+// Función de filtrado (Se mantiene igual, ahora usa la variable global 'ciudades')
 function aplicarFiltros() {
     const presupuestoMax = parseInt(slider.value);
     const ambienteFiltro = selectorAmbiente.value;
@@ -54,19 +57,12 @@ function aplicarFiltros() {
     renderizarCiudades(filtradas);
 }
 
-// Eventos
+// Eventos (Iguales)
 slider.addEventListener('input', (e) => {
     etiquetaPrecio.innerText = e.target.value + "€";
     aplicarFiltros();
 });
-
 selectorAmbiente.addEventListener('change', aplicarFiltros);
 
-btnBuscar.addEventListener('click', () => {
-    const texto = inputBusqueda.value.toLowerCase();
-    const resultados = ciudades.filter(c => c.nombre.toLowerCase().includes(texto));
-    renderizarCiudades(resultados);
-});
-
-// Carga inicial
-renderizarCiudades(ciudades);
+// Carga inicial: En lugar de renderizar, ejecutamos la petición al servidor
+cargarDatos();
