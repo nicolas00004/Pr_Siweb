@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFUNI | Comparador de Ciudades para Estudiantes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <nav class="nav-global">
+            <div class="logo">
+                <h1>INFUNI</h1>
+            </div>
+            <ul>
+                <li><a href="#buscador">Buscador</a></li>
+                <li><a href="#comparador">Comparador</a></li>
+                <li><a href="#comunidad">Comunidad</a></li>
+                <li><a href="#perfil">Mi Perfil</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="home-search">
+            <h2>Encuentra tu próximo destino académico</h2>
+            <div class="search-container">
+                <input type="text" placeholder="¿A qué ciudad quieres ir? Ej: Granada, Bolonia...">
+                <button type="submit">Buscar</button>
+            </div>
+            <nav class="breadcrumbs">
+                <p>Inicio > España > Granada</p>
+            </nav>
+        </section>
+
+        <section id="comparador">
+            <h2>Comparador de Destinos</h2>
+            <div class="filtros">
+                <label>Presupuesto: <input type="range" min="300" max="1500"></label>
+                <label>Ambiente: 
+                    <select>
+                        <option value="tranquilo">Tranquilo</option>
+                        <option value="fiesta">Fiesta</option>
+                    </select>
+                </label>
+            </div>
+            <div class="grid-ciudades">
+                <article class="card">
+                    <h3>Granada</h3>
+                    <p>Seguridad: ⭐⭐⭐⭐⭐</p>
+                    <p>Ocio: ⭐⭐⭐⭐⭐</p>
+                    <a href="ficha-ciudad.html">Ver detalles</a>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Guías Erasmus</h4>
+                <ul>
+                    <li><a href="#">Primeros pasos</a></li>
+                    <li><a href="#">Becas</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Política de Privacidad (RGPD)</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+        <p>&copy; 2026 INFUNI S.L. - Jóvenes por el mundo</p>
+    </footer>
+
+</body>
+</html>
