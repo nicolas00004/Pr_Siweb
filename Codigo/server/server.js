@@ -47,6 +47,8 @@ const CiudadSchema = new mongoose.Schema({
     ambiente: String,
     seguridad: Number,
     ocio: Number,
+    conectividad: { type: Number, default: 4 }, // 1-5 (Wi-Fi, Coworking)
+    turismo: { type: Number, default: 3 }, // 1-5 (Atracciones, Monumentos)
     descripcion: String, // backup de info para front
     paisId: { type: mongoose.Schema.Types.ObjectId, ref: 'Pais' },
     f_registro: { type: Date, default: Date.now }
@@ -267,7 +269,11 @@ app.post('/api/usuarios/:id/favorito', async (req, res) => {
     try {
         const { ciudadId } = req.body;
         const usuario = await Usuario.findById(req.params.id);
-        if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
+        
+        if (!usuario) {
+            console.warn(`⚠️ Intento de favorito fallido: Usuario ${req.params.id} no existe en la BD. Posible sesión huérfana.`);
+            return res.status(404).json({ error: 'Usuario no encontrado. Por favor, reinicia sesión.' });
+        }
 
         // SOLUCIÓN: Comparar como strings ya que MongoDB almacena ObjectIds
         const indice = usuario.ciudadesFavoritas.findIndex(c => c.toString() === ciudadId);

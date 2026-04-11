@@ -3,8 +3,8 @@ const id = params.get('id');
 const contenedor = document.getElementById('detalle-contenido');
 const API_BASE = 'http://localhost:3000';
 
-function obtenerImagenCiudad(nombre) {
-    return `https://source.unsplash.com/1200x500/?${encodeURIComponent(nombre)},cityscape,university`;
+function obtenerImagenCiudad(ciudad) {
+    return ciudad.imagen || `https://source.unsplash.com/1200x500/?${encodeURIComponent(ciudad.nombre || 'city')},cityscape,university`;
 }
 
 async function cargarDetalle() {
@@ -29,7 +29,7 @@ async function cargarDetalle() {
 
         const maquetacion = `
             <div class="ficha">
-                <div class="ficha-img-header" style="background-image: url('${obtenerImagenCiudad(ciudad.nombre)}')"></div>
+                <div class="ficha-img-header" style="background-image: url('${obtenerImagenCiudad(ciudad)}')"></div>
                 <h1>${ciudad.nombre} <span style="font-size: 1.2rem; color: var(--text-muted); font-weight: normal;">| ${nombrePais}</span></h1>
                 
                 <div class="grid-info">
@@ -84,8 +84,10 @@ async function cargarDetalle() {
 
                         <div class="bloque-texto" style="background: #fffcee; border-color: #fbbf24;">
                             <h3 style="color: #d97706;">📝 Opiniones de Estudiantes</h3>
-                            <p style="color: #92400e;"><em>Fase beta:</em> Aquí pronto podrás leer reseñas reales de estudiantes publicadas en el Foro Oficial vinculadas a ${ciudad.nombre}.</p>
-                            <button class="btn-submit" style="margin-top: 15px; width: auto; font-size: 0.9rem;" onclick="location.href='comunidad.html'">Ir a Comunidad</button>
+                            <div id="opinionesCiudadContainer" style="margin-top: 15px;">
+                                <p style="color: #92400e;">Cargando reseñas...</p>
+                            </div>
+                            <button class="btn-submit" style="margin-top: 20px; width: auto; font-size: 0.9rem;" onclick="location.href='comunidad.html'">Escribir mi experiencia</button>
                         </div>
                     </div>
 
@@ -105,8 +107,9 @@ async function cargarDetalle() {
                             <strong>Visitas al mes</strong>
                             <span>+${Math.floor(Math.random() * 50) + 10}k</span>
                         </div>
-                        <div class="dato-lista" style="margin-top: 20px;">
-                            <button class="btn-submit" style="width: 100%; border-radius: 8px;">Añadir a Favoritos ❤️</button>
+                        <div class="dato-lista" style="margin-top: 20px;" id="favBtnContainer">
+                            <!-- Se carga por JS para saber el estado -->
+                            <button class="btn-submit" style="width: 100%; border-radius: 8px;" id="btnFavorito">Añadir a Favoritos ❤️</button>
                         </div>
                     </aside>
                 </div>
@@ -114,6 +117,77 @@ async function cargarDetalle() {
         `;
         
         contenedor.innerHTML = maquetacion;
+
+        // --- CARGAR OPINIONES REALES ---
+        fetch(`${API_BASE}/api/opiniones/${id}`)
+            .then(res => res.json())
+            .then(ops => {
+                const opDiv = document.getElementById('opinionesCiudadContainer');
+                if (ops.length === 0) {
+                    opDiv.innerHTML = '<p style="color: #92400e; font-style: italic;">Aún no hay reseñas específicas. ¡Ayuda a otros siendo el primero!</p>';
+                } else {
+                    opDiv.innerHTML = ops.map(o => `
+                        <div style="border-bottom: 1px solid #fde68a; padding: 10px 0;">
+                            <strong style="color: #b45309;">${o.usuarioId ? o.usuarioId.nombre : 'Estudiante'}:</strong>
+                            <span style="font-size: 0.85rem; color: #d97706;">(${o.valoracion}/5 estrella)</span>
+                            <p style="margin-top: 5px; color: #92400e;">"${o.texto}"</p>
+                        </div>
+                    `).join('');
+                }
+            });
+
+        // --- GESTIÓN DE FAVORITOS ---
+        const user = JSON.parse(localStorage.getItem('usuarioInfo') || 'null');
+        const btnFav = document.getElementById('btnFavorito');
+
+        if (user) {
+            // Verificar si ya es favorito cargando el perfil del usuario
+            fetch(`${API_BASE}/api/usuarios/${user.id}`)
+                .then(res => res.json())
+                .then(u => {
+                    const isFav = u.ciudadesFavoritas && u.ciudadesFavoritas.some(f => (f._id || f) === id);
+                    actualizarEstadoBotonFav(isFav);
+                });
+
+            btnFav.onclick = async () => {
+                try {
+                    const res = await fetch(`${API_BASE}/api/usuarios/${user.id}/favorito`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ciudadId: id })
+                    });
+                    
+                    // 1. Verificar si el ID del usuario sigue siendo válido
+                    const sesionExpirada = await verificarSesion(res);
+                    if (sesionExpirada) return;
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        actualizarEstadoBotonFav(data.esFavorito);
+                        
+                        // 2. Feedback visual elegante
+                        showToast(data.esFavorito ? "❤️ Añadido a favoritos" : "🤍 Eliminado de favoritos", data.esFavorito ? "success" : "default");
+                    } else {
+                        showToast("⚠️ Fallo al actualizar favorito", "error");
+                    }
+                } catch (e) { 
+                    console.error(e);
+                    showToast("🔌 Error de conexión", "error");
+                }
+            };
+        } else {
+            btnFav.onclick = () => window.location.href = 'login.html';
+        }
+
+        function actualizarEstadoBotonFav(isFav) {
+            if (isFav) {
+                btnFav.innerText = "Quitar de Favoritos 💔";
+                btnFav.style.background = "#94a3b8"; // Gris slate
+            } else {
+                btnFav.innerText = "Añadir a Favoritos ❤️";
+                btnFav.style.background = ""; // Reset a primary
+            }
+        }
     } catch (error) {
         console.error(error);
         contenedor.innerHTML = `

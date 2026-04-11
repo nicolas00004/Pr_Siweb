@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Cultura e Integración - INFUNI</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .page-header { background: var(--primary-color); color: white; padding: 60px 5%; border-radius: 0 0 40px 40px; text-align: center; }
+        .page-header h1 { font-size: 2.5rem; margin-bottom: 15px; color: white; }
+        .content-wiki { max-width: 900px; margin: -40px auto 60px; background: white; border-radius: 30px; padding: 50px; box-shadow: var(--shadow-md); position: relative; }
+        .content-wiki h2 { color: var(--primary-color); margin-top: 40px; border-left: 5px solid var(--accent-color); padding-left: 15px; }
+        .content-wiki p { line-height: 1.8; color: var(--text-dark); margin-bottom: 20px; }
+        .checklist-box { background: #f8fafc; padding: 30px; border-radius: 20px; border: 1px dashed #cbd5e1; margin-top: 50px; }
+        .check-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; cursor: pointer; font-weight: 600; }
+        .check-item input { width: 20px; height: 20px; accent-color: var(--primary-color); }
+        .check-item.done { text-decoration: line-through; color: var(--text-muted); }
+        .btn-back { display: inline-flex; align-items: center; gap: 8px; color: var(--primary-color); font-weight: 700; text-decoration: none; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="nav-global">
+            <div class="logo"><h1>INF<span>UNI</span></h1></div>
+            <ul>
+                <li><a href="../index.html">Inicio</a></li>
+                <li><a href="../index.html#comparador">Destinos</a></li>
+                <li>
+                    <a href="../herramientas.html">Herramientas ▾</a>
+                    <ul>
+                        <li><a href="../herramientas.html#comparador">Comparador Personalizado</a></li>
+                        <li><a href="../herramientas.html#calculadora">Calculadora de Gastos</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="index.html" class="active">Guías ▾</a>
+                    <ul>
+                        <li><a href="vivienda.html">Vivienda y Pisos</a></li>
+                        <li><a href="legal.html">Trámites Legales</a></li>
+                        <li><a href="salud.html">Salud y Emergencias</a></li>
+                        <li><a href="finanzas.html">Finanzas Globales</a></li>
+                        <li><a href="index.html"><b>Ver todas las Guías</b></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="../comunidad.html">Comunidad ▾</a>
+                    <ul>
+                        <li><a href="../comunidad.html#foro">Foro de preguntas rápidas</a></li>
+                        <li><a href="../index.html#comunidad">Añadir nueva ciudad</a></li>
+                        <li><a href="../comunidad.html#escribir">Escribir una reseña</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="../login.html" class="btn-login">Área Personal 👤</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <h1>🤝 Integración y Cultura</h1>
+        <p>No seas un turista. Sé un local.</p>
+    </div>
+
+    <main class="content-wiki">
+        <a href="guias.html" class="btn-back">⬅ Volver al Centro de Guías</a>
+        
+        <h2>1. Adiós a la "Burbuja"</h2>
+        <p>El mayor peligro de viajar al extranjero es juntarse solo con gente de tu propia nacionalidad. Es cómodo, pero anula el propósito del viaje. Intenta vivir con gente local o de otras nacionalidades, ve a bares que no sean "típicos de extranjeros" y relaciónate con los vecinos.</p>
+
+        <h2>2. Idioma: La Llave Maestra</h2>
+        <p>Incluso si todos hablan inglés, aprender lo básico del idioma local (saludos, pedir en un restaurante, dar las gracias) cambia totalmente cómo te recibe la gente. Descarga **Duolingo** meses antes de irte y busca intercambios de idiomas ("tandems") una vez allí.</p>
+
+        <h2>3. Costumbres y Horarios</h2>
+        <p>Investiga los horarios de las comidas y comercios. En España cenamos a las 22:00, pero en Alemania a las 19:00 ya puede estar todo cerrado. Respetar estas diferencias te ayudará a integrarte mucho más rápido y evitar miradas de extrañeza.</p>
+
+        <div class="checklist-box">
+            <h3>✅ Checklist Cultural</h3>
+            <div class="checklist">
+                <label class="check-item"><input type="checkbox" id="c-1" onchange="toggleTask('c-1')"> Aprender 20 frases básicas en el idioma local</label>
+                <label class="check-item"><input type="checkbox" id="c-2" onchange="toggleTask('c-2')"> Apuntarse a la red ESN o similar</label>
+                <label class="check-item"><input type="checkbox" id="c-3" onchange="toggleTask('c-3')"> Descargar app de transporte y mapas locales</label>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/guias-logic.js"></script>
+    <script src="../../js/auth.js"></script>
+</body>
+</html>

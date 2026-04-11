@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Legal y Trámites - INFUNI</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .page-header { background: var(--primary-color); color: white; padding: 60px 5%; border-radius: 0 0 40px 40px; text-align: center; }
+        .page-header h1 { font-size: 2.5rem; margin-bottom: 15px; color: white; }
+        .content-wiki { max-width: 900px; margin: -40px auto 60px; background: white; border-radius: 30px; padding: 50px; box-shadow: var(--shadow-md); position: relative; }
+        .content-wiki h2 { color: var(--primary-color); margin-top: 40px; border-left: 5px solid var(--accent-color); padding-left: 15px; }
+        .content-wiki p { line-height: 1.8; color: var(--text-dark); margin-bottom: 20px; }
+        .checklist-box { background: #f8fafc; padding: 30px; border-radius: 20px; border: 1px dashed #cbd5e1; margin-top: 50px; }
+        .check-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; cursor: pointer; font-weight: 600; }
+        .check-item input { width: 20px; height: 20px; accent-color: var(--primary-color); }
+        .check-item.done { text-decoration: line-through; color: var(--text-muted); }
+        .btn-back { display: inline-flex; align-items: center; gap: 8px; color: var(--primary-color); font-weight: 700; text-decoration: none; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="nav-global">
+            <div class="logo"><h1>INF<span>UNI</span></h1></div>
+            <ul>
+                <li><a href="../index.html">Inicio</a></li>
+                <li><a href="../index.html#comparador">Destinos</a></li>
+                <li>
+                    <a href="../herramientas.html">Herramientas ▾</a>
+                    <ul>
+                        <li><a href="../herramientas.html#comparador">Comparador Personalizado</a></li>
+                        <li><a href="../herramientas.html#calculadora">Calculadora de Gastos</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="index.html" class="active">Guías ▾</a>
+                    <ul>
+                        <li><a href="vivienda.html">Vivienda y Pisos</a></li>
+                        <li><a href="legal.html">Trámites Legales</a></li>
+                        <li><a href="salud.html">Salud y Emergencias</a></li>
+                        <li><a href="finanzas.html">Finanzas Globales</a></li>
+                        <li><a href="index.html"><b>Ver todas las Guías</b></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="../comunidad.html">Comunidad ▾</a>
+                    <ul>
+                        <li><a href="../comunidad.html#foro">Foro de preguntas rápidas</a></li>
+                        <li><a href="../index.html#comunidad">Añadir nueva ciudad</a></li>
+                        <li><a href="../comunidad.html#escribir">Escribir una reseña</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="../login.html" class="btn-login">Área Personal 👤</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <h1>📄 Trámites y Burocracia</h1>
+        <p>No dejes que los papeles te impidan disfrutar de tu aventura.</p>
+    </div>
+
+    <main class="content-wiki">
+        <a href="guias.html" class="btn-back">⬅ Volver al Centro de Guías</a>
+        
+        <h2>1. Identificación y Registro</h2>
+        <p>Si eres ciudadano de la UE, el proceso es sencillo pero obligatorio. Debes registrarte en el registro de ciudadanos extranjeros si tu estancia supera los 3 meses. Si eres extracomunitario, el **Visado** es tu prioridad número 1: asegúrate de tener la carta de aceptación original y el seguro médico que cubra repatriación.</p>
+
+        <h2>2. Empadronamiento</h2>
+        <p>Este es el "Santo Grial" de los trámites. Es el documento que demuestra que vives oficialmente en una dirección. Lo necesitarás para abrir una cuenta bancaria local, ir al médico o incluso sacar el abono de transporte subvencionado. Necesitas tu contrato de alquiler y tu DNI/Pasaporte.</p>
+
+        <h2>3. El "Learning Agreement" o Contrato de Trabajo</h2>
+        <p>Para estudiantes, este documento es sagrado. Sin las firmas de origen y destino, no hay beca. Para trabajadores, revisa que tu contrato estipule claramente las horas y el bruto anual para evitar sorpresas con los impuestos locales.</p>
+
+        <div class="checklist-box">
+            <h3>✅ Checklist Legal</h3>
+            <div class="checklist">
+                <label class="check-item"><input type="checkbox" id="l-1" onchange="toggleTask('l-1')"> Comprobar validez de DNI/Pasaporte (>6 meses)</label>
+                <label class="check-item"><input type="checkbox" id="l-2" onchange="toggleTask('l-2')"> Solicitar cita para Registro de Ciudadano UE / NIE</label>
+                <label class="check-item"><input type="checkbox" id="l-3" onchange="toggleTask('l-3')"> Obtener certificado digital (si es posible)</label>
+                <label class="check-item"><input type="checkbox" id="l-4" onchange="toggleTask('l-4')"> Compulsar copias físicas de documentos vitales</label>
+                <label class="check-item"><input type="checkbox" id="l-5" onchange="toggleTask('l-5')"> Traducir documentos oficiales (si aplica)</label>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/guias-logic.js"></script>
+    <script src="../../js/auth.js"></script>
+</body>
+</html>

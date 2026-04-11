@@ -99,11 +99,14 @@
                             </div>`;
                     } else {
                         favContainer.innerHTML = arrayFavoritas.map(c => `
-                            <div class="fav-card" onclick="window.location.href='detalle.html?id=${c._id}'">
-                                <div class="fav-img" style="background-image: url('https://source.unsplash.com/400x300/?${encodeURIComponent(c.nombre)},city')"></div>
+                            <div class="fav-card">
+                                <div class="fav-img" style="background-image: url('${c.imagen || `https://source.unsplash.com/400x300/?${encodeURIComponent(c.nombre)},city`}')" onclick="window.location.href='detalle.html?id=${c._id}'"></div>
                                 <div class="fav-body">
-                                    <h4 class="fav-title">${c.nombre}</h4>
-                                    <div class="fav-stats">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <h4 class="fav-title" style="cursor:pointer;" onclick="window.location.href='detalle.html?id=${c._id}'">${c.nombre}</h4>
+                                        <button onclick="quitarFavorito('${c._id}')" style="background:none; border:none; cursor:pointer; font-size:1.2rem;" title="Quitar">❌</button>
+                                    </div>
+                                    <div class="fav-stats" onclick="window.location.href='detalle.html?id=${c._id}'">
                                         <span>💶 ${c.presupuesto}€</span>
                                         <span>🛡️ ${"⭐".repeat(c.seguridad || 0)}</span>
                                     </div>
@@ -118,11 +121,26 @@
                 });
         }
 
-        // 2. Cerrar sesión
+        // 2. Función para quitar favorito
+        async function quitarFavorito(ciudadId) {
+            if(!confirm("¿Quitar esta ciudad de tus favoritos?")) return;
+            const userInfo = JSON.parse(localStorage.getItem('usuarioInfo'));
+            try {
+                const res = await fetch(`${API}/api/usuarios/${userInfo.id}/favorito`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ciudadId })
+                });
+                if(res.ok) location.reload(); 
+            } catch(e) { alert("Error al eliminar"); }
+        }
+
+        // 3. Cerrar sesión
         document.getElementById('btnLogout').addEventListener('click', () => {
             localStorage.removeItem('usuarioInfo');
             window.location.href = 'index.html';
         });
     </script>
+<script src="../js/auth.js"></script>
 </body>
 </html>

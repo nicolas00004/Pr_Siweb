@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INFUNI | Comparador de Ciudades para Estudiantes</title>
+    <title>INFUNI | Tu Proyectos de Vida y Viaje</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -24,12 +24,13 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="guias.html">Guías ▾</a>
+                    <a href="guias/index.html">Guías ▾</a>
                     <ul>
-                        <li><a href="guias.html#alojamiento">Alojamiento y Residencias</a></li>
-                        <li><a href="guias.html#tramites">Trámites y Papeleo</a></li>
-                        <li><a href="guias.html#24horas">Primeras 24 horas</a></li>
-                        <li><a href="guias.html#recetas">Recetas Rápidas</a></li>
+                        <li><a href="guias/vivienda.html">Vivienda y Pisos</a></li>
+                        <li><a href="guias/legal.html">Trámites Legales</a></li>
+                        <li><a href="guias/salud.html">Salud y Emergencias</a></li>
+                        <li><a href="guias/finanzas.html">Finanzas Globales</a></li>
+                        <li><a href="guias/index.html"><b>Ver todas las Guías</b></a></li>
                     </ul>
                 </li>
                 <li>
@@ -49,7 +50,7 @@
 
     <main>
         <section id="hero" class="home-search">
-            <h2>Encuentra tu próximo destino académico</h2>
+            <h2>Encuentra tu próximo destino para vivir, trabajar o viajar</h2>
             <div class="search-container">
                 <input type="text" id="inputBusqueda" placeholder="¿A qué ciudad quieres ir? Ej: Granada, Bolonia...">
                 <button type="button" id="btnBuscar">Buscar</button>
@@ -102,11 +103,11 @@
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="f_ambiente">Ambiente Estudiantil</label>
+                            <label for="f_ambiente">Estilo de Vida Predominante</label>
                             <select id="f_ambiente" name="ambiente" required>
                                 <option value="" disabled selected>Selecciona una opción</option>
-                                <option value="fiesta">Fiesta y mucha vida social</option>
-                                <option value="tranquilo">Tranquilo e inmersivo</option>
+                                <option value="fiesta">Vida Nocturna y Social</option>
+                                <option value="tranquilo">Paz, Naturaleza e Inmersión</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -134,7 +135,7 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h4>Guías Erasmus</h4>
+                <h4>Guías de Destino</h4>
                 <ul>
                     <li><a href="#">Primeros pasos</a></li>
                     <li><a href="#">Becas</a></li>
@@ -152,5 +153,6 @@
     </footer>
 
     <script src="../js/script.js"></script>
+<script src="../js/auth.js"></script>
 </body>
 </html>

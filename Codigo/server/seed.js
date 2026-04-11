@@ -28,6 +28,8 @@ const CiudadSchema = new mongoose.Schema({
     ambiente: String,
     seguridad: Number,
     ocio: Number,
+    conectividad: Number, // 1-5 (Wi-Fi, Coworking)
+    turismo: Number, // 1-5 (Atracciones)
     descripcion: String,
     paisId: { type: mongoose.Schema.Types.ObjectId, ref: 'Pais' },
     f_registro: { type: Date, default: Date.now }
@@ -57,40 +59,40 @@ const Opinion = mongoose.model('Opinion', OpinionSchema, 'opiniones');
 
 const ciudadesBase = [
     { 
-        nombre: "Granada", presupuesto: 400, ambiente: "fiesta", seguridad: 5, ocio: 5, 
-        descripcion: "Famosa por sus tapas y la Alhambra.",
+        nombre: "Granada", presupuesto: 400, ambiente: "fiesta", seguridad: 5, ocio: 5, conectividad: 4, turismo: 5,
+        descripcion: "Perfecta para estudiantes y nómadas con presupuesto ajustado.",
         historia: "Granada fue la capital del antiguo reino nazarí y el último bastión musulmán en la península ibérica hasta 1492. Su universidad, fundada en 1531 por Carlos V, es una de las más prestigiosas e históricas de Europa.",
         alojamiento: "Es una ciudad muy asequible para estudiantes. El precio medio de una habitación ronda los 200€ al mes. Las zonas más demandadas son Pedro Antonio (mucha fiesta), Cartuja (cerco de las facultades de Humanidades) y el Realejo.",
         transporte: "La ciudad se puede recorrer andando casi entera. Dispone de una línea de metro que cruza la ciudad en menos de 30 minutos y red de autobuses universitarios muy útil.",
         barrios: "Pedro Antonio de Alarcón es el núcleo estudiantil y seguro, pero ruidoso. El Albaicín es precioso e histórico, pero a veces menos accesible. Plaza de Toros está muy bien para medicina e informática."
     },
     { 
-        nombre: "Sevilla", presupuesto: 600, ambiente: "fiesta", seguridad: 4, ocio: 5, 
-        descripcion: "Cultura universitaria muy activa y calurosa.",
+        nombre: "Sevilla", presupuesto: 600, ambiente: "fiesta", seguridad: 4, ocio: 5, conectividad: 4, turismo: 5,
+        descripcion: "Cultura vibrante y excelentes opciones de coworking.",
         historia: "Una ciudad bañada por el Guadalquivir con un patrimonio abrumador (la Giralda, el Alcázar). Ciudad icónica con influencias romanas, visigodas y árabes.",
         alojamiento: "Algo más cara que Granada (rondando los 300-350€ por habitación). Los barrios de Viapol, Triana o la Macarena son muy codiciados por la comunidad erasmus.",
         transporte: "Buena red de autobuses y carril bici por toda la ciudad, siendo una de las mejores ciudades de Europa para ir en bicicleta.",
         barrios: "Triana tiene un alma castiza inigualable. Reina Mercedes es el campus principal y por ende hay un ambiente puramente universitario y económico."
     },
     { 
-        nombre: "Madrid", presupuesto: 900, ambiente: "fiesta", seguridad: 4, ocio: 5, c_postal: "28001", valoracion: 4.5, 
-        descripcion: "La capital ofrece infinitas posibilidades.",
+        nombre: "Madrid", presupuesto: 900, ambiente: "fiesta", seguridad: 4, ocio: 5, conectividad: 5, turismo: 5, c_postal: "28001", valoracion: 4.5, 
+        descripcion: "El hub tecnológico y cultural de España con infinitas oportunidades.",
         historia: "Convertida en capital por Felipe II, Madrid es hoy una de las grandes metrópolis europeas, centro financiero, cultural y universitario.",
         alojamiento: "Altamente competitivo y costoso. Habitaciones rara vez bajan de los 500-600€. Zonas como Moncloa, Malasaña o Lavapiés son muy populares.",
         transporte: "Una de las mejores redes de metro del mundo. El abono joven es prácticamente obligatorio y súper rentable.",
         barrios: "Moncloa (Ciudad Universitaria) es ideal para no viajar mucho. Malasaña es para quienes buscan vida nocturna alternativa y constante."
     },
     { 
-        nombre: "Salamanca", presupuesto: 500, ambiente: "fiesta", seguridad: 5, ocio: 4, 
-        descripcion: "La ciudad universitaria por excelencia en España.",
+        nombre: "Salamanca", presupuesto: 500, ambiente: "fiesta", seguridad: 5, ocio: 4, conectividad: 3, turismo: 4,
+        descripcion: "Ciudad histórica ideal para inmersión cultural y tranquilidad.",
         historia: "Su universidad es la más antigua de España y una de las más antiguas de Europa, fundada en 1218.",
         alojamiento: "Precios muy asequibles. Por 250€ puedes tener una buena habitación muy cerca de tu facultad.",
         transporte: "No necesitarás transporte público. Literalmente vas andando a cualquier lado en menos de 20 minutos.",
         barrios: "El centro histórico lo es todo. Barrio del Oeste ofrece algo más urbano y bohemio con su arte callejero."
     },
     { 
-        nombre: "Valencia", presupuesto: 650, ambiente: "fiesta", seguridad: 4, ocio: 4, 
-        descripcion: "Sol, playa y vida muy activa con su Universidad Politécnica.",
+        nombre: "Valencia", presupuesto: 650, ambiente: "fiesta", seguridad: 4, ocio: 4, conectividad: 4, turismo: 4,
+        descripcion: "Sol, playa y un ecosistema emprendedor en crecimiento.",
         historia: "Fundada por los romanos, Valencia es la tercera ciudad de España y famosa por las Fallas y la Ciudad de las Artes.",
         alojamiento: "Zona de Benimaclet (muy universitaria) o Blasco Ibáñez. Habitaciones alrededor de 300-400€.",
         transporte: "Excelente sistema de tranvía, metro y el popular Valenbisi. Ciudad 100% plana, ideal para bicis y patinetes.",

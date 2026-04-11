@@ -1,19 +1,16 @@
-# INFUNI — Portal Erasmus para Estudiantes Universitarios
+# INFUNI — Portal Global de Destinos (Vivir, Trabajar, Viajar) 🌎💼🍹
 
-> Plataforma web completa para que los estudiantes universitarios puedan explorar, comparar y guardar destinos Erasmus, con gestión de usuarios, reseñas y herramientas de planificación.
+> Una plataforma interactiva diseñada para que estudiantes Erasmus, nómadas digitales y viajeros puedan explorar, comparar y planificar su próximo gran destino con información real, herramientas inteligentes y feedback de la comunidad.
 
 ---
 
 ## 📋 Descripción del Proyecto
 
-**INFUNI** es un portal web desarrollado como práctica académica para la asignatura de **Sistemas de Información en la Web (SIWEB)**. Permite a los estudiantes:
+**INFUNI** ha evolucionado de un portal académico a una solución global de información sobre destinos. Desarrollado como proyecto para la asignatura de **Sistemas de Información en la Web (SIWEB)**, el portal ofrece una experiencia integral para:
 
-- Explorar ciudades Erasmus disponibles con información detallada
-- Comparar ciudades por presupuesto, seguridad y ambiente
-- Guardar sus ciudades favoritas en un perfil personal
-- Leer y escribir reseñas de la comunidad
-- Acceder a guías prácticas sobre trámites, alojamiento y vida en el extranjero
-- Calcular el presupuesto mensual estimado según sus preferencias
+- **Nómadas Digitales**: Información sobre conectividad Wi-Fi, espacios de coworking y coste de vida profesional.
+- **Estudiantes Erasmus**: Guías de alojamiento, trámites universitarios y presupuesto estudiantil.
+- **Viajeros y Turistas**: Rankins de seguridad, nivel de interés turístico y monumentos.
 
 ---
 
@@ -22,171 +19,94 @@
 ```
 Pr_Siweb/
 ├── Codigo/                   # Código fuente de la aplicación
-│   ├── html/                 # Páginas HTML
-│   │   ├── index.html        # Página principal (explorador de ciudades)
-│   │   ├── detalle.html      # Ficha detallada de cada ciudad
-│   │   ├── herramientas.html # Comparador y calculadora de gastos
-│   │   ├── guias.html        # Guías de supervivencia Erasmus
-│   │   ├── comunidad.html    # Foro y reseñas de la comunidad
-│   │   ├── login.html        # Inicio de sesión
-│   │   ├── registro.html     # Registro de nuevos usuarios
-│   │   └── perfil.html       # Panel de usuario (ciudades favoritas)
+│   ├── html/                 # Páginas de la interfaz (UI)
+│   │   ├── index.html        # Explorador global de destinos
+│   │   ├── detalle.html      # Wiki-ficha de ciudad (Historia, Barrios, Vivienda)
+│   │   ├── herramientas.html # Calculadora dual y Comparador multidestino
+│   │   ├── guias.html        # Hojas de ruta interactivas con checklist
+│   │   ├── comunidad.html    # Plataforma de reseñas y foro
+│   │   ├── login.html        # Autenticación segura
+│   │   └── perfil.html       # Panel personal (Favoritos sincronizados)
 │   ├── css/
-│   │   └── style.css         # Hoja de estilos global (glassmorphism + variables CSS)
+│   │   └── style.css         # Diseño Glassmorphism y sistema de notificaciones
 │   ├── js/
-│   │   ├── script.js         # Lógica de la página principal (filtros, SSE)
-│   │   ├── detalle.js        # Carga y renderizado de la ficha de ciudad
-│   │   └── api.js            # Constante API_BASE compartida
+│   │   ├── auth.js           # Gestión global de sesión y notificaciones Toast
+│   │   ├── script.js         # Lógica del mural y persistencia de favoritos
+│   │   ├── detalle.js        # Motor de renderizado de fichas dinámicas
+│   │   └── api.js            # Configuración de base de la API
 │   └── server/
-│       ├── server.js         # Servidor Express + Mongoose + rutas API REST
-│       └── seed.js           # Script de pobado de la base de datos
+│       ├── server.js         # API REST (Express) + Sincronización de Sesiones
+│       └── seed.js           # Script de poblamiento inteligente (Modelos relacionados)
 ├── package.json
 └── README.md
 ```
 
 ---
 
-## 🔧 Tecnologías Utilizadas
+## 🔧 Ecosistema Tecnológico
 
 | Capa | Tecnología |
 |---|---|
-| **Frontend** | HTML5, CSS3 (Vanilla), JavaScript ES6+ |
-| **Backend** | Node.js + Express.js |
-| **Base de Datos** | MongoDB (local) + Mongoose ODM |
-| **Tiempo Real** | Server-Sent Events (SSE) |
-| **Tipografía** | Google Fonts — Inter |
-| **Diseño** | Glassmorphism, CSS Custom Properties |
+| **Frontend** | HTML5 Semantic, CSS3 (Custom Variables), JavaScript (ES6 Modules) |
+| **Backend** | Node.js + Express.js Framework |
+| **Base de Datos** | MongoDB (Documental) + Mongoose (ODM) |
+| **Persistencia** | Sincronización inteligente de ID de sesión y LocalStorage |
+| **UX/UI** | Glassmorphism, Notificaciones Toast, Animaciones CSS |
+| **Comunicación** | API REST + Server-Sent Events (SSE) para rankings en vivo |
 
 ---
 
-## 🗄️ Modelo de Datos (NoSQL - MongoDB)
+## 🗄️ Modelo de Datos Extendido
 
-Se han definido **4 colecciones** con relaciones mediante referencias `ObjectId`:
+El sistema utiliza un esquema relacional sobre MongoDB para garantizar la integridad de los datos:
 
-### `paises`
-| Campo | Tipo | Descripción |
+### `ciudades` (Extendido para Nómadas y Turistas)
+| Campo | Tipo | descripción |
 |---|---|---|
-| `nombre` | String | Nombre del país |
-| `transporte` | Number (1-5) | Valoración del transporte |
-| `ocio` | Number (1-5) | Valoración del ocio diurno |
-| `ocioNocturno` | Number (1-5) | Valoración del ocio nocturno |
-| `seguridad` | Number (1-5) | Valoración de seguridad |
-| `calidadAcademica` | Number (1-5) | Calidad universitaria |
-
-### `ciudades`
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `nombre` | String | Nombre de la ciudad |
-| `presupuesto` | Number | Gasto mensual estimado (€) |
-| `ambiente` | String | Tipo de ambiente (`fiesta`, `tranquilo`, etc.) |
-| `seguridad` | Number (1-5) | Valoración de seguridad |
-| `ocio` | Number (1-5) | Valoración del ocio |
-| `descripcion` | String | Descripción breve |
-| `historia` | String | Historia y universidad de la ciudad |
-| `alojamiento` | String | Guía de alojamiento |
-| `transporte` | String | Información de transporte |
-| `barrios` | String | Guía de barrios recomendados |
-| `paisId` | ObjectId → `paises` | Referencia al país |
-| `f_registro` | Date | Fecha de inserción |
+| `nombre` | String | Nombre del destino |
+| `presupuesto` | Number | Gasto mensual (Estudiante vs Pro) |
+| `conectividad` | Number (1-5) | Calidad de Wi-Fi y Coworking |
+| `turismo` | Number (1-5) | Interés monumental y turístico |
+| `ambiente` | String | Estilo de vida (Vida Social / Tranquilidad) |
+| `seguridad` | Number (1-5) | Nivel de seguridad ciudadana |
+| `historia` | String | Datos históricos y académicos |
+| `paisId` | ObjectId | Referencia al país contenedor |
 
 ### `usuarios`
-| Campo | Tipo | Descripción |
+| Campo | Tipo | descripción |
 |---|---|---|
-| `nombre` | String | Nombre del usuario |
-| `apellidos` | String | Apellidos |
-| `correo` | String (unique) | Email de acceso |
-| `password` | String | Contraseña |
-| `paisesRelacionados` | [ObjectId] → `paises` | Países de interés |
-| `ciudadesFavoritas` | [ObjectId] → `ciudades` | Ciudades guardadas |
-
-### `opiniones`
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `texto` | String | Contenido de la reseña |
-| `valoracion` | Number (1-5) | Puntuación |
-| `usuarioId` | ObjectId → `usuarios` | Autor de la opinión |
-| `ciudadId` | ObjectId → `ciudades` | Ciudad valorada |
-| `fecha` | Date | Fecha de publicación |
+| `nombre` | String | Nombre completo |
+| `correo` | String | Email (Login ID) |
+| `ciudadesFavoritas`| [ObjectId]| Relación R1: Ciudades guardadas |
+| `paisesRelacionados`| [ObjectId]| Relación R2: Intereses geográficos |
 
 ---
 
-## 🚀 Instalación y Puesta en Marcha
+## 🚀 Instalación Rápida
 
-### Prerrequisitos
+1. **Instalar dependencias**: `npm install`
+2. **Preparar la DB**: En `Codigo/server`, ejecutar `node seed.js`. 
+   > *Esto creará el usuario de prueba y poblará las 5 ciudades base con datos globales.*
+3. **Lanzar**: `node server.js` y entrar en `http://localhost:3000`.
 
-- [Node.js](https://nodejs.org/) v18+
-- [MongoDB](https://www.mongodb.com/try/download/community) corriendo en local (`mongodb://localhost:27017`)
-
-### Pasos
-
-**1. Clonar el repositorio**
-```bash
-git clone https://github.com/nicolas00004/Pr_Siweb.git
-cd Pr_Siweb
-```
-
-**2. Instalar dependencias**
-```bash
-npm install
-```
-
-**3. Poblar la base de datos** *(solo la primera vez o para resetear datos)*
-```bash
-cd Codigo/server
-node seed.js
-```
-
-**4. Arrancar el servidor**
-```bash
-node server.js
-```
-
-> El navegador se abrirá automáticamente en `http://localhost:3000`.  
-> Si no se abre, accede manualmente a esa dirección.
+### 🔑 Usuario de Prueba
+- **Email**: `maria@universidad.es`
+- **Password**: `123456`
 
 ---
 
-## 🔑 Usuario de Prueba
+## ✨ Funcionalidades Estrella
 
-| Campo | Valor |
-|---|---|
-| **Correo** | `maria@universidad.es` |
-| **Contraseña** | `123456` |
-
----
-
-## 🌐 Rutas de la API REST
-
-| Método | Ruta | Descripción |
-|---|---|---|
-| `GET` | `/api/ciudades` | Listar todas las ciudades |
-| `GET` | `/api/ciudades/:id` | Obtener detalle de una ciudad |
-| `POST` | `/api/ciudades` | Crear nueva ciudad |
-| `DELETE` | `/api/ciudades/:id` | Eliminar ciudad |
-| `GET` | `/api/ciudades/stream` | Stream SSE de cambios en tiempo real |
-| `POST` | `/api/login` | Iniciar sesión (correo + contraseña) |
-| `POST` | `/api/registro` | Registrar nuevo usuario |
-| `GET` | `/api/usuarios/:id` | Perfil completo con ciudades favoritas |
-
----
-
-## 📄 Funcionalidades Implementadas
-
-- ✅ Explorador de ciudades con filtros por presupuesto, ambiente y búsqueda de texto
-- ✅ Actualización en tiempo real mediante Server-Sent Events (SSE)
-- ✅ Ficha detallada de ciudad con historia, barrios, alojamiento y transporte
-- ✅ Comparador V.S. de dos ciudades en tiempo real
-- ✅ Calculadora interactiva de gastos mensuales
-- ✅ Guías Erasmus en formato acordeón (Alojamiento, Trámites, 24h, Recetas)
-- ✅ Foro de comunidad con formulario de reseñas
-- ✅ Sistema de registro de usuarios con validación de contraseñas
-- ✅ Inicio de sesión autenticado contra MongoDB
-- ✅ Panel de perfil personal con ciudades favoritas guardadas
-- ✅ Diseño responsive con estética premium glassmorphism
+- **🔍 Mural Global**: Filtros avanzados por presupuesto y estilo de vida con actualizaciones en tiempo real.
+- **⚖️ Comparador Multidestino**: Compara hasta 4 ciudades simultáneamente incluyendo criterios de Wi-Fi y Turismo.
+- **🎚️ Calculadora Dual Estudiante/Pro**: Cambia el modo de la calculadora para adaptar los consejos y costes a tu perfil.
+- **✅ Checklist con Memoria**: Hoja de ruta para reubicación que guarda tu progreso automáticamente.
+- **🛡️ Sincronización de Seguridad**: Monitorización de sesión que detecta si el ID de usuario es inválido y fuerza el re-login.
+- **🔔 Sistema de Toasts**: Feedback visual instantáneo al guardar favoritos o reseñas.
 
 ---
 
 ## 👨‍💻 Autor
 
 Práctica desarrollada para la asignatura **SIWEB** — Grado en Ingeniería Informática.  
-Universidad · Curso 2025-2026
+Universidad de Jaén· Curso 2025-2026

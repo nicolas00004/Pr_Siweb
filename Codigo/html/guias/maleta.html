@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Maleta - INFUNI</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .page-header { background: var(--primary-color); color: white; padding: 60px 5%; border-radius: 0 0 40px 40px; text-align: center; }
+        .page-header h1 { font-size: 2.5rem; margin-bottom: 15px; color: white; }
+        .content-wiki { max-width: 900px; margin: -40px auto 60px; background: white; border-radius: 30px; padding: 50px; box-shadow: var(--shadow-md); position: relative; }
+        .content-wiki h2 { color: var(--primary-color); margin-top: 40px; border-left: 5px solid var(--accent-color); padding-left: 15px; }
+        .content-wiki p { line-height: 1.8; color: var(--text-dark); margin-bottom: 20px; }
+        .checklist-box { background: #f8fafc; padding: 30px; border-radius: 20px; border: 1px dashed #cbd5e1; margin-top: 50px; }
+        .check-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; cursor: pointer; font-weight: 600; }
+        .check-item input { width: 20px; height: 20px; accent-color: var(--primary-color); }
+        .check-item.done { text-decoration: line-through; color: var(--text-muted); }
+        .btn-back { display: inline-flex; align-items: center; gap: 8px; color: var(--primary-color); font-weight: 700; text-decoration: none; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="nav-global">
+            <div class="logo"><h1>INF<span>UNI</span></h1></div>
+            <ul>
+                <li><a href="../index.html">Inicio</a></li>
+                <li><a href="../index.html#comparador">Destinos</a></li>
+                <li>
+                    <a href="../herramientas.html">Herramientas ▾</a>
+                    <ul>
+                        <li><a href="../herramientas.html#comparador">Comparador Personalizado</a></li>
+                        <li><a href="../herramientas.html#calculadora">Calculadora de Gastos</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="index.html" class="active">Guías ▾</a>
+                    <ul>
+                        <li><a href="vivienda.html">Vivienda y Pisos</a></li>
+                        <li><a href="legal.html">Trámites Legales</a></li>
+                        <li><a href="salud.html">Salud y Emergencias</a></li>
+                        <li><a href="finanzas.html">Finanzas Globales</a></li>
+                        <li><a href="index.html"><b>Ver todas las Guías</b></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="../comunidad.html">Comunidad ▾</a>
+                    <ul>
+                        <li><a href="../comunidad.html#foro">Foro de preguntas rápidas</a></li>
+                        <li><a href="../index.html#comunidad">Añadir nueva ciudad</a></li>
+                        <li><a href="../comunidad.html#escribir">Escribir una reseña</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="../login.html" class="btn-login">Área Personal 👤</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <h1>🧳 La Maleta Inteligente</h1>
+        <p>Optimiza tu espacio. Minimiza tus problemas.</p>
+    </div>
+
+    <main class="content-wiki">
+        <a href="guias.html" class="btn-back">⬅ Volver al Centro de Guías</a>
+        
+        <h2>1. Menos es Más</h2>
+        <p>El error más común es llevar ropa "por si acaso". La regla de oro: lleva ropa para 10-14 días y asume que lavarás la ropa. Elige colores neutros que combinen entre sí para maximizar los outfits con el mínimo de prendas. Recuerda que allí donde vayas también habrá tiendas (y probablemente rebajas).</p>
+
+        <h2>2. Tecnología Indispensable</h2>
+        <p>No olvides un **adaptador de corriente universal** si vas fuera de la UE. Una batería externa (powerbank) de buena capacidad te salvará la vida en tus primeros días usando el mapa del móvil constantemente. Un disco duro externo con copias de tus documentos y fotos también es altamente recoemndable.</p>
+
+        <h2>3. Documentación en Mano</h2>
+        <p>Lleva siempre una **carpeta física** con copias de tu DNI/Pasaporte, contrato de alquiler, carta de aceptación universitaria y seguro médico. Si el móvil se queda sin batería o te lo roban, tener estos papeles físicamente te permitirá solucionar cualquier trámite inicial sin pánico.</p>
+
+        <div class="checklist-box">
+            <h3>✅ Checklist de Equipaje</h3>
+            <div class="checklist">
+                <label class="check-item"><input type="checkbox" id="m-1" onchange="toggleTask('m-1')"> Revisar límites de peso de la aerolínea</label>
+                <label class="check-item"><input type="checkbox" id="m-2" onchange="toggleTask('m-2')"> Preparar carpeta física de "Supervivencia" (Docs)</label>
+                <label class="check-item"><input type="checkbox" id="m-3" onchange="toggleTask('m-3')"> Adaptador de corriente internacional</label>
+                <label class="check-item"><input type="checkbox" id="m-4" onchange="toggleTask('m-4')"> Ropa por capas (sistema cebolla)</label>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/guias-logic.js"></script>
+    <script src="../../js/auth.js"></script>
+</body>
+</html>

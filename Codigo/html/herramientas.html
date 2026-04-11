@@ -32,11 +32,33 @@
         .calc-row label { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 10px; }
         .calc-row input[type=range] { width: 100%; cursor: pointer; }
         
-        .calc-total { 
-            background: var(--bg-light); padding: 20px; border-radius: 12px; 
-            text-align: center; margin-top: 30px; border: 2px dashed var(--accent-color);
-        }
         .calc-total span { display: block; font-size: 2.5rem; font-weight: 800; color: var(--primary-color); }
+
+        /* Estilos Modo Calculadora */
+        .mode-switch {
+            background: #f1f5f9;
+            padding: 5px;
+            border-radius: 50px;
+            display: inline-flex;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        .btn-mode {
+            border: none;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+            color: var(--text-muted);
+        }
+        .btn-mode.active {
+            background: white;
+            color: var(--primary-color);
+            box-shadow: var(--shadow-sm);
+        }
     </style>
 </head>
 <body>
@@ -56,12 +78,13 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="guias.html">Guías ▾</a>
+                    <a href="guias/index.html">Guías ▾</a>
                     <ul>
-                        <li><a href="guias.html#alojamiento">Alojamiento y Residencias</a></li>
-                        <li><a href="guias.html#tramites">Trámites y Papeleo</a></li>
-                        <li><a href="guias.html#24horas">Primeras 24 horas</a></li>
-                        <li><a href="guias.html#recetas">Recetas Rápidas</a></li>
+                        <li><a href="guias/vivienda.html">Vivienda y Pisos</a></li>
+                        <li><a href="guias/legal.html">Trámites Legales</a></li>
+                        <li><a href="guias/salud.html">Salud y Emergencias</a></li>
+                        <li><a href="guias/finanzas.html">Finanzas Globales</a></li>
+                        <li><a href="guias/index.html"><b>Ver todas las Guías</b></a></li>
                     </ul>
                 </li>
                 <li>
@@ -85,120 +108,330 @@
 
         <div class="tools-grid">
             
-            <!-- COMPARADOR VS -->
-            <div class="tool-panel" id="comparador">
-                <h3>V.S. Comparador Rápido</h3>
-                <div class="compare-box">
-                    <select class="city-select" id="city1">
-                        <option value="600,f,4,5">Sevilla</option>
-                        <option value="900,f,4,5">Madrid</option>
-                    </select>
-                    <span style="font-size: 1.5rem; font-weight: bold; color: var(--text-muted); align-self: center;">VS</span>
-                    <select class="city-select" id="city2">
-                        <option value="400,f,5,5">Granada</option>
-                        <option value="650,f,4,4">Valencia</option>
-                        <option value="500,f,5,4">Salamanca</option>
-                    </select>
+            <!-- COMPARADOR VS DINÁMICO -->
+            <div class="tool-panel" id="comparador" style="grid-column: 1 / -1;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>📊 Comparador de Destinos Multidestino</h3>
+                    <button class="btn-submit" id="btnAddCity" style="width: auto; padding: 10px 20px; font-size: 0.9rem;">+ Añadir Ciudad</button>
                 </div>
+                
+                <p style="margin-bottom: 20px; color: var(--text-muted);">Compara hasta 4 ciudades simultáneamente para ver cuál se ajusta mejor a tu presupuesto y estilo de vida.</p>
 
-                <table class="compare-table" id="tablaCompare">
-                    <thead>
-                        <tr>
-                            <th style="text-align: left;">Criterio</th>
-                            <th>Ciudad A</th>
-                            <th>Ciudad B</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style="text-align: left;"><strong>Est. Presupuesto</strong></td>
-                            <td id="td1_pres">600€</td>
-                            <td class="winner" id="td2_pres">400€</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;"><strong>Ambiente</strong></td>
-                            <td id="td1_amb">Fiesta</td>
-                            <td id="td2_amb">Fiesta</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;"><strong>Seguridad</strong></td>
-                            <td id="td1_seg">⭐⭐⭐⭐</td>
-                            <td class="winner" id="td2_seg">⭐⭐⭐⭐⭐</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div style="overflow-x: auto;">
+                    <table class="compare-table" id="tablaCompare">
+                        <thead>
+                            <tr id="headerRow">
+                                <th style="text-align: left; min-width: 150px;">Criterio</th>
+                                <!-- Columnas dinámicas aquí -->
+                            </tr>
+                        </thead>
+                        <tbody id="compareBody">
+                            <tr data-criterio="presupuesto">
+                                <td style="text-align: left;"><strong>💶 Presupuesto Est.</strong></td>
+                            </tr>
+                            <tr data-criterio="ambiente">
+                                <td style="text-align: left;"><strong>🎭 Ambiente</strong></td>
+                            </tr>
+                            <tr data-criterio="seguridad">
+                                <td style="text-align: left;"><strong>🛡️ Seguridad</strong></td>
+                            </tr>
+                            <tr data-criterio="ocio">
+                                <td style="text-align: left;"><strong>🎡 Ocio y Actividades</strong></td>
+                            </tr>
+                            <tr data-criterio="conectividad">
+                                <td style="text-align: left;"><strong>🌐 Wi-Fi / Conexión</strong></td>
+                            </tr>
+                            <tr data-criterio="turismo">
+                                <td style="text-align: left;"><strong>🏛️ Turismo y Monumentos</strong></td>
+                            </tr>
+                            <tr id="deleteRow">
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <!-- CALCULADORA DE GASTOS -->
-            <div class="tool-panel" id="calculadora">
-                <h3>💶 Calculadora de Supervivencia</h3>
+            <!-- CALCULADORA DE GASTOS AMPLIADA -->
+            <div class="tool-panel" id="calculadora" style="grid-column: 1 / -1;">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                        <h3>💶 Calculadora de Presupuesto Universal</h3>
+                        <p style="margin-bottom: 30px; color: var(--text-muted);">Adapta tus gastos según si buscas ahorrar como estudiante o producir como profesional.</p>
+                    </div>
+                    <div class="mode-switch">
+                        <button class="btn-mode active" id="btnEst" onclick="setCalcMode('est')">🎒 Estudiante</button>
+                        <button class="btn-mode" id="btnNom" onclick="setCalcMode('nom')">💻 Nómada / Pro</button>
+                    </div>
+                </div>
                 
-                <div class="calc-row">
-                    <label><span>🏠 Alquiler Mensual Max.</span> <span id="v-alq">350€</span></label>
-                    <input type="range" id="s-alq" min="150" max="1000" step="10" value="350">
-                </div>
-                <div class="calc-row">
-                    <label><span>🛒 Compra y Comida</span> <span id="v-com">200€</span></label>
-                    <input type="range" id="s-com" min="100" max="500" step="10" value="200">
-                </div>
-                <div class="calc-row">
-                    <label><span>🍻 Ocio y Extras</span> <span id="v-oci">100€</span></label>
-                    <input type="range" id="s-oci" min="50" max="400" step="10" value="100">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                    <div>
+                        <div class="calc-row">
+                            <label><span>🏠 Alquiler (Habitación)</span> <span id="v-alq">350€</span></label>
+                            <input type="range" id="s-alq" min="150" max="1000" step="10" value="350">
+                        </div>
+                        <div class="calc-row">
+                            <label><span>🛒 Comida y Supermercado</span> <span id="v-com">200€</span></label>
+                            <input type="range" id="s-com" min="100" max="500" step="10" value="200">
+                        </div>
+                        <div class="calc-row">
+                            <label><span>💡 Facturas (Luz, Agua, Net)</span> <span id="v-fac">60€</span></label>
+                            <input type="range" id="s-fac" min="30" max="200" step="5" value="60">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="calc-row">
+                            <label><span>🚌 Transporte Mensual</span> <span id="v-tra">30€</span></label>
+                            <input type="range" id="s-tra" min="0" max="100" step="5" value="30">
+                        </div>
+                        <div class="calc-row">
+                            <label><span>🍻 Ocio y Salidas</span> <span id="v-oci">100€</span></label>
+                            <input type="range" id="s-oci" min="20" max="400" step="10" value="100">
+                        </div>
+                        <div class="calc-row">
+                            <label><span>📦 Otros (Suscripciones, Ropa)</span> <span id="v-otr">40€</span></label>
+                            <input type="range" id="s-otr" min="0" max="200" step="10" value="40">
+                        </div>
+                    </div>
                 </div>
 
-                <div class="calc-total">
-                    Presupuesto Mensual Calculado:
-                    <span id="calc-result">650€</span>
-                    <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted);">
-                        Ideal para ciudades como <strong style="color: var(--primary-color);">Valencia o Sevilla</strong>.
-                    </p>
+                <div class="calc-total" style="background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);">
+                    <p style="font-weight: 600; color: var(--text-muted); margin-bottom: 10px;">Presupuesto Mensual Recomendado:</p>
+                    <span id="calc-result">780€</span>
+                    <div id="calc-advice" style="margin-top: 15px; font-size: 0.95rem; color: var(--text-dark);">
+                        <!-- Dinámico -->
+                    </div>
                 </div>
             </div>
 
         </div>
+
+        <!-- SECCIÓN DE RANKINGS DINÁMICOS -->
+        <div style="margin-top: 60px;">
+            <h3 style="color: var(--primary-color); text-align: center; margin-bottom: 30px;">🏆 Rankings en Tiempo Real</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div class="tool-panel" id="rankBaratas">
+                    <h4>💰 Más Económicas</h4>
+                    <div id="listBaratas" style="margin-top: 15px;">
+                        <!-- Dinámico -->
+                    </div>
+                </div>
+                <div class="tool-panel" id="rankSeguras">
+                    <h4>🛡️ Más Seguras</h4>
+                    <div id="listSeguras" style="margin-top: 15px;">
+                        <!-- Dinámico -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <!-- LOGICA FRONT END HERRAMIENTAS -->
     <script>
-        // Lógica de Comparador V.S.
-        const c1 = document.getElementById('city1');
-        const c2 = document.getElementById('city2');
-        
-        function updateCompare() {
-            const v1 = c1.value.split(','); // pre, amb, seg, oci
-            const v2 = c2.value.split(',');
-            
-            document.getElementById('td1_pres').innerHTML = v1[0] + '€';
-            document.getElementById('td1_pres').className = Number(v1[0]) < Number(v2[0]) ? 'winner' : '';
-            document.getElementById('td2_pres').innerHTML = v2[0] + '€';
-            document.getElementById('td2_pres').className = Number(v2[0]) < Number(v1[0]) ? 'winner' : '';
+        const API_BASE = 'http://localhost:3000';
+        let todasCiudades = [];
+        let ciudadesCargadas = false;
 
-            document.getElementById('td1_amb').innerHTML = v1[1] === 'f' ? 'Fiesta' : 'Tranquilo';
-            document.getElementById('td2_amb').innerHTML = v2[1] === 'f' ? 'Fiesta' : 'Tranquilo';
+        // 1. CARGAR CIUDADES INICIALES
+        async function init() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ciudades`);
+                todasCiudades = await res.json();
+                ciudadesCargadas = true;
+                
+                // Añadir las dos primeras ciudades por defecto
+                addCompareColumn();
+                addCompareColumn();
 
-            document.getElementById('td1_seg').innerHTML = '⭐'.repeat(v1[2]);
-            document.getElementById('td1_seg').className = Number(v1[2]) > Number(v2[2]) ? 'winner' : '';
-            document.getElementById('td2_seg').innerHTML = '⭐'.repeat(v2[2]);
-            document.getElementById('td2_seg').className = Number(v2[2]) > Number(v1[2]) ? 'winner' : '';
+                renderRankings();
+            } catch (e) { console.error("Error cargando ciudades", e); }
         }
 
-        c1.addEventListener('change', updateCompare);
-        c2.addEventListener('change', updateCompare);
+        // 2. LÓGICA COMPARADOR DINÁMICO
+        const headerRow = document.getElementById('headerRow');
+        const compareBody = document.getElementById('compareBody');
+        const deleteRow = document.getElementById('deleteRow');
+        let colCount = 0;
 
-        // Lógica Calculadora
-        const sAlq = document.getElementById('s-alq'); const vAlq = document.getElementById('v-alq');
-        const sCom = document.getElementById('s-com'); const vCom = document.getElementById('v-com');
-        const sOci = document.getElementById('s-oci'); const vOci = document.getElementById('v-oci');
-        const result = document.getElementById('calc-result');
+        function addCompareColumn() {
+            if (colCount >= 4) return; // Límite de 4 ciudades
+            colCount++;
+            const id = `city_col_${colCount}`;
+
+            // Crear Header (Select)
+            const th = document.createElement('th');
+            th.id = `header_${id}`;
+            th.style.minWidth = "200px";
+            th.innerHTML = `
+                <select class="city-select" onchange="updateColumn('${id}', this.value)" style="margin-bottom:10px;">
+                    <option value="">Selecciona...</option>
+                    ${todasCiudades.map(c => `<option value="${c._id}">${c.nombre}</option>`).join('')}
+                </select>
+            `;
+            headerRow.appendChild(th);
+
+            // Crear Celdas en el cuerpo (Incluyendo los nuevos criterios)
+            const criterios = ['presupuesto', 'ambiente', 'seguridad', 'ocio', 'conectividad', 'turismo'];
+            criterios.forEach(crit => {
+                const tr = document.querySelector(`tr[data-criterio="${crit}"]`);
+                if (tr) {
+                    const td = document.createElement('td');
+                    td.id = `${crit}_${id}`;
+                    td.style.verticalAlign = "middle";
+                    td.innerHTML = "---";
+                    tr.appendChild(td);
+                }
+            });
+
+            // Botón eliminar
+            const tdDel = document.createElement('td');
+            tdDel.id = `del_${id}`;
+            tdDel.innerHTML = `<button onclick="removeColumn('${id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.8rem;">✖ Quitar</button>`;
+            deleteRow.appendChild(tdDel);
+        }
+
+        function updateColumn(colId, ciudadId) {
+            const ciudad = todasCiudades.find(c => c._id === ciudadId);
+            const criterios = ['presupuesto', 'ambiente', 'seguridad', 'ocio', 'conectividad', 'turismo'];
+            
+            criterios.forEach(crit => {
+                const element = document.getElementById(`${crit}_${colId}`);
+                if (!element) return;
+                
+                if (!ciudad) {
+                    element.innerHTML = "---";
+                    element.className = "";
+                } else {
+                    let val = ciudad[crit];
+                    if (crit === 'presupuesto') {
+                        const pct = Math.min(100, (val / 1500) * 100);
+                        element.innerHTML = `
+                            <div>${val}€</div>
+                            <div style="height:6px; background:#e2e8f0; border-radius:3px; margin-top:8px; overflow:hidden;">
+                                <div style="width:${pct}%; height:100%; background:var(--primary-color);"></div>
+                            </div>
+                        `;
+                    }
+                    else if (crit === 'ambiente') {
+                        element.innerText = val === 'fiesta' ? '🎭 Vida Social' : '🧘 Tranquilidad';
+                    }
+                    else if (['seguridad', 'ocio', 'conectividad', 'turismo'].includes(crit)) {
+                        const stars = '⭐'.repeat(val || 0);
+                        element.innerHTML = `<div>${stars}</div>`;
+                    }
+                }
+            });
+            destacarGanadores();
+        }
+
+        function destacarGanadores() {
+            const criterios = ['presupuesto', 'seguridad', 'ocio', 'conectividad', 'turismo'];
+            criterios.forEach(crit => {
+                const celdas = Array.from(document.querySelectorAll(`tr[data-criterio="${crit}"] td`)).slice(1);
+                let bestVal = (crit === 'presupuesto') ? Infinity : -Infinity;
+                
+                celdas.forEach(td => {
+                    td.classList.remove("winner");
+                    const rawText = td.innerText.replace('€', '').replace(/⭐/g, '1');
+                    const val = parseFloat(rawText);
+                    if (!isNaN(val)) {
+                        if (crit === 'presupuesto' && val < bestVal) bestVal = val;
+                        if (crit !== 'presupuesto' && val > bestVal) bestVal = val;
+                    }
+                });
+
+                if (bestVal !== Infinity && bestVal !== -Infinity) {
+                    celdas.forEach(td => {
+                        const rawText = td.innerText.replace('€', '').replace(/⭐/g, '1');
+                        if (parseFloat(rawText) === bestVal) td.classList.add("winner");
+                    });
+                }
+            });
+        }
+
+        function removeColumn(id) {
+            const elHeader = document.getElementById(`header_${id}`);
+            if (elHeader) elHeader.remove();
+            
+            ['presupuesto', 'ambiente', 'seguridad', 'ocio', 'conectividad', 'turismo'].forEach(crit => {
+                const elCrit = document.getElementById(`${crit}_${id}`);
+                if (elCrit) elCrit.remove();
+            });
+            
+            const elDel = document.getElementById(`del_${id}`);
+            if (elDel) elDel.remove();
+            
+            colCount--;
+            destacarGanadores();
+        }
+
+        // 3. LÓGICA CALCULADORA UNIVERSAL
+        let currentMode = 'est';
+        const sliders = ['alq', 'com', 'fac', 'tra', 'oci', 'otr'];
+        
+        function setCalcMode(mode) {
+            currentMode = mode;
+            document.getElementById('btnEst').classList.toggle('active', mode === 'est');
+            document.getElementById('btnNom').classList.toggle('active', mode === 'nom');
+            
+            // Ajustar valores base según el modo
+            if (mode === 'nom') {
+                document.getElementById('s-alq').value = 700;
+                document.getElementById('s-com').value = 350;
+                document.getElementById('s-fac').value = 120;
+                document.getElementById('s-oci').value = 250;
+            } else {
+                document.getElementById('s-alq').value = 350;
+                document.getElementById('s-com').value = 200;
+                document.getElementById('s-fac').value = 60;
+                document.getElementById('s-oci').value = 100;
+            }
+            updateCalc();
+        }
 
         function updateCalc() {
-            vAlq.innerText = sAlq.value + '€';
-            vCom.innerText = sCom.value + '€';
-            vOci.innerText = sOci.value + '€';
-            result.innerText = (Number(sAlq.value) + Number(sCom.value) + Number(sOci.value)) + '€';
+            let total = 0;
+            sliders.forEach(s => {
+                const val = document.getElementById(`s-${s}`).value;
+                document.getElementById(`v-${s}`).innerText = val + '€';
+                total += Number(val);
+            });
+            document.getElementById('calc-result').innerText = total + '€';
+            
+            // Sugerencia dinámica y Comparativa
+            const mediaReferencia = currentMode === 'est' ? 750 : 1400;
+            const diff = total - mediaReferencia;
+            const pctDiff = ((diff / mediaReferencia) * 100).toFixed(0);
+            
+            let color = pctDiff > 0 ? "#ef4444" : "#10b981";
+            let comparativa = pctDiff > 0 
+                ? `⚠️ Estás un <strong>${pctDiff}% por encima</strong> del presupuesto ${currentMode==='est'?'estudiantil':'profesional'} medio.`
+                : `✅ Estás un <strong>${Math.abs(pctDiff)}% por debajo</strong> de la media.`;
+
+            let msg = "";
+            if (currentMode === 'est') {
+                if (total < 500) msg = "Presupuesto muy ajustado. Considera ciudades más baratas.";
+                else if (total < 850) msg = "Presupuesto estándar. Perfecto para la mayoría de ciudades españolas.";
+                else msg = "Presupuesto alto. ¡Vivirás como un rey en casi cualquier sitio!";
+            } else {
+                if (total < 1000) msg = "Presupuesto de nómada minimalista. Busca hubs secundarios.";
+                else if (total < 1800) msg = "Presupuesto profesional. Ideal para capitales como Madrid o Valencia.";
+                else msg = "Presupuesto VIP. Estilo de vida premium garantizado.";
+            }
+
+            document.getElementById('calc-advice').innerHTML = `
+                <p style="margin-bottom:8px;">${msg}</p>
+                <p style="font-size:0.85rem; color:${color};">${comparativa}</p>
+            `;
         }
 
-        [sAlq, sCom, sOci].forEach(el => el.addEventListener('input', updateCalc));
+        sliders.forEach(s => document.getElementById(`s-${s}`).addEventListener('input', updateCalc));
+
+        init();
+        updateCalc();
     </script>
+<script src="../js/auth.js"></script>
 </body>
 </html>

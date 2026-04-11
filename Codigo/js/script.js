@@ -7,11 +7,27 @@ const btnBuscar = document.getElementById('btnBuscar');
 
 const API_BASE = 'http://localhost:3000';
 let ciudades = [];
+let userFavoritasIds = [];
 
 async function cargarDatos() {
     try {
+        const userInfo = JSON.parse(localStorage.getItem('usuarioInfo'));
+        
+        // 1. Cargar ciudades
         const r = await fetch(`${API_BASE}/api/ciudades`);
         ciudades = await r.json();
+
+        // 2. Si hay usuario, cargar sus favoritos para marcar los corazones
+        if (userInfo) {
+            const resU = await fetch(`${API_BASE}/api/usuarios/${userInfo.id}`);
+            const userFull = await resU.json();
+            userFavoritasIds = (userFull.ciudadesFavoritas || []).map(f => f._id || f);
+            
+            // Mostrar bienvenida personalizada
+            const heroH2 = document.querySelector('#hero h2');
+            if (heroH2) heroH2.innerText = `👋 ¡Hola ${userInfo.nombre}! Tu próximo destino te espera`;
+        }
+
         aplicarFiltros();
     } catch (e) {
         console.error('Error cargando ciudades:', e);
@@ -19,9 +35,8 @@ async function cargarDatos() {
     }
 }
 
-function obtenerImagenCiudad(nombre) {
-    // Generar imagen aleatoria basada en el nombre usando Unsplash Source
-    return `https://source.unsplash.com/400x300/?${encodeURIComponent(nombre)},city`;
+function obtenerImagenCiudad(ciudad) {
+    return ciudad.imagen || `https://source.unsplash.com/400x300/?${encodeURIComponent(ciudad.nombre)},city`;
 }
 
 function renderizarCiudades(datos) {
@@ -33,20 +48,68 @@ function renderizarCiudades(datos) {
         return;
     }
 
-    contenedor.innerHTML = datos.map(c => `
-        <article class="card" style="cursor: pointer;" onclick="window.location.href='detalle.html?id=${c._id}'">
-            <div class="card-img-placeholder" style="background-image: url('${obtenerImagenCiudad(c.nombre)}')"></div>
-            <div class="card-content">
-                <h3>${c.nombre}</h3>
-                <div class="card-info">
-                    <span class="pill">💶 ${c.presupuesto}€ / mes</span>
-                    <span class="pill">🎭 Ambiente: ${c.ambiente || 'N/A'}</span>
-                    <span class="pill">🛡️ Seguridad: ${"⭐".repeat(c.seguridad || 0)}</span>
+    contenedor.innerHTML = datos.map(c => {
+        const isFav = userFavoritasIds.includes(c._id);
+        return `
+            <article class="card" style="cursor: pointer;" onclick="window.location.href='detalle.html?id=${c._id}'">
+                <button class="fav-btn ${isFav ? 'active' : ''}" 
+                        onclick="event.stopPropagation(); toggleFavoritoRapido('${c._id}')" 
+                        title="${isFav ? 'Quitar de favoritos' : 'Añadir a favoritos'}">
+                    ${isFav ? '❤️' : '🤍'}
+                </button>
+                <div class="card-img-placeholder" style="background-image: url('${obtenerImagenCiudad(c)}')"></div>
+                <div class="card-content">
+                    <h3>${c.nombre}</h3>
+                    <div class="card-info">
+                        <span class="pill">💶 ${c.presupuesto}€ / mes</span>
+                        <span class="pill">🎭 Ambiente: ${c.ambiente || 'N/A'}</span>
+                        <span class="pill">🛡️ Seguridad: ${"⭐".repeat(c.seguridad || 0)}</span>
+                    </div>
+                    <a href="detalle.html?id=${c._id}" class="btn-ver" onclick="event.stopPropagation()">Ver detalles completos</a>
                 </div>
-                <a href="detalle.html?id=${c._id}" class="btn-ver" onclick="event.stopPropagation()">Ver detalles completos</a>
-            </div>
-        </article>
-    `).join('');
+            </article>
+        `;
+    }).join('');
+}
+
+async function toggleFavoritoRapido(ciudadId) {
+    const user = JSON.parse(localStorage.getItem('usuarioInfo'));
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/api/usuarios/${user.id}/favorito`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ciudadId })
+        });
+        
+        // 1. Verificar si el ID de usuario sigue existiendo
+        const sesionExpirada = await verificarSesion(res);
+        if (sesionExpirada) return;
+
+        if (res.ok) {
+            const data = await res.json();
+            
+            // 2. Feedback visual (Toast)
+            showToast(data.esFavorito ? "❤️ ¡Añadido a favoritos!" : "🤍 Eliminado de favoritos", data.esFavorito ? "success" : "default");
+
+            // 3. Actualizar lista local y volver a renderizar
+            if (data.esFavorito) {
+                userFavoritasIds.push(ciudadId);
+            } else {
+                userFavoritasIds = userFavoritasIds.filter(id => id !== ciudadId);
+            }
+            aplicarFiltros(); 
+        } else {
+            showToast("⚠️ Error al guardar favorito", "error");
+        }
+    } catch (e) {
+        console.error("Error favoritos:", e);
+        showToast("🔌 Error de conexión con el servidor", "error");
+    }
 }
 
 function aplicarFiltros() {

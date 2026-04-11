@@ -62,12 +62,13 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="guias.html">Guías ▾</a>
+                    <a href="guias/index.html">Guías ▾</a>
                     <ul>
-                        <li><a href="guias.html#alojamiento">Alojamiento y Residencias</a></li>
-                        <li><a href="guias.html#tramites">Trámites y Papeleo</a></li>
-                        <li><a href="guias.html#24horas">Primeras 24 horas</a></li>
-                        <li><a href="guias.html#recetas">Recetas Rápidas</a></li>
+                        <li><a href="guias/vivienda.html">Vivienda y Pisos</a></li>
+                        <li><a href="guias/legal.html">Trámites Legales</a></li>
+                        <li><a href="guias/salud.html">Salud y Emergencias</a></li>
+                        <li><a href="guias/finanzas.html">Finanzas Globales</a></li>
+                        <li><a href="guias/index.html"><b>Ver todas las Guías</b></a></li>
                     </ul>
                 </li>
                 <li>
@@ -175,14 +176,90 @@
     </main>
 
     <script>
-        document.getElementById('formResena').addEventListener('submit', function(e) {
+        const API_BASE = 'http://localhost:3000';
+        const foroContainer = document.getElementById('foro');
+        const selectCiudades = document.getElementById('ciudadForo');
+
+        // 1. Cargar Ciudades para el Selector
+        async function cargarCiudadesSelector() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ciudades`);
+                const ciudades = await res.json();
+                selectCiudades.innerHTML = '<option value="">Selecciona...</option>' + 
+                    ciudades.map(c => `<option value="${c._id}">${c.nombre}</option>`).join('');
+            } catch (err) { console.error("Error ciudades:", err); }
+        }
+
+        // 2. Cargar Opiniones Recientes
+        async function cargarOpiniones() {
+            try {
+                const res = await fetch(`${API_BASE}/api/opiniones`);
+                const opiniones = await res.json();
+                
+                if (opiniones.length === 0) {
+                    foroContainer.innerHTML = '<p style="text-align:center; padding:40px;">No hay hilos todavía. ¡Sé el primero en preguntar!</p>';
+                    return;
+                }
+
+                foroContainer.innerHTML = opiniones.map(op => `
+                    <div class="hilo-card">
+                        <div class="hilo-header">
+                            <div class="hilo-autor">👤 ${op.usuarioId ? (op.usuarioId.nombre || 'Estudiante') : 'Anónimo'}</div>
+                            <div class="hilo-ciudad">📍 ${op.ciudadId ? op.ciudadId.nombre : 'General'}</div>
+                        </div>
+                        <div class="hilo-texto">${op.texto}</div>
+                        <div class="hilo-footer">
+                            <span>⭐ ${op.valoracion}/5</span>
+                            <span>🕒 ${new Date(op.fecha).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) { 
+                foroContainer.innerHTML = '<p>Error cargando la comunidad.</p>';
+            }
+        }
+
+        // 3. Enviar nueva Opinión
+        document.getElementById('formResena').addEventListener('submit', async function(e) {
             e.preventDefault();
             const feedback = document.getElementById('foroFeedback');
-            feedback.style.color = "#10b981";
-            feedback.innerText = "¡Hilo publicado! (Simulación Frontend)";
-            this.reset();
-            setTimeout(() => { feedback.innerText = ""; }, 3000);
+            
+            const localUser = JSON.parse(localStorage.getItem('usuarioInfo') || '{}');
+
+            const payload = {
+                ciudadId: document.getElementById('ciudadForo').value,
+                valoracion: document.getElementById('valForo').value,
+                texto: document.getElementById('textoForo').value,
+                usuarioId: localUser.id || null,
+                usuarioNombre: localUser.nombre || 'Estudiante Erasmus'
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/api/opiniones`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    feedback.style.color = "#10b981";
+                    feedback.innerText = "¡Hilo publicado con éxito!";
+                    this.reset();
+                    cargarOpiniones(); // Recargar lista
+                } else {
+                    const error = await res.json();
+                    feedback.style.color = "#ef4444";
+                    feedback.innerText = error.error || "Error al publicar. Revisa los datos.";
+                }
+            } catch (err) {
+                feedback.innerText = "Error de conexión con el servidor.";
+            }
         });
+
+        // Inicializar
+        cargarCiudadesSelector();
+        cargarOpiniones();
     </script>
+<script src="../js/auth.js"></script>
 </body>
 </html>

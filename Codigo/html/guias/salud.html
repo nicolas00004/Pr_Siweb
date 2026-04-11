@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Salud - INFUNI</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .page-header { background: var(--primary-color); color: white; padding: 60px 5%; border-radius: 0 0 40px 40px; text-align: center; }
+        .page-header h1 { font-size: 2.5rem; margin-bottom: 15px; color: white; }
+        .content-wiki { max-width: 900px; margin: -40px auto 60px; background: white; border-radius: 30px; padding: 50px; box-shadow: var(--shadow-md); position: relative; }
+        .content-wiki h2 { color: var(--primary-color); margin-top: 40px; border-left: 5px solid var(--accent-color); padding-left: 15px; }
+        .content-wiki p { line-height: 1.8; color: var(--text-dark); margin-bottom: 20px; }
+        .checklist-box { background: #f8fafc; padding: 30px; border-radius: 20px; border: 1px dashed #cbd5e1; margin-top: 50px; }
+        .check-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; cursor: pointer; font-weight: 600; }
+        .check-item input { width: 20px; height: 20px; accent-color: var(--primary-color); }
+        .check-item.done { text-decoration: line-through; color: var(--text-muted); }
+        .btn-back { display: inline-flex; align-items: center; gap: 8px; color: var(--primary-color); font-weight: 700; text-decoration: none; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="nav-global">
+            <div class="logo"><h1>INF<span>UNI</span></h1></div>
+            <ul>
+                <li><a href="../index.html">Inicio</a></li>
+                <li><a href="../index.html#comparador">Destinos</a></li>
+                <li>
+                    <a href="../herramientas.html">Herramientas ▾</a>
+                    <ul>
+                        <li><a href="../herramientas.html#comparador">Comparador Personalizado</a></li>
+                        <li><a href="../herramientas.html#calculadora">Calculadora de Gastos</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="index.html" class="active">Guías ▾</a>
+                    <ul>
+                        <li><a href="vivienda.html">Vivienda y Pisos</a></li>
+                        <li><a href="legal.html">Trámites Legales</a></li>
+                        <li><a href="salud.html">Salud y Emergencias</a></li>
+                        <li><a href="finanzas.html">Finanzas Globales</a></li>
+                        <li><a href="index.html"><b>Ver todas las Guías</b></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="../comunidad.html">Comunidad ▾</a>
+                    <ul>
+                        <li><a href="../comunidad.html#foro">Foro de preguntas rápidas</a></li>
+                        <li><a href="../index.html#comunidad">Añadir nueva ciudad</a></li>
+                        <li><a href="../comunidad.html#escribir">Escribir una reseña</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="../login.html" class="btn-login">Área Personal 👤</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <h1>🩺 Salud y Bienestar</h1>
+        <p>Tu salud no tiene fronteras. Prepárate para cualquier imprevisto.</p>
+    </div>
+
+    <main class="content-wiki">
+        <a href="guias.html" class="btn-back">⬅ Volver al Centro de Guías</a>
+        
+        <h2>1. Sanidad Pública y la TSE</h2>
+        <p>Si viajas por Europa, la **Tarjeta Sanitaria Europea (TSE)** es obligatoria. Te da derecho a recibir las prestaciones sanitarias necesarias, desde un punto de vista médico, durante una estancia temporal en cualquiera de los países de la UE. Importante: la TSE no es una alternativa al seguro de viaje; no cubre la asistencia sanitaria privada ni costes como el vuelo de regreso a tu país.</p>
+
+        <h2>2. Seguros Privados Recomentados</h2>
+        <p>Para estancias fuera de la UE o si buscas una cobertura total (incluyendo robos o repatriación), considera seguros especializados para nómadas o estudiantes como World Nomads, IATI o SafetyWing. Suelen incluir asistencia 24/7 en tu idioma natal, algo vital en momentos de estrés médico.</p>
+
+        <h2>3. Farmacias y Medicación</h2>
+        <p>Si tomas medicación crónica, lleva contigo las recetas originales y, si es posible, una traducción al inglés del diagnóstico. Investiga cómo se llaman tus medicamentos en el país de destino, ya que la marca comercial suele cambiar aunque el principio activo sea el mismo.</p>
+
+        <div class="checklist-box">
+            <h3>✅ Checklist de Salud</h3>
+            <div class="checklist">
+                <label class="check-item"><input type="checkbox" id="s-1" onchange="toggleTask('s-1')"> Solicitar Tarjeta Sanitaria Europea física</label>
+                <label class="check-item"><input type="checkbox" id="s-2" onchange="toggleTask('s-2')"> Contratar seguro de viaje con repatriación</label>
+                <label class="check-item"><input type="checkbox" id="s-3" onchange="toggleTask('s-3')"> Localizar hospital de urgencias más cercano</label>
+                <label class="check-item"><input type="checkbox" id="s-4" onchange="toggleTask('s-4')"> Preparar botiquín básico (analgésicos, tiritas)</label>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/guias-logic.js"></script>
+    <script src="../../js/auth.js"></script>
+</body>
+</html>
