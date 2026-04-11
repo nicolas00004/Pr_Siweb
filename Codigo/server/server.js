@@ -197,6 +197,95 @@ app.delete('/api/ciudades/:id', async (req, res) => {
     } catch (err) { res.status(500).json(err); }
 });
 
+// --- RUTAS DE OPINIONES ---
+
+// Obtener todas las opiniones (para el foro general)
+app.get('/api/opiniones', async (req, res) => {
+    try {
+        const ops = await Opinion.find()
+            .populate('usuarioId', 'nombre apellidos')
+            .populate('ciudadId', 'nombre')
+            .sort({ fecha: -1 })
+            .limit(20);
+        res.json(ops);
+    } catch (err) { res.status(500).json({ error: 'Error cargando foro' }); }
+});
+
+// Obtener opiniones de una ciudad
+app.get('/api/opiniones/:ciudadId', async (req, res) => {
+    try {
+        const ops = await Opinion.find({ ciudadId: req.params.ciudadId })
+            .populate('usuarioId', 'nombre apellidos')
+            .sort({ fecha: -1 })
+            .limit(10);
+        res.json(ops);
+    } catch (err) { res.status(500).json({ error: 'Error cargando opiniones' }); }
+});
+
+// Crear nueva opinión desde el foro/comunidad y recalcular valoración de la ciudad
+app.post('/api/opiniones', async (req, res) => {
+    try {
+        const { texto, valoracion, ciudadId, usuarioNombre } = req.body;
+        if (!texto || !valoracion || !ciudadId) {
+            return res.status(400).json({ error: 'Faltan campos obligatorios' });
+        }
+
+        // Si no hay usuarioId, buscamos un usuario genérico o creamos uno temporal
+        let usuarioId = req.body.usuarioId;
+        if (!usuarioId) {
+            const anonimo = await Usuario.findOne({ correo: 'comunidad@infuni.es' });
+            if (anonimo) {
+                usuarioId = anonimo._id;
+            } else {
+                const nuevo = await Usuario.create({
+                    nombre: usuarioNombre || 'Anónimo',
+                    correo: `anonimo_${Date.now()}@infuni.es`,
+                    password: 'temporal'
+                });
+                usuarioId = nuevo._id;
+            }
+        }
+
+        const nuevaOpinion = new Opinion({ texto, valoracion, ciudadId, usuarioId });
+        await nuevaOpinion.save();
+
+        // Recalcular valoración media de la ciudad automáticamente
+        const todasOps = await Opinion.find({ ciudadId });
+        const media = todasOps.reduce((acc, op) => acc + op.valoracion, 0) / todasOps.length;
+        await Ciudad.findByIdAndUpdate(ciudadId, { valoracion: Math.round(media * 10) / 10 });
+
+        res.status(201).json({ mensaje: '¡Opinión publicada con éxito!', valoracionMedia: media.toFixed(1) });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error al guardar la opinión' });
+    }
+});
+
+// --- RUTA PARA AÑADIR/QUITAR FAVORITOS ---
+app.post('/api/usuarios/:id/favorito', async (req, res) => {
+    try {
+        const { ciudadId } = req.body;
+        const usuario = await Usuario.findById(req.params.id);
+        if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+        const yaEsFavorito = usuario.ciudadesFavoritas.includes(ciudadId);
+        if (yaEsFavorito) {
+            usuario.ciudadesFavoritas = usuario.ciudadesFavoritas.filter(c => c.toString() !== ciudadId);
+        } else {
+            usuario.ciudadesFavoritas.push(ciudadId);
+        }
+        await usuario.save();
+
+        res.json({
+            mensaje: yaEsFavorito ? 'Ciudad eliminada de favoritos' : 'Ciudad añadida a favoritos',
+            esFavorito: !yaEsFavorito,
+            favoritos: usuario.ciudadesFavoritas
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Error al actualizar favoritos' });
+    }
+});
+
 // --- AQUÍ HEMOS BORRADO EL CIUDAD.WATCH() QUE DABA ERROR ---
 
 app.listen(3000, () => {
