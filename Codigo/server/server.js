@@ -222,31 +222,32 @@ app.get('/api/opiniones/:ciudadId', async (req, res) => {
     } catch (err) { res.status(500).json({ error: 'Error cargando opiniones' }); }
 });
 
-// Crear nueva opinión desde el foro/comunidad y recalcular valoración de la ciudad
+// Crear nueva opinión
 app.post('/api/opiniones', async (req, res) => {
     try {
         const { texto, valoracion, ciudadId, usuarioNombre } = req.body;
+        
         if (!texto || !valoracion || !ciudadId) {
             return res.status(400).json({ error: 'Faltan campos obligatorios' });
         }
 
-        // Si no hay usuarioId, buscamos un usuario genérico o creamos uno temporal
-        let usuarioId = req.body.usuarioId;
-        if (!usuarioId) {
-            const anonimo = await Usuario.findOne({ correo: 'comunidad@infuni.es' });
-            if (anonimo) {
-                usuarioId = anonimo._id;
-            } else {
-                const nuevo = await Usuario.create({
-                    nombre: usuarioNombre || 'Anónimo',
-                    correo: `anonimo_${Date.now()}@infuni.es`,
-                    password: 'temporal'
-                });
-                usuarioId = nuevo._id;
-            }
+        // Validación de IDs para evitar CastErrors
+        if (!mongoose.Types.ObjectId.isValid(ciudadId)) {
+            return res.status(400).json({ error: 'ID de ciudad no válido' });
         }
 
-        const nuevaOpinion = new Opinion({ texto, valoracion, ciudadId, usuarioId });
+        let usuarioId = req.body.usuarioId;
+        if (usuarioId && !mongoose.Types.ObjectId.isValid(usuarioId)) {
+            usuarioId = null; // Ignorar ID inválido y forzar anónimo
+        }
+
+        if (!usuarioId) {
+            const anonimo = await Usuario.findOne({ correo: 'comunidad@infuni.es' }) || 
+                           await Usuario.create({ nombre: 'Comunidad INFUNI', correo: 'comunidad@infuni.es', password: '---' });
+            usuarioId = anonimo._id;
+        }
+
+        const nuevaOpinion = new Opinion({ texto, valoracion: Number(valoracion), ciudadId, usuarioId });
         await nuevaOpinion.save();
 
         // Recalcular valoración media de la ciudad automáticamente
@@ -268,17 +269,19 @@ app.post('/api/usuarios/:id/favorito', async (req, res) => {
         const usuario = await Usuario.findById(req.params.id);
         if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
 
-        const yaEsFavorito = usuario.ciudadesFavoritas.includes(ciudadId);
-        if (yaEsFavorito) {
-            usuario.ciudadesFavoritas = usuario.ciudadesFavoritas.filter(c => c.toString() !== ciudadId);
+        // SOLUCIÓN: Comparar como strings ya que MongoDB almacena ObjectIds
+        const indice = usuario.ciudadesFavoritas.findIndex(c => c.toString() === ciudadId);
+        
+        if (indice !== -1) {
+            usuario.ciudadesFavoritas.splice(indice, 1);
         } else {
             usuario.ciudadesFavoritas.push(ciudadId);
         }
         await usuario.save();
 
         res.json({
-            mensaje: yaEsFavorito ? 'Ciudad eliminada de favoritos' : 'Ciudad añadida a favoritos',
-            esFavorito: !yaEsFavorito,
+            mensaje: indice !== -1 ? 'Ciudad eliminada' : 'Ciudad añadida',
+            esFavorito: indice === -1,
             favoritos: usuario.ciudadesFavoritas
         });
     } catch (err) {
