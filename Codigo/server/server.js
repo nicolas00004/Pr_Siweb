@@ -1,10 +1,20 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
+const { exec } = require('child_process');
 const app = express();
 
-app.use(cors());
+// CORS: Permitir todos los orígenes (incluido null de file://)
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
+
+// Servir archivos estáticos (html, css, js)
+app.use(express.static(path.join(__dirname, '..')));
 
 // Conexión a MongoDB
 mongoose.connect('mongodb://localhost:27017/bdd')
@@ -46,6 +56,8 @@ const UsuarioSchema = new mongoose.Schema({
     nombre: { type: String, required: true },
     apellidos: { type: String }, // No required para dar flexibilidad
     correo: { type: String, required: true, unique: true },
+    password: { type: String, required: true }, // Contraseña añadida
+
     // R2: Relación del usuario con países
     paisesRelacionados: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pais' }],
     // Favoritos: Relación de ciudades favoritas del usuario (R1 derivado)
@@ -98,6 +110,11 @@ async function notificarCambiosGlobal() {
 
 // --- RUTAS API ---
 
+// Ruta raiz -> index.html
+app.get('/', (req, res) => {
+    res.redirect('/html/index.html');
+});
+
 app.get('/api/ciudades', async (req, res) => {
     try {
         const lista = await Ciudad.find();
@@ -111,6 +128,55 @@ app.get('/api/ciudades/:id', async (req, res) => {
         if (!ciudad) return res.status(404).json({ error: "Ciudad no encontrada" });
         res.json(ciudad);
     } catch (err) { res.status(500).json(err); }
+});
+
+// --- RUTAS DE USUARIO Y LOGIN ---
+
+app.post('/api/registro', async (req, res) => {
+    try {
+        const { nombre, apellidos, correo, password } = req.body;
+        if (!nombre || !correo || !password) return res.status(400).json({ error: "Faltan campos obligatorios" });
+        
+        const existe = await Usuario.findOne({ correo });
+        if (existe) return res.status(400).json({ error: "El correo ya está registrado" });
+
+        const nuevoUsuario = new Usuario({ nombre, apellidos, correo, password });
+        await nuevoUsuario.save();
+        res.status(201).json({ mensaje: "Usuario registrado con éxito" });
+    } catch (err) {
+        res.status(500).json({ error: "Error interno al registrar." });
+    }
+});
+
+app.post('/api/login', async (req, res) => {
+    try {
+        const { correo, password } = req.body;
+        if (!correo || !password) return res.status(400).json({ error: "Falta correo o contraseña" });
+        
+        const usuario = await Usuario.findOne({ correo: correo });
+        if (!usuario) {
+            return res.status(401).json({ error: "El correo no está registrado." });
+        }
+        
+        // Comprobación Mínima (Normalmente aquí va Bcrypt)
+        if (usuario.password !== password) {
+            return res.status(401).json({ error: "Contraseña incorrecta." });
+        }
+
+        res.json(usuario);
+    } catch (err) { 
+        res.status(500).json({ error: "Error en el servidor" }); 
+    }
+});
+
+app.get('/api/usuarios/:id', async (req, res) => {
+    try {
+        const usuario = await Usuario.findById(req.params.id).populate('ciudadesFavoritas');
+        if (!usuario) return res.status(404).json({ error: "Usuario no encontrado" });
+        res.json(usuario);
+    } catch (err) { 
+        res.status(500).json({ error: "Error de servidor al cargar perfil" }); 
+    }
 });
 
 // He añadido esta ruta POST para que puedas probar el tiempo real
@@ -133,4 +199,13 @@ app.delete('/api/ciudades/:id', async (req, res) => {
 
 // --- AQUÍ HEMOS BORRADO EL CIUDAD.WATCH() QUE DABA ERROR ---
 
-app.listen(3000, () => console.log('🚀 Servidor corriendo en puerto 3000'));
+app.listen(3000, () => {
+    console.log('🚀 Servidor corriendo en http://localhost:3000');
+    console.log('📂 Abriendo navegador automáticamente...');
+    // Abrir el navegador con la URL del servidor (evita el problema file://)
+    exec('xdg-open http://localhost:3000/html/index.html', (err) => {
+        if (err) {
+            console.log('ℹ️  Abre manualmente: http://localhost:3000/html/index.html');
+        }
+    });
+});

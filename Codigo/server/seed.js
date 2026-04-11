@@ -37,6 +37,7 @@ const UsuarioSchema = new mongoose.Schema({
     nombre: { type: String, required: true },
     apellidos: { type: String },
     correo: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
     paisesRelacionados: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pais' }],
     ciudadesFavoritas: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ciudad' }]
 });
@@ -122,11 +123,11 @@ async function poblarBD() {
 
         // 3. Crear Usuarios
         const usuario1 = await Usuario.create({
-            nombre: "María", apellidos: "Pérez", correo: "maria@universidad.es",
+            nombre: "María", apellidos: "Pérez", correo: "maria@universidad.es", password: "123456",
             paisesRelacionados: [paisEspana._id, paisItalia._id],
             ciudadesFavoritas: [ciudadesInsertadas[0]._id, ciudadesInsertadas[1]._id] // Granada y Sevilla
         });
-        console.log('✅ Usuario María creado con ciudades favoritas.');
+        console.log('✅ Usuario María creado con password (123456) y favoritas.');
 
         // 4. Crear Opiniones
         await Opinion.create({
