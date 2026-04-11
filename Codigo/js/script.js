@@ -5,16 +5,17 @@ const selectorAmbiente = document.getElementById('selectAmbiente');
 const inputBusqueda = document.getElementById('inputBusqueda');
 const btnBuscar = document.getElementById('btnBuscar');
 
+const API_BASE = 'http://localhost:3000';
 let ciudades = [];
 
 async function cargarDatos() {
     try {
-        const r = await fetch('http://localhost:3000/api/ciudades');
+        const r = await fetch(`${API_BASE}/api/ciudades`);
         ciudades = await r.json();
         aplicarFiltros();
     } catch (e) {
-        console.error("Error cargando ciudades:", e);
-        contenedor.innerHTML = "<p>Error al cargar los datos. Asegúrate de que el servidor está encendido.</p>";
+        console.error('Error cargando ciudades:', e);
+        contenedor.innerHTML = '<p style="text-align:center;padding:40px;">Error al cargar datos. Asegúrate de que el servidor está encendido (<code>node server.js</code>).</p>';
     }
 }
 
@@ -33,7 +34,7 @@ function renderizarCiudades(datos) {
     }
 
     contenedor.innerHTML = datos.map(c => `
-        <article class="card">
+        <article class="card" style="cursor: pointer;" onclick="window.location.href='detalle.html?id=${c._id}'">
             <div class="card-img-placeholder" style="background-image: url('${obtenerImagenCiudad(c.nombre)}')"></div>
             <div class="card-content">
                 <h3>${c.nombre}</h3>
@@ -42,7 +43,7 @@ function renderizarCiudades(datos) {
                     <span class="pill">🎭 Ambiente: ${c.ambiente || 'N/A'}</span>
                     <span class="pill">🛡️ Seguridad: ${"⭐".repeat(c.seguridad || 0)}</span>
                 </div>
-                <a href="detalle.html?id=${c._id}" class="btn-ver">Ver detalles completos</a>
+                <a href="detalle.html?id=${c._id}" class="btn-ver" onclick="event.stopPropagation()">Ver detalles completos</a>
             </div>
         </article>
     `).join('');

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramientas - INFUNI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; align-items: start; }
+        @media (max-width: 900px) { .tools-grid { grid-template-columns: 1fr; } }
+        
+        .tool-panel {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e2e8f0;
+        }
+
+        .tool-panel h3 { color: var(--primary-color); margin-bottom: 20px; font-size: 1.5rem; }
+        
+        .compare-box { display: flex; justify-content: space-between; gap: 20px; }
+        .city-select { flex: 1; padding: 15px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-family: inherit; font-size: 1rem; }
+        
+        .compare-table { width: 100%; margin-top: 25px; border-collapse: collapse; }
+        .compare-table th, .compare-table td { padding: 15px; border-bottom: 1px solid #e2e8f0; text-align: center; }
+        .compare-table th { color: var(--text-muted); font-weight: 500; }
+        .compare-table tr:hover { background: var(--bg-light); }
+        .winner { font-weight: bold; color: var(--accent-color); }
+        
+        .calc-row { margin-bottom: 20px; }
+        .calc-row label { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 10px; }
+        .calc-row input[type=range] { width: 100%; cursor: pointer; }
+        
+        .calc-total { 
+            background: var(--bg-light); padding: 20px; border-radius: 12px; 
+            text-align: center; margin-top: 30px; border: 2px dashed var(--accent-color);
+        }
+        .calc-total span { display: block; font-size: 2.5rem; font-weight: 800; color: var(--primary-color); }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="nav-global">
+            <div class="logo">
+                <h1>INF<span>UNI</span></h1>
+            </div>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#comparador">Destinos</a></li>
+                <li>
+                    <a href="herramientas.html">Herramientas ▾</a>
+                    <ul>
+                        <li><a href="#comparador">Comparador Personalizado</a></li>
+                        <li><a href="#calculadora">Calculadora de Gastos</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="guias.html">Guías ▾</a>
+                    <ul>
+                        <li><a href="guias.html#alojamiento">Alojamiento y Residencias</a></li>
+                        <li><a href="guias.html#tramites">Trámites y Papeleo</a></li>
+                        <li><a href="guias.html#24horas">Primeras 24 horas</a></li>
+                        <li><a href="guias.html#recetas">Recetas Rápidas</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="comunidad.html">Comunidad ▾</a>
+                    <ul>
+                        <li><a href="comunidad.html#foro">Foro de preguntas rápidas</a></li>
+                        <li><a href="index.html#comunidad">Añadir nueva ciudad</a></li>
+                        <li><a href="comunidad.html#escribir">Escribir una reseña</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="login.html" class="btn-login">Área Personal 👤</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main style="padding: 120px 5% 50px 5%; max-width: 1300px; margin: 0 auto;">
+        <h2>🛠️ Herramientas de Decisión</h2>
+        <p class="texto-largo">Utiliza nuestros algoritmos simulados para ayudarte a tomar la mejor decisión académica.</p>
+
+        <div class="tools-grid">
+            
+            <!-- COMPARADOR VS -->
+            <div class="tool-panel" id="comparador">
+                <h3>V.S. Comparador Rápido</h3>
+                <div class="compare-box">
+                    <select class="city-select" id="city1">
+                        <option value="600,f,4,5">Sevilla</option>
+                        <option value="900,f,4,5">Madrid</option>
+                    </select>
+                    <span style="font-size: 1.5rem; font-weight: bold; color: var(--text-muted); align-self: center;">VS</span>
+                    <select class="city-select" id="city2">
+                        <option value="400,f,5,5">Granada</option>
+                        <option value="650,f,4,4">Valencia</option>
+                        <option value="500,f,5,4">Salamanca</option>
+                    </select>
+                </div>
+
+                <table class="compare-table" id="tablaCompare">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">Criterio</th>
+                            <th>Ciudad A</th>
+                            <th>Ciudad B</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: left;"><strong>Est. Presupuesto</strong></td>
+                            <td id="td1_pres">600€</td>
+                            <td class="winner" id="td2_pres">400€</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;"><strong>Ambiente</strong></td>
+                            <td id="td1_amb">Fiesta</td>
+                            <td id="td2_amb">Fiesta</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;"><strong>Seguridad</strong></td>
+                            <td id="td1_seg">⭐⭐⭐⭐</td>
+                            <td class="winner" id="td2_seg">⭐⭐⭐⭐⭐</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- CALCULADORA DE GASTOS -->
+            <div class="tool-panel" id="calculadora">
+                <h3>💶 Calculadora de Supervivencia</h3>
+                
+                <div class="calc-row">
+                    <label><span>🏠 Alquiler Mensual Max.</span> <span id="v-alq">350€</span></label>
+                    <input type="range" id="s-alq" min="150" max="1000" step="10" value="350">
+                </div>
+                <div class="calc-row">
+                    <label><span>🛒 Compra y Comida</span> <span id="v-com">200€</span></label>
+                    <input type="range" id="s-com" min="100" max="500" step="10" value="200">
+                </div>
+                <div class="calc-row">
+                    <label><span>🍻 Ocio y Extras</span> <span id="v-oci">100€</span></label>
+                    <input type="range" id="s-oci" min="50" max="400" step="10" value="100">
+                </div>
+
+                <div class="calc-total">
+                    Presupuesto Mensual Calculado:
+                    <span id="calc-result">650€</span>
+                    <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted);">
+                        Ideal para ciudades como <strong style="color: var(--primary-color);">Valencia o Sevilla</strong>.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- LOGICA FRONT END HERRAMIENTAS -->
+    <script>
+        // Lógica de Comparador V.S.
+        const c1 = document.getElementById('city1');
+        const c2 = document.getElementById('city2');
+        
+        function updateCompare() {
+            const v1 = c1.value.split(','); // pre, amb, seg, oci
+            const v2 = c2.value.split(',');
+            
+            document.getElementById('td1_pres').innerHTML = v1[0] + '€';
+            document.getElementById('td1_pres').className = Number(v1[0]) < Number(v2[0]) ? 'winner' : '';
+            document.getElementById('td2_pres').innerHTML = v2[0] + '€';
+            document.getElementById('td2_pres').className = Number(v2[0]) < Number(v1[0]) ? 'winner' : '';
+
+            document.getElementById('td1_amb').innerHTML = v1[1] === 'f' ? 'Fiesta' : 'Tranquilo';
+            document.getElementById('td2_amb').innerHTML = v2[1] === 'f' ? 'Fiesta' : 'Tranquilo';
+
+            document.getElementById('td1_seg').innerHTML = '⭐'.repeat(v1[2]);
+            document.getElementById('td1_seg').className = Number(v1[2]) > Number(v2[2]) ? 'winner' : '';
+            document.getElementById('td2_seg').innerHTML = '⭐'.repeat(v2[2]);
+            document.getElementById('td2_seg').className = Number(v2[2]) > Number(v1[2]) ? 'winner' : '';
+        }
+
+        c1.addEventListener('change', updateCompare);
+        c2.addEventListener('change', updateCompare);
+
+        // Lógica Calculadora
+        const sAlq = document.getElementById('s-alq'); const vAlq = document.getElementById('v-alq');
+        const sCom = document.getElementById('s-com'); const vCom = document.getElementById('v-com');
+        const sOci = document.getElementById('s-oci'); const vOci = document.getElementById('v-oci');
+        const result = document.getElementById('calc-result');
+
+        function updateCalc() {
+            vAlq.innerText = sAlq.value + '€';
+            vCom.innerText = sCom.value + '€';
+            vOci.innerText = sOci.value + '€';
+            result.innerText = (Number(sAlq.value) + Number(sCom.value) + Number(sOci.value)) + '€';
+        }
+
+        [sAlq, sCom, sOci].forEach(el => el.addEventListener('input', updateCalc));
+    </script>
+</body>
+</html>

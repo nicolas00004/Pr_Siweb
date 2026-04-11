@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - INFUNI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .login-box {
+            background: var(--white);
+            color: var(--text-dark);
+            padding: 50px;
+            border-radius: 20px;
+            max-width: 500px;
+            margin: 60px auto;
+            text-align: left;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .login-box h3 { font-size: 1.8rem; margin-bottom: 20px; text-align: center; color: var(--primary-color); }
+        .login-box input { width: 100%; border: 1.5px solid #cbd5e1; padding: 12px; border-radius: 10px; margin-bottom: 15px; font-family: inherit; }
+        .login-box input:focus { outline: none; border-color: var(--accent-color); }
+        
+        #errorMsg { color: #ef4444; font-size: 0.9rem; text-align: center; margin-top: 15px; display: none; font-weight: 600; }
+        #successMsg { color: #10b981; font-size: 0.9rem; text-align: center; margin-top: 15px; display: none; font-weight: 600; }
+        
+        .row-inputs { display: flex; gap: 15px; }
+        .row-inputs > div { flex: 1; }
+    </style>
+</head>
+<body style="background: linear-gradient(135deg, #0f172a 0%, #3b82f6 100%); min-height: 100vh;">
+    
+    <div style="text-align: center; margin-top: 40px;">
+        <h1 style="color: white; font-size: 2.8rem; letter-spacing: -1px; font-weight: 800;">INF<span style="color:#60a5fa;">UNI</span></h1>
+    </div>
+
+    <div class="login-box">
+        <h3>Únete a la Comunidad</h3>
+        <form id="registroForm">
+            <div class="row-inputs">
+                <div>
+                    <label style="font-weight: 600; display: block; margin-bottom: 5px;">Nombre</label>
+                    <input type="text" id="regNombre" placeholder="Tu nombre" required>
+                </div>
+                <div>
+                    <label style="font-weight: 600; display: block; margin-bottom: 5px;">Apellidos</label>
+                    <input type="text" id="regApellidos" placeholder="Tus apellidos">
+                </div>
+            </div>
+
+            <label style="font-weight: 600; display: block; margin-bottom: 5px;">Correo Electrónico Universitario</label>
+            <input type="email" id="regCorreo" placeholder="ejemplo@universidad.es" required>
+            
+            <label style="font-weight: 600; display: block; margin-bottom: 5px;">Contraseña Segura</label>
+            <input type="password" id="regPass" placeholder="••••••••" required>
+            
+            <label style="font-weight: 600; display: block; margin-bottom: 5px;">Repetir Contraseña</label>
+            <input type="password" id="regPass2" placeholder="••••••••" required>
+            
+            <button type="submit" class="btn-submit" style="margin-top: 10px; width: 100%;">Registrar mi Cuenta</button>
+            <p id="errorMsg"></p>
+            <p id="successMsg">¡Cuenta creada con éxito! Redirigiendo al login...</p>
+        </form>
+
+        <p style="text-align: center; margin-top: 25px; color: var(--text-muted);">
+            ¿Ya tienes cuenta? <a href="login.html" style="color: var(--accent-color); font-weight: bold; text-decoration: none;">Inicia Sesión aquí</a>
+        </p>
+    </div>
+
+    <script>
+        const API = 'http://localhost:3000';
+
+        document.getElementById('registroForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nombre = document.getElementById('regNombre').value.trim();
+            const apellidos = document.getElementById('regApellidos').value.trim();
+            const correo = document.getElementById('regCorreo').value.trim();
+            const password = document.getElementById('regPass').value;
+            const pass2 = document.getElementById('regPass2').value;
+            
+            const errorMsg = document.getElementById('errorMsg');
+            const successMsg = document.getElementById('successMsg');
+            
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+
+            if (password !== pass2) {
+                errorMsg.innerText = 'Las contraseñas no coinciden.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API}/api/registro`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre, apellidos, correo, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    successMsg.style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    errorMsg.innerText = data.error || 'No se pudo crear la cuenta.';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (err) {
+                errorMsg.innerText = 'Error conectando al servidor. ¿Está node server.js corriendo?';
+                errorMsg.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

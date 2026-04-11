@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunidad - INFUNI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .comunidad-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; margin-top: 40px; align-items: start; }
+        @media (max-width: 900px) { .comunidad-grid { grid-template-columns: 1fr; } }
+        
+        .foro-contenedor { display: flex; flex-direction: column; gap: 20px; }
+        
+        .hilo-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid var(--accent-color);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .hilo-header { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; }
+        .hilo-autor { font-weight: bold; color: var(--primary-color); display: flex; align-items: center; gap: 10px; }
+        .hilo-ciudad { background: var(--bg-light); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: var(--accent-color); }
+        .hilo-texto { color: var(--text-dark); line-height: 1.6; }
+        .hilo-footer { margin-top: 15px; display: flex; gap: 15px; color: var(--text-muted); font-size: 0.9rem; }
+        .hilo-footer span { cursor: pointer; }
+        .hilo-footer span:hover { color: var(--accent-color); }
+
+        .sidebar-form {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar-form h3 { color: var(--primary-color); margin-bottom: 20px; }
+        .sidebar-form label { font-weight: 600; display: block; margin-bottom: 5px; margin-top: 15px; }
+        .sidebar-form input, .sidebar-form select, .sidebar-form textarea {
+            width: 100%; padding: 12px; border-radius: 10px; border: 1.5px solid #cbd5e1;
+            font-family: inherit; margin-bottom: 5px;
+        }
+        .sidebar-form textarea { resize: vertical; min-height: 120px; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="nav-global">
+            <div class="logo">
+                <h1>INF<span>UNI</span></h1>
+            </div>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#comparador">Destinos</a></li>
+                <li>
+                    <a href="herramientas.html">Herramientas ▾</a>
+                    <ul>
+                        <li><a href="herramientas.html#comparador">Comparador Personalizado</a></li>
+                        <li><a href="herramientas.html#calculadora">Calculadora de Gastos</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="guias.html">Guías ▾</a>
+                    <ul>
+                        <li><a href="guias.html#alojamiento">Alojamiento y Residencias</a></li>
+                        <li><a href="guias.html#tramites">Trámites y Papeleo</a></li>
+                        <li><a href="guias.html#24horas">Primeras 24 horas</a></li>
+                        <li><a href="guias.html#recetas">Recetas Rápidas</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="comunidad.html">Comunidad ▾</a>
+                    <ul>
+                        <li><a href="#foro">Foro de preguntas rápidas</a></li>
+                        <li><a href="index.html#comunidad">Añadir nueva ciudad</a></li>
+                        <li><a href="#escribir">Escribir una reseña</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="login.html" class="btn-login">Área Personal 👤</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main style="padding: 120px 5% 50px 5%; max-width: 1300px; margin: 0 auto;">
+        <h2>🗣️ Comunidad INFUNI</h2>
+        <p class="texto-largo">Lee las experiencias de estudiantes reales o aporta tu granito de arena.</p>
+
+        <div class="comunidad-grid">
+            
+            <!-- FORO / HILOS -->
+            <div class="foro-contenedor" id="foro">
+                
+                <div class="hilo-card">
+                    <div class="hilo-header">
+                        <div class="hilo-autor">👨‍🎓 Carlos M.</div>
+                        <div class="hilo-ciudad">📍 Salamanca</div>
+                    </div>
+                    <div class="hilo-texto">
+                        ¿Alguien sabe si el barrio del Oeste es seguro para volver por la noche andando desde la biblioteca? Estaba pensando en alquilar allí.
+                    </div>
+                    <div class="hilo-footer">
+                        <span>💬 4 Respuestas</span>
+                        <span>❤️ 12 Me gustas</span>
+                        <span>🕒 Hace 2 horas</span>
+                    </div>
+                </div>
+
+                <div class="hilo-card">
+                    <div class="hilo-header">
+                        <div class="hilo-autor">👩‍🔬 Laura P.</div>
+                        <div class="hilo-ciudad">📍 Milán</div>
+                    </div>
+                    <div class="hilo-texto">
+                        No cometaís el mismo error que yo: las residencias gestionadas por la PoliMi se llenan en junio. Si aplicáis en agosto como hice yo, os toca buscar piso compartido carísimo en Lambrate.
+                    </div>
+                    <div class="hilo-footer">
+                        <span>💬 1 Respuesta</span>
+                        <span>❤️ 35 Me gustas</span>
+                        <span>🕒 Hace 1 día</span>
+                    </div>
+                </div>
+
+                <div class="hilo-card">
+                    <div class="hilo-header">
+                        <div class="hilo-autor">🧑‍🎨 David G.</div>
+                        <div class="hilo-ciudad">📍 Granada</div>
+                    </div>
+                    <div class="hilo-texto">
+                        Dejo por aquí que el abono joven universitario de transporte en Granada se saca en Severo Ochoa, tardan 1 día y cuesta poquísimo. Esencial.
+                    </div>
+                    <div class="hilo-footer">
+                        <span>💬 0 Respuestas</span>
+                        <span>❤️ 89 Me gustas</span>
+                        <span>🕒 Hace 3 días</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORMULARIO RESEÑAS -->
+            <aside class="sidebar-form" id="escribir">
+                <h3>Escribir a la Comunidad</h3>
+                <form id="formResena">
+                    <label>Ciudad de la que hablas</label>
+                    <select id="ciudadForo" required>
+                        <option value="">Selecciona...</option>
+                        <option value="madrid">Madrid</option>
+                        <option value="granada">Granada</option>
+                        <option value="sevilla">Sevilla</option>
+                        <option value="valencia">Valencia</option>
+                        <option value="salamanca">Salamanca</option>
+                    </select>
+
+                    <label>Tu valoración</label>
+                    <select id="valForo" required>
+                        <option value="5">⭐⭐⭐⭐⭐ Increíble</option>
+                        <option value="4">⭐⭐⭐⭐ Muy buena</option>
+                        <option value="3">⭐⭐⭐ Normal</option>
+                        <option value="2">⭐⭐ Regular</option>
+                        <option value="1">⭐ Problemática</option>
+                    </select>
+
+                    <label>Tu experiencia / Duda</label>
+                    <textarea placeholder="Cuéntale al resto de futuros estudiantes..." required id="textoForo"></textarea>
+
+                    <button type="submit" class="btn-submit" style="margin-top: 15px; width: 100%;">Publicar Hilo</button>
+                    <p id="foroFeedback" style="margin-top: 10px; font-weight: bold; text-align: center;"></p>
+                </form>
+            </aside>
+
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('formResena').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const feedback = document.getElementById('foroFeedback');
+            feedback.style.color = "#10b981";
+            feedback.innerText = "¡Hilo publicado! (Simulación Frontend)";
+            this.reset();
+            setTimeout(() => { feedback.innerText = ""; }, 3000);
+        });
+    </script>
+</body>
+</html>
