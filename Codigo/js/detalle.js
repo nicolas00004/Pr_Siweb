@@ -1,202 +1,246 @@
 const params = new URLSearchParams(window.location.search);
 const id = params.get('id');
 const contenedor = document.getElementById('detalle-contenido');
+const headerSeccion = document.getElementById('detalle-header-seccion');
+const breadcrumbCiudad = document.getElementById('breadcrumb-ciudad');
 const API_BASE = 'http://localhost:3000';
 
-function obtenerImagenCiudad(ciudad) {
-    return ciudad.imagen || `https://source.unsplash.com/1200x500/?${encodeURIComponent(ciudad.nombre || 'city')},cityscape,university`;
+let globalCiudadData = null;
+
+function obtenerImagenCiudad(ciudad, index = 0) {
+    const keywords = ['cityscape', 'university', 'streets', 'architecture', 'culture'];
+    const kw = keywords[index % keywords.length];
+    return ciudad.imagen && index === 0 ? ciudad.imagen : `https://source.unsplash.com/800x600/?${encodeURIComponent(ciudad.nombre || 'city')},${kw}`;
 }
 
 async function cargarDetalle() {
     if (!id) {
-        contenedor.innerHTML = "<h2>No se ha especificado ninguna ciudad.</h2>";
+        contenedor.innerHTML = "<h2 style='text-align:center;'>No se ha especificado ninguna ciudad.</h2>";
         return;
     }
+
     try {
         const respuesta = await fetch(`${API_BASE}/api/ciudades/${id}`);
         if (!respuesta.ok) throw new Error("Ciudad no encontrada");
-        const ciudad = await respuesta.json();
+        globalCiudadData = await respuesta.json();
 
-        // Extraemos textos enciclopédicos con fallbacks (porsi no existen o están vacíos)
-        const hist = ciudad.historia || "Datos históricos en construcción para esta ciudad.";
-        const aloj = ciudad.alojamiento || "Información de residencias y alquiler pendiente de actualización.";
-        const trans = ciudad.transporte || "Pronto detallaremos cómo moverte por esta ciudad.";
-        const barr = ciudad.barrios || "Próximamente incluiremos la guía completa de barrios universitarios.";
-        const descBack = ciudad.descripcion || "";
+        // Actualizar Breadcrumbs
+        breadcrumbCiudad.innerText = globalCiudadData.nombre;
 
-        // Si la ciudad tiene el país referenciado (`paisId` populado)
-        const nombrePais = ciudad.paisId ? (ciudad.paisId.nombre || "País Desconocido") : "País Mágico";
-
-        const maquetacion = `
-            <div class="ficha">
-                <div class="ficha-img-header" style="background-image: url('${obtenerImagenCiudad(ciudad)}')"></div>
-                <h1>${ciudad.nombre} <span style="font-size: 1.2rem; color: var(--text-muted); font-weight: normal;">| ${nombrePais}</span></h1>
-                
-                <div class="grid-info">
-                    <div class="info-item">
-                        <span class="icon">💶</span>
-                        <span class="label">Presupuesto Mín.</span>
-                        <span class="value">${ciudad.presupuesto}€ / mes</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="icon">🎭</span>
-                        <span class="label">Ambiente</span>
-                        <span class="value" style="text-transform: capitalize;">${ciudad.ambiente}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="icon">🛡️</span>
-                        <span class="label">Seguridad</span>
-                        <span class="value">${"⭐".repeat(ciudad.seguridad || 0)}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="icon">🎉</span>
-                        <span class="label">Ocio</span>
-                        <span class="value">${"⭐".repeat(ciudad.ocio || 0)}</span>
-                    </div>
-                </div>
-
-                <div class="articulo-wiki">
-                    <!-- CONTENIDO PRINCIPAL -->
-                    <div class="contenido-texto">
-                        <p class="texto-largo" style="font-size: 1.25rem; font-weight: 500; margin-bottom: 30px;">
-                            ${descBack}
-                        </p>
-
-                        <div class="bloque-texto" id="historia">
-                            <h3>🏛️ Acerca de la Ciudad y su Universidad</h3>
-                            <p>${hist}</p>
-                        </div>
-
-                        <div class="bloque-texto" id="barrios">
-                            <h3>🏘️ Barrios y Zonas Recomendadas</h3>
-                            <p>${barr}</p>
-                        </div>
-
-                        <div class="bloque-texto" id="coste">
-                            <h3>💰 Coste de Vida y Alojamiento</h3>
-                            <p>${aloj}</p>
-                        </div>
-
-                        <div class="bloque-texto" id="transporte">
-                            <h3>🚲 Transporte e Infraestructura</h3>
-                            <p>${trans}</p>
-                        </div>
-
-                        <div class="bloque-texto" style="background: #fffcee; border-color: #fbbf24;">
-                            <h3 style="color: #d97706;">📝 Opiniones de Estudiantes</h3>
-                            <div id="opinionesCiudadContainer" style="margin-top: 15px;">
-                                <p style="color: #92400e;">Cargando reseñas...</p>
-                            </div>
-                            <button class="btn-submit" style="margin-top: 20px; width: auto; font-size: 0.9rem;" onclick="location.href='comunidad.html'">Escribir mi experiencia</button>
-                        </div>
-                    </div>
-
-                    <!-- SIDEBAR LATERAL -->
-                    <aside class="sidebar-ficha">
-                        <h3>Resumen Rápido</h3>
-                        
-                        <div class="dato-lista">
-                            <strong>Código Postal</strong>
-                            <span>${ciudad.c_postal || "---"}</span>
-                        </div>
-                        <div class="dato-lista">
-                            <strong>Valoración General</strong>
-                            <span>${ciudad.valoracion ? ciudad.valoracion + "/5" : "---"}</span>
-                        </div>
-                        <div class="dato-lista">
-                            <strong>Visitas al mes</strong>
-                            <span>+${Math.floor(Math.random() * 50) + 10}k</span>
-                        </div>
-                        <div class="dato-lista" style="margin-top: 20px;" id="favBtnContainer">
-                            <!-- Se carga por JS para saber el estado -->
-                            <button class="btn-submit" style="width: 100%; border-radius: 8px;" id="btnFavorito">Añadir a Favoritos ❤️</button>
-                        </div>
-                    </aside>
-                </div>
+        // --- RENDERIZAR CABECERA (TÍTULO Y TABS) ---
+        headerSeccion.innerHTML = `
+            <h1 class="fade-in">${globalCiudadData.nombre}</h1>
+            <div class="tabs-container fade-in" id="tabs-destinos">
+                <button class="tab-btn active" data-seccion="historia">🏛️ Historia</button>
+                <button class="tab-btn" data-seccion="campus">🎓 Campus</button>
+                <button class="tab-btn" data-seccion="sitios">📍 Sitios</button>
+                <button class="tab-btn" data-seccion="guia">📖 Guía</button>
+                <button class="tab-btn" data-seccion="opiniones">📝 Opiniones</button>
             </div>
         `;
-        
-        contenedor.innerHTML = maquetacion;
 
-        // --- CARGAR OPINIONES REALES ---
-        fetch(`${API_BASE}/api/opiniones/${id}`)
-            .then(res => res.json())
-            .then(ops => {
-                const opDiv = document.getElementById('opinionesCiudadContainer');
-                if (ops.length === 0) {
-                    opDiv.innerHTML = '<p style="color: #92400e; font-style: italic;">Aún no hay reseñas específicas. ¡Ayuda a otros siendo el primero!</p>';
-                } else {
-                    opDiv.innerHTML = ops.map(o => `
-                        <div style="border-bottom: 1px solid #fde68a; padding: 10px 0;">
-                            <strong style="color: #b45309;">${o.usuarioId ? o.usuarioId.nombre : 'Estudiante'}:</strong>
-                            <span style="font-size: 0.85rem; color: #d97706;">(${o.valoracion}/5 estrella)</span>
-                            <p style="margin-top: 5px; color: #92400e;">"${o.texto}"</p>
-                        </div>
-                    `).join('');
-                }
-            });
+        // Renderizar sección inicial (Historia)
+        renderizarSeccion('historia');
 
-        // --- GESTIÓN DE FAVORITOS ---
-        const user = JSON.parse(localStorage.getItem('usuarioInfo') || 'null');
-        const btnFav = document.getElementById('btnFavorito');
+        // --- LÓGICA DE TABS ---
+        const tabs = document.querySelectorAll('.tab-btn');
+        tabs.forEach(tab => {
+            tab.onclick = () => {
+                const targetId = tab.getAttribute('data-seccion');
+                
+                // Actualizar estado botones
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
 
-        if (user) {
-            // Verificar si ya es favorito cargando el perfil del usuario
-            fetch(`${API_BASE}/api/usuarios/${user.id}`)
-                .then(res => res.json())
-                .then(u => {
-                    const isFav = u.ciudadesFavoritas && u.ciudadesFavoritas.some(f => (f._id || f) === id);
-                    actualizarEstadoBotonFav(isFav);
-                });
-
-            btnFav.onclick = async () => {
-                try {
-                    const res = await fetch(`${API_BASE}/api/usuarios/${user.id}/favorito`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ ciudadId: id })
-                    });
-                    
-                    // 1. Verificar si el ID del usuario sigue siendo válido
-                    const sesionExpirada = await verificarSesion(res);
-                    if (sesionExpirada) return;
-
-                    if (res.ok) {
-                        const data = await res.json();
-                        actualizarEstadoBotonFav(data.esFavorito);
-                        
-                        // 2. Feedback visual elegante
-                        showToast(data.esFavorito ? "❤️ Añadido a favoritos" : "🤍 Eliminado de favoritos", data.esFavorito ? "success" : "default");
-                    } else {
-                        showToast("⚠️ Fallo al actualizar favorito", "error");
-                    }
-                } catch (e) { 
-                    console.error(e);
-                    showToast("🔌 Error de conexión", "error");
-                }
+                // CAMBIAR CONTENIDO (Mini-página)
+                renderizarSeccion(targetId);
+                
+                // Scroll arriba suave si es necesario para centrar la vista en el contenido
+                headerSeccion.scrollIntoView({ behavior: 'smooth', block: 'start' });
             };
-        } else {
-            btnFav.onclick = () => window.location.href = 'login.html';
-        }
+        });
 
-        function actualizarEstadoBotonFav(isFav) {
-            if (isFav) {
-                btnFav.innerText = "Quitar de Favoritos 💔";
-                btnFav.style.background = "#94a3b8"; // Gris slate
-            } else {
-                btnFav.innerText = "Añadir a Favoritos ❤️";
-                btnFav.style.background = ""; // Reset a primary
-            }
-        }
     } catch (error) {
         console.error(error);
-        contenedor.innerHTML = `
-            <div style="text-align: center; padding: 50px;">
-                <h2>Aún no hay información profunda disponible.</h2>
-                <p>No se ha podido cargar el fichero detallado de esta ciudad o el servidor está apagado.</p>
-                <button onclick="location.href='index.html'" class="btn-submit" style="width: auto; margin-top: 20px;">Volver a Inicio</button>
+        contenedor.innerHTML = `<div style="text-align:center; padding: 50px;"><h2>Error al cargar el destino</h2><p>${error.message}</p></div>`;
+    }
+}
+
+function renderizarSeccion(seccionId) {
+    if (!globalCiudadData) return;
+
+    let html = '';
+    
+    if (seccionId === 'historia') {
+        html = `
+            <div class="mini-pagina fade-in">
+                <section class="seccion-destino">
+                    <div class="seccion-img">
+                        <img src="${obtenerImagenCiudad(globalCiudadData, 0)}" alt="${globalCiudadData.nombre}">
+                    </div>
+                    <div class="seccion-text">
+                        <h2>🏛️ Historia y Universidad</h2>
+                        <p>${globalCiudadData.historia || "Datos históricos en construcción para esta ciudad."}</p>
+                    </div>
+                </section>
+                
+                <section class="seccion-destino">
+                    <div class="seccion-text">
+                        <h2>💡 Tips de Expertos</h2>
+                        <p>No olvides verificar siempre los horarios locales y la disponibilidad de servicios en la zona universitaria. Cada rincón tiene su magia esperando ser descubierta.</p>
+                    </div>
+                    <div class="seccion-img">
+                        <img src="${obtenerImagenCiudad(globalCiudadData, 1)}" alt="Tip extra">
+                    </div>
+                </section>
             </div>
         `;
+        contenedor.innerHTML = html;
+    } else if (seccionId === 'campus') {
+        html = `
+            <div class="fade-in">
+                <h2>🎓 Universidades y Facultades</h2>
+                <div class="grid-guias" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    ${globalCiudadData.universidades.length > 0 ? globalCiudadData.universidades.map(u => `
+                        <div class="card" style="padding: 20px; background: white; border-radius: 15px; border: 1px solid #e2e8f0;">
+                            <h3 style="color: var(--primary-color); margin-top: 0;">${u.nombre}</h3>
+                            <p>${u.descripcion || 'Sin descripción disponible.'}</p>
+                        </div>
+                    `).join('') : '<p>No hay universidades registradas para esta ciudad.</p>'}
+                </div>
+            </div>
+        `;
+        contenedor.innerHTML = html;
+    } else if (seccionId === 'sitios') {
+        // Agrupar sitios por categoría
+        const categorias = {
+            ocio: '🎭 Ocio y Entretenimiento',
+            cultura: '🏛️ Cultura y Patrimonio',
+            ocioNocturno: '🌙 Vida Nocturna',
+            seguridad: '🏘️ Barrios y Zonas'
+        };
+        
+        html = `
+            <div class="fade-in">
+                <h2>📍 Lugares de Interés</h2>
+                <div style="display: flex; flex-direction: column; gap: 30px;">
+                    ${Object.keys(categorias).map(cat => {
+                        const sitiosCat = globalCiudadData.sitios.filter(s => s.categoria === cat);
+                        if (sitiosCat.length === 0) return '';
+                        return `
+                            <div>
+                                <h3 style="color: var(--accent-color); border-bottom: 2px solid var(--accent-color); display: inline-block; padding-bottom: 5px;">${categorias[cat]}</h3>
+                                <div class="grid-guias" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 15px;">
+                                    ${sitiosCat.map(s => `
+                                        <div class="card" style="padding: 20px; background: white; border-radius: 15px; border: 1px solid #e2e8f0;">
+                                            <h4 style="margin-top: 0;">${s.nombre}</h4>
+                                            <p style="font-size: 0.9rem;">${s.descripcion || 'Punto de interés recomendado.'}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+        contenedor.innerHTML = html;
+    } else if (seccionId === 'guia') {
+        html = `
+            <div class="guide-content fade-in">
+                <section class="seccion-destino" style="flex-direction: column; align-items: flex-start;">
+                    <div class="seccion-text" style="width: 100%;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h2>📖 Hoja de Ruta: ${globalCiudadData.nombre}</h2>
+                            <div style="text-align: right;">
+                                <div class="progress-container" style="width: 200px; height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+                                    <div id="main-progress" style="width: 0%; height: 100%; background: var(--primary-color); transition: width 0.3s;"></div>
+                                </div>
+                                <span id="progress-text" style="font-size: 0.75rem; color: var(--text-muted);">0% completado</span>
+                            </div>
+                        </div>
+                        
+                        <p style="margin-bottom: 30px;">Completa estos pasos esenciales para asegurar tu estancia en ${globalCiudadData.nombre}. Tu progreso se guarda automáticamente.</p>
+                        
+                        <div class="checklist" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; width: 100%;">
+                            <div class="card" style="padding: 20px; background: white; border-radius: 15px; border: 1px solid #e2e8f0;">
+                                <h3 style="margin-top:0;">🏠 Vivienda</h3>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;"><input type="checkbox" id="v-1" onchange="toggleTask('v-1')"> Reservar alojamiento inicial</label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;"><input type="checkbox" id="v-2" onchange="toggleTask('v-2')"> Revisar contrato de alquiler</label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;"><input type="checkbox" id="v-3" onchange="toggleTask('v-3')"> Confirmar fianza y primer mes</label>
+                            </div>
+                            <div class="card" style="padding: 20px; background: white; border-radius: 15px; border: 1px solid #e2e8f0;">
+                                <h3 style="margin-top:0;">⚖️ Legal y Salud</h3>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;"><input type="checkbox" id="l-1" onchange="toggleTask('l-1')"> Solicitar NIE / Registro local</label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;"><input type="checkbox" id="s-1" onchange="toggleTask('s-1')"> Activar Seguro Médico / TSE</label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;"><input type="checkbox" id="l-2" onchange="toggleTask('l-2')"> Padrón de habitantes</label>
+                            </div>
+                            <div class="card" style="padding: 20px; background: white; border-radius: 15px; border: 1px solid #e2e8f0;">
+                                <h3 style="margin-top:0;">💰 Finanzas</h3>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;"><input type="checkbox" id="f-1" onchange="toggleTask('f-1')"> Abrir cuenta bancaria local</label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;"><input type="checkbox" id="f-2" onchange="toggleTask('f-2')"> Configurar tarjeta de transporte</label>
+                                <label style="display: block; margin: 10px 0; cursor: pointer;"><input type="checkbox" id="f-3" onchange="toggleTask('f-3')"> Verificar comisiones cajeros</label>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 40px; padding: 25px; background: #f8fafc; border-radius: 15px; border: 1px solid #e2e8f0;">
+                            <h4 style="margin-top:0; color: var(--primary-color);">💡 Consejos Específicos para ${globalCiudadData.nombre}</h4>
+                            <p style="font-size: 0.95rem; line-height: 1.6;">${globalCiudadData.alojamiento || 'Busca alojamiento con al menos 2 meses de antelación. Los barrios universitarios suelen ser los primeros en llenarse.'}</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        `;
+        contenedor.innerHTML = html;
+        // Lanzar funciones de persistencia de guias-logic.js
+        if (window.loadChecklistState) {
+            loadChecklistState();
+            updateGlobalProgress();
+        }
+    } else if (seccionId === 'opiniones') {
+        html = `
+            <div class="fade-in">
+                <section class="seccion-destino" style="flex-direction: column; align-items: flex-start;">
+                    <div class="seccion-text" style="width: 100%;">
+                        <h2>📝 Opiniones de Estudiantes</h2>
+                        <div id="opinionesCiudadContainer" style="margin-top: 20px; background: white; padding: 30px; border-radius: 20px; border: 1px solid #e2e8f0; width: 100%;">
+                            <p>Cargando reseñas...</p>
+                        </div>
+                        <button class="btn-submit" style="width: auto; margin-top: 20px;" onclick="location.href='comunidad.html'">Añadir mi experiencia</button>
+                    </div>
+                </section>
+            </div>
+        `;
+        contenedor.innerHTML = html;
+        cargarOpiniones(id);
+        contenedor.innerHTML = html;
+        cargarOpiniones(id);
+    }
+}
+
+async function cargarOpiniones(ciudadId) {
+    const opDiv = document.getElementById('opinionesCiudadContainer');
+    if (!opDiv) return;
+
+    try {
+        const res = await fetch(`${API_BASE}/api/opiniones/${ciudadId}`);
+        const ops = await res.json();
+        
+        if (ops.length === 0) {
+            opDiv.innerHTML = '<p style="color: var(--text-muted); font-style: italic;">Aún no hay reseñas para esta ciudad. ¡Sé el primero en compartir tu experiencia!</p>';
+        } else {
+            opDiv.innerHTML = ops.map(o => `
+                <div style="border-bottom: 1px solid #f1f5f9; padding: 20px 0;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <strong style="color: var(--primary-color);">${o.usuarioId ? o.usuarioId.nombre : 'Estudiante'}</strong>
+                        <span style="color: #fbbf24;">${"★".repeat(o.valoracion)}${"☆".repeat(5-o.valoracion)}</span>
+                    </div>
+                    <p style="color: var(--text-dark); line-height: 1.6;">"${o.texto}"</p>
+                </div>
+            `).join('');
+        }
+    } catch (e) {
+        opDiv.innerHTML = '<p>No se pudieron cargar las opiniones.</p>';
     }
 }
 

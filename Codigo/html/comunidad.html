@@ -49,7 +49,9 @@
     <header>
         <nav class="nav-global">
             <div class="logo">
-                <h1>INF<span>UNI</span></h1>
+                <a href="index.html" style="text-decoration: none; color: inherit;">
+                    <h1>INF<span>UNI</span></h1>
+                </a>
             </div>
             <ul>
                 <li><a href="index.html">Inicio</a></li>
@@ -62,16 +64,6 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="guias/index.html">Guías ▾</a>
-                    <ul>
-                        <li><a href="guias/vivienda.html">Vivienda y Pisos</a></li>
-                        <li><a href="guias/legal.html">Trámites Legales</a></li>
-                        <li><a href="guias/salud.html">Salud y Emergencias</a></li>
-                        <li><a href="guias/finanzas.html">Finanzas Globales</a></li>
-                        <li><a href="guias/index.html"><b>Ver todas las Guías</b></a></li>
-                    </ul>
-                </li>
-                <li>
                     <a href="comunidad.html">Comunidad ▾</a>
                     <ul>
                         <li><a href="#foro">Foro de preguntas rápidas</a></li>
@@ -80,7 +72,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="login.html" class="btn-login">Área Personal 👤</a>
+                    <a href="login.html" class="btn-login" id="btnSesion">Inicia Sesión 👤</a>
                 </li>
             </ul>
         </nav>
@@ -140,6 +132,16 @@
                     </div>
                 </div>
             </div>
+
+            <!-- MENSAJE LOGIN REQUERIDO -->
+            <aside class="sidebar-form" id="msgLoginRequired" style="display: none; text-align: center; border-left: 4px solid var(--accent-color);">
+                <h3>Escribir a la Comunidad</h3>
+                <p style="margin-bottom: 20px; color: var(--text-dark);">Solo los estudiantes registrados pueden compartir sus experiencias.</p>
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <p style="font-size: 0.9rem; font-weight: 600;">Regístrate o inicia sesión para participar en el foro.</p>
+                </div>
+                <button onclick="location.href='login.html'" class="btn-submit" style="width: 100%;">Ir al Login 👤</button>
+            </aside>
 
             <!-- FORMULARIO RESEÑAS -->
             <aside class="sidebar-form" id="escribir">
@@ -257,6 +259,18 @@
         });
 
         // Inicializar
+        function checkAuth() {
+            const user = localStorage.getItem('usuarioInfo');
+            if (user) {
+                document.getElementById('escribir').style.display = 'block';
+                document.getElementById('msgLoginRequired').style.display = 'none';
+            } else {
+                document.getElementById('escribir').style.display = 'none';
+                document.getElementById('msgLoginRequired').style.display = 'block';
+            }
+        }
+
+        checkAuth();
         cargarCiudadesSelector();
         cargarOpiniones();
     </script>

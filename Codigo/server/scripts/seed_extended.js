@@ -22,6 +22,16 @@ const CiudadSchema = new mongoose.Schema({
 }, { strict: false });
 const Ciudad = mongoose.model('Ciudad', CiudadSchema, 'ciudades');
 
+const PaisSchema = new mongoose.Schema({
+    nombre: { type: String, required: true },
+    transporte: { type: Number, default: 3 },
+    ocio: { type: Number, default: 3 },
+    ocioNocturno: { type: Number, default: 3 },
+    seguridad: { type: Number, default: 3 },
+    calidadAcademica: { type: Number, default: 3 }
+});
+const Pais = mongoose.model('Pais', PaisSchema, 'paises');
+
 const UniversidadSchema = new mongoose.Schema({
     nombre: String,
     descripcion: String,
@@ -99,21 +109,33 @@ async function seed() {
     try {
         console.log("🧹 Limpiando datos antiguos...");
         await Promise.all([
-            // Ciudad.deleteMany({}), // Mejor no borrar todo, solo actualizar si existe
             Universidad.deleteMany({}),
-            Sitio.deleteMany({})
+            Sitio.deleteMany({}),
+            Pais.deleteMany({}) // Limpiar países para regenerar
         ]);
+
+        // Crear Países base
+        const paises = await Pais.insertMany([
+            { nombre: "España", seguridad: 4, ocio: 5 },
+            { nombre: "Francia", seguridad: 3, ocio: 4 },
+            { nombre: "Portugal", seguridad: 5, ocio: 3 }
+        ]);
+        console.log("🌍 Países creados.");
 
         for (const data of nuevasCiudades) {
             // Buscar o crear ciudad
             let ciudad = await Ciudad.findOne({ nombre: data.nombre });
+            // Asignar país por defecto (España para estas ciudades nuevas)
+            const paisEspaña = paises.find(p => p.nombre === "España");
+
             if (ciudad) {
                 await Ciudad.findByIdAndUpdate(ciudad._id, {
                     lat: data.lat,
                     lng: data.lng,
                     historia: data.historia,
                     presupuesto: data.presupuesto,
-                    ambiente: data.ambiente
+                    ambiente: data.ambiente,
+                    paisId: paisEspaña._id
                 });
             } else {
                 ciudad = new Ciudad({
@@ -122,7 +144,8 @@ async function seed() {
                     lng: data.lng,
                     presupuesto: data.presupuesto,
                     ambiente: data.ambiente,
-                    historia: data.historia
+                    historia: data.historia,
+                    paisId: paisEspaña._id
                 });
                 await ciudad.save();
             }
@@ -140,6 +163,19 @@ async function seed() {
             }
 
             console.log(`✅ ${data.nombre} procesada con éxito.`);
+        }
+
+        // --- ACTUALIZAR USUARIO TEST (MARÍA) ---
+        // Intentar buscar a María
+        const UsuarioSchema = new mongoose.Schema({}, { strict: false });
+        const Usuario = mongoose.model('Usuario', UsuarioSchema, 'usuarios');
+        
+        const maria = await Usuario.findOne({ nombre: "María" });
+        if (maria) {
+            // Relacionar con España y Portugal
+            const rel = paises.filter(p => p.nombre !== "Francia").map(p => p._id);
+            await Usuario.findByIdAndUpdate(maria._id, { paisesRelacionados: rel });
+            console.log("👤 Usuario María actualizado con países relacionados.");
         }
 
         console.log("\n🏁 Semilla extendida completada.");

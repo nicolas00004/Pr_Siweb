@@ -78,7 +78,18 @@ const UsuarioSchema = new mongoose.Schema({
     apellidos: { type: String }, 
     correo: { type: String, required: true, unique: true },
     password: { type: String, required: true }, 
-    ciudadesFavoritas: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ciudad' }]
+    ciudadesFavoritas: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ciudad' }],
+    paisesRelacionados: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pais' }]
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
+
+// Relación virtual: Un usuario TIENE muchas búsquedas
+UsuarioSchema.virtual('busquedas', {
+    ref: 'Busqueda',
+    localField: '_id',
+    foreignField: 'usuarioId'
 });
 
 const BusquedaSchema = new mongoose.Schema({
@@ -214,32 +225,31 @@ app.post('/api/login', async (req, res) => {
 
 app.get('/api/usuarios/:id', async (req, res) => {
     try {
-        const usuario = await Usuario.findById(req.params.id).populate('ciudadesFavoritas');
+        const usuario = await Usuario.findById(req.params.id)
+            .populate('ciudadesFavoritas')
+            .populate('busquedas')
+            .populate('paisesRelacionados');
+
         if (!usuario) return res.status(404).json({ error: "Usuario no encontrado" });
         
-        // Buscar búsquedas asociadas
-        const busquedas = await Busqueda.find({ usuarioId: req.params.id }).sort({ fecha: -1 });
-        
         // Transformar para mantener compatibilidad con el front (añadiendo el objeto .pesos virtualmente)
-        const busquedasFormateadas = busquedas.map(b => {
-            const obj = b.toObject();
-            return {
-                ...obj,
-                pesos: {
-                    transporte: obj.transporte,
-                    ocio: obj.ocio,
-                    ocioNocturno: obj.ocioNocturno,
-                    seguridad: obj.seguridad,
-                    calidadAcademica: obj.calidadAcademica
-                }
-            };
-        });
-
         const userObj = usuario.toObject();
-        userObj.busquedas = busquedasFormateadas;
+        if (userObj.busquedas) {
+            userObj.busquedas = userObj.busquedas.map(b => ({
+                ...b,
+                pesos: {
+                    transporte: b.transporte,
+                    ocio: b.ocio,
+                    ocioNocturno: b.ocioNocturno,
+                    seguridad: b.seguridad,
+                    calidadAcademica: b.calidadAcademica
+                }
+            }));
+        }
         
         res.json(userObj);
     } catch (err) { 
+        console.error(err);
         res.status(500).json({ error: "Error de servidor al cargar perfil" }); 
     }
 });

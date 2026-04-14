@@ -33,13 +33,14 @@
     <header>
         <nav class="nav-global">
             <div class="logo">
-                <h1>INF<span>UNI</span></h1>
+                <a href="index.html" style="text-decoration: none; color: inherit;">
+                    <h1>INF<span>UNI</span></h1>
+                </a>
             </div>
             <ul>
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="index.html#comparador">Destinos</a></li>
                 <li><a href="herramientas.html">Herramientas ▾</a></li>
-                <li><a href="guias.html">Guías ▾</a></li>
                 <li><a href="comunidad.html">Comunidad ▾</a></li>
                 <li>
                     <!-- Este botón cambiará porque estamos en sesión -->
@@ -61,9 +62,15 @@
 
             <div class="panel-derecho">
                 <h3>Tus Ciudades Favoritas ❤️</h3>
-                <div id="favoritosContainer" class="favoritos-list">
+                <div id="favoritosContainer" class="favoritos-list" style="margin-bottom: 50px;">
                     <!-- Cargado por JS -->
                     <div class="empty-state">Cargando tus preferencias...</div>
+                </div>
+
+                <h3>Tus Búsquedas Guardadas 💾</h3>
+                <div id="busquedasContainer" class="favoritos-list">
+                    <!-- Cargado por JS -->
+                    <div class="empty-state">Cargando tus búsquedas...</div>
                 </div>
             </div>
 
@@ -114,6 +121,36 @@
                             </div>
                         `).join('');
                     }
+
+                    // 2. Renderizar Búsquedas
+                    const busContainer = document.getElementById('busquedasContainer');
+                    const arrayBusquedas = usuarioDB.busquedas || [];
+
+                    if (arrayBusquedas.length === 0) {
+                        busContainer.innerHTML = `
+                            <div class="empty-state">
+                                <span style="font-size: 3rem;">🔍</span>
+                                <p style="margin-top: 15px; color: var(--text-muted);">No tienes búsquedas guardadas todavía.</p>
+                            </div>`;
+                    } else {
+                        busContainer.innerHTML = arrayBusquedas.map(b => `
+                            <div class="fav-card">
+                                <div class="fav-body">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                        <h4 class="fav-title" style="margin:0;">${b.nombre}</h4>
+                                        <button onclick="eliminarBusqueda('${b._id}')" style="background:none; border:none; cursor:pointer;" title="Eliminar">🗑️</button>
+                                    </div>
+                                    <div class="fav-stats">
+                                        <span style="background: var(--primary-color); color:white; padding: 2px 8px; border-radius: 10px;">${b.rol === 'estudiante' ? '🎓 Estudiante' : '💼 Trabajador'}</span>
+                                        <div style="font-size:0.75rem; margin-top:10px; color:var(--text-muted); line-height:1.4;">
+                                            ${Object.entries(b.pesos).map(([k, v]) => `<span style="display:inline-block; margin-right:8px;"><b>${k.charAt(0).toUpperCase()}</b>:${v}</span>`).join('')}
+                                        </div>
+                                    </div>
+                                    <button onclick="localStorage.setItem('tempBusqueda', '${JSON.stringify(b).replace(/'/g, "\\'")}'); window.location.href='index.html'" class="btn-ver" style="margin-top:15px; width:100%; border-radius:10px; font-size:0.85rem;">Cargar Configuración</button>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
                 })
                 .catch(err => {
                     console.error('Error cargando favoritos:', err);
@@ -133,6 +170,17 @@
                 });
                 if(res.ok) location.reload(); 
             } catch(e) { alert("Error al eliminar"); }
+        }
+
+        async function eliminarBusqueda(busquedaId) {
+            if(!confirm("¿Eliminar esta búsqueda guardada?")) return;
+            const userInfo = JSON.parse(localStorage.getItem('usuarioInfo'));
+            try {
+                const res = await fetch(`${API}/api/usuarios/${userInfo.id}/busquedas/${busquedaId}`, {
+                    method: 'DELETE'
+                });
+                if(res.ok) location.reload();
+            } catch(e) { alert("Error al eliminar búsqueda"); }
         }
 
         // 3. Cerrar sesión
