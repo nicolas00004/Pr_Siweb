@@ -39,31 +39,58 @@ const CiudadSchema = new mongoose.Schema({
     valoracion: Number, // media calculada o info fija
     // Nuevas características editoriales detalladas:
     historia: String,
-    alojamiento: String, // info sobre pisos/residencias
-    transporte: String,
-    barrios: String, // info sobre seguridad y distritos
+    alojamiento: String,
+    transporte_info: String,
+    barrios: String,
     // Conservamos los anteriores por compatibilidad con el front que ya funciona:
     presupuesto: Number,
     ambiente: String,
     seguridad: Number,
     ocio: Number,
-    conectividad: { type: Number, default: 4 }, // 1-5 (Wi-Fi, Coworking)
-    turismo: { type: Number, default: 3 }, // 1-5 (Atracciones, Monumentos)
+    transporte: { type: Number, default: 3 },
+    ocioNocturno: { type: Number, default: 3 },
+    calidadAcademica: { type: Number, default: 3 },
+    conectividad: { type: Number, default: 4 }, 
+    turismo: { type: Number, default: 3 },
     descripcion: String, // backup de info para front
+    // Coordenadas para el mapa
+    lat: { type: Number, default: 40.4168 },
+    lng: { type: Number, default: -3.7038 },
     paisId: { type: mongoose.Schema.Types.ObjectId, ref: 'Pais' },
     f_registro: { type: Date, default: Date.now }
 });
 
+const UniversidadSchema = new mongoose.Schema({
+    nombre: { type: String, required: true },
+    descripcion: String,
+    ciudadId: { type: mongoose.Schema.Types.ObjectId, ref: 'Ciudad', required: true }
+});
+
+const SitioSchema = new mongoose.Schema({
+    nombre: { type: String, required: true },
+    categoria: { type: String, enum: ['ocio', 'ocioNocturno', 'cultura', 'seguridad', 'academica', 'transporte'], default: 'ocio' },
+    descripcion: String,
+    ciudadId: { type: mongoose.Schema.Types.ObjectId, ref: 'Ciudad', required: true }
+});
+
 const UsuarioSchema = new mongoose.Schema({
     nombre: { type: String, required: true },
-    apellidos: { type: String }, // No required para dar flexibilidad
+    apellidos: { type: String }, 
     correo: { type: String, required: true, unique: true },
-    password: { type: String, required: true }, // Contraseña añadida
-
-    // R2: Relación del usuario con países
-    paisesRelacionados: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pais' }],
-    // Favoritos: Relación de ciudades favoritas del usuario (R1 derivado)
+    password: { type: String, required: true }, 
     ciudadesFavoritas: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ciudad' }]
+});
+
+const BusquedaSchema = new mongoose.Schema({
+    usuarioId: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
+    nombre: { type: String, required: true },
+    rol: { type: String, enum: ['estudiante', 'trabajador'], required: true },
+    transporte: { type: Number, default: 1 },
+    ocio: { type: Number, default: 1 },
+    ocioNocturno: { type: Number, default: 1 },
+    seguridad: { type: Number, default: 1 },
+    calidadAcademica: { type: Number, default: 1 },
+    fecha: { type: Date, default: Date.now }
 });
 
 const OpinionSchema = new mongoose.Schema({
@@ -79,7 +106,10 @@ const OpinionSchema = new mongoose.Schema({
 const Pais = mongoose.model('Pais', PaisSchema, 'paises');
 const Ciudad = mongoose.model('Ciudad', CiudadSchema, 'ciudades');
 const Usuario = mongoose.model('Usuario', UsuarioSchema, 'usuarios');
+const Busqueda = mongoose.model('Busqueda', BusquedaSchema, 'busquedas');
 const Opinion = mongoose.model('Opinion', OpinionSchema, 'opiniones');
+const Universidad = mongoose.model('Universidad', UniversidadSchema, 'universidades');
+const Sitio = mongoose.model('Sitio', SitioSchema, 'sitios');
 
 // --- LÓGICA DE TIEMPO REAL (SSE) ---
 const clientesSSE = new Set();
@@ -128,7 +158,18 @@ app.get('/api/ciudades/:id', async (req, res) => {
     try {
         const ciudad = await Ciudad.findById(req.params.id).populate('paisId');
         if (!ciudad) return res.status(404).json({ error: "Ciudad no encontrada" });
-        res.json(ciudad);
+        
+        // Buscar universidades y sitios asociados de forma paralela
+        const [universidades, sitios] = await Promise.all([
+            Universidad.find({ ciudadId: req.params.id }),
+            Sitio.find({ ciudadId: req.params.id })
+        ]);
+
+        const resp = ciudad.toObject();
+        resp.universidades = universidades;
+        resp.sitios = sitios;
+        
+        res.json(resp);
     } catch (err) { res.status(500).json(err); }
 });
 
@@ -175,7 +216,29 @@ app.get('/api/usuarios/:id', async (req, res) => {
     try {
         const usuario = await Usuario.findById(req.params.id).populate('ciudadesFavoritas');
         if (!usuario) return res.status(404).json({ error: "Usuario no encontrado" });
-        res.json(usuario);
+        
+        // Buscar búsquedas asociadas
+        const busquedas = await Busqueda.find({ usuarioId: req.params.id }).sort({ fecha: -1 });
+        
+        // Transformar para mantener compatibilidad con el front (añadiendo el objeto .pesos virtualmente)
+        const busquedasFormateadas = busquedas.map(b => {
+            const obj = b.toObject();
+            return {
+                ...obj,
+                pesos: {
+                    transporte: obj.transporte,
+                    ocio: obj.ocio,
+                    ocioNocturno: obj.ocioNocturno,
+                    seguridad: obj.seguridad,
+                    calidadAcademica: obj.calidadAcademica
+                }
+            };
+        });
+
+        const userObj = usuario.toObject();
+        userObj.busquedas = busquedasFormateadas;
+        
+        res.json(userObj);
     } catch (err) { 
         res.status(500).json({ error: "Error de servidor al cargar perfil" }); 
     }
@@ -261,6 +324,75 @@ app.post('/api/opiniones', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Error al guardar la opinión' });
+    }
+});
+
+// --- RUTAS DE BÚSQUEDAS GUARDADAS ---
+
+// Guardar nueva búsqueda
+app.post('/api/usuarios/:id/busquedas', async (req, res) => {
+    try {
+        const { nombre, rol, pesos } = req.body;
+        const usuarioId = req.params.id;
+        
+        const nuevaBusqueda = new Busqueda({
+            usuarioId,
+            nombre,
+            rol,
+            transporte: pesos.transporte,
+            ocio: pesos.ocio,
+            ocioNocturno: pesos.ocioNocturno,
+            seguridad: pesos.seguridad,
+            calidadAcademica: pesos.calidadAcademica
+        });
+
+        await nuevaBusqueda.save();
+        
+        // Devolver todas las búsquedas del usuario actualizadas
+        const todas = await Busqueda.find({ usuarioId }).sort({ fecha: -1 });
+        const formateadas = todas.map(b => {
+            const obj = b.toObject();
+            return {
+                ...obj,
+                pesos: {
+                    transporte: obj.transporte,
+                    ocio: obj.ocio,
+                    ocioNocturno: obj.ocioNocturno,
+                    seguridad: obj.seguridad,
+                    calidadAcademica: obj.calidadAcademica
+                }
+            };
+        });
+        
+        res.status(201).json(formateadas);
+    } catch (err) {
+        res.status(500).json({ error: 'Error al guardar búsqueda' });
+    }
+});
+
+// Eliminar búsqueda
+app.delete('/api/usuarios/:id/busquedas/:busquedaId', async (req, res) => {
+    try {
+        await Busqueda.findByIdAndDelete(req.params.busquedaId);
+        
+        const todas = await Busqueda.find({ usuarioId: req.params.id }).sort({ fecha: -1 });
+        const formateadas = todas.map(b => {
+            const obj = b.toObject();
+            return {
+                ...obj,
+                pesos: {
+                    transporte: obj.transporte,
+                    ocio: obj.ocio,
+                    ocioNocturno: obj.ocioNocturno,
+                    seguridad: obj.seguridad,
+                    calidadAcademica: obj.calidadAcademica
+                }
+            };
+        });
+
+        res.json({ mensaje: 'Búsqueda eliminada', busquedas: formateadas });
+    } catch (err) {
+        res.status(500).json({ error: 'Error al eliminar búsqueda' });
     }
 });
 

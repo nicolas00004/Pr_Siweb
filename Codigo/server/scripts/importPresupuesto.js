@@ -19,6 +19,9 @@ const DATOS_REALES = {
         presupuesto: 420,
         seguridad: 4,
         ocio: 5,
+        transporte: 4,
+        ocioNocturno: 5,
+        calidadAcademica: 4,
         valoracion: 4.8,
         c_postal: '18001',
         imagen: 'https://images.unsplash.com/photo-1570698473651-b2de99bae12f?auto=format&fit=crop&q=80&w=1200', // Alhambra
@@ -30,6 +33,9 @@ const DATOS_REALES = {
         presupuesto: 580,
         seguridad: 4,
         ocio: 5,
+        transporte: 5,
+        ocioNocturno: 4,
+        calidadAcademica: 4,
         valoracion: 4.6,
         c_postal: '41001',
         imagen: 'https://images.unsplash.com/photo-1559131397-f94da353f565?auto=format&fit=crop&q=80&w=1200', // Plaza de España
@@ -41,6 +47,9 @@ const DATOS_REALES = {
         presupuesto: 950,
         seguridad: 3,
         ocio: 5,
+        transporte: 5,
+        ocioNocturno: 5,
+        calidadAcademica: 5,
         valoracion: 4.3,
         c_postal: '28001',
         imagen: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&q=80&w=1200', // Gran Vía
@@ -52,6 +61,9 @@ const DATOS_REALES = {
         presupuesto: 520,
         seguridad: 5,
         ocio: 4,
+        transporte: 3,
+        ocioNocturno: 5,
+        calidadAcademica: 5,
         valoracion: 4.7,
         c_postal: '37001',
         imagen: 'https://images.unsplash.com/photo-1628172915850-2fb5635031b9?auto=format&fit=crop&q=80&w=1200', // Salamanca Plaza
@@ -63,6 +75,9 @@ const DATOS_REALES = {
         presupuesto: 670,
         seguridad: 4,
         ocio: 4,
+        transporte: 5,
+        ocioNocturno: 4,
+        calidadAcademica: 4,
         valoracion: 4.5,
         c_postal: '46001',
         imagen: 'https://images.unsplash.com/photo-1534307671554-9a6d81f4d629?auto=format&fit=crop&q=80&w=1200', // Ciudad Artes Ciencias
