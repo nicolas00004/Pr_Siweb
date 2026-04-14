@@ -238,15 +238,15 @@ app.post('/api/opiniones', async (req, res) => {
             return res.status(400).json({ error: 'ID de ciudad no válido' });
         }
 
-        let usuarioId = req.body.usuarioId;
-        if (usuarioId && !mongoose.Types.ObjectId.isValid(usuarioId)) {
-            usuarioId = null; // Ignorar ID inválido y forzar anónimo
+        const usuarioId = req.body.usuarioId;
+        
+        if (!usuarioId || !mongoose.Types.ObjectId.isValid(usuarioId)) {
+            return res.status(401).json({ error: 'Debes estar registrado para publicar una opinión.' });
         }
 
-        if (!usuarioId) {
-            const anonimo = await Usuario.findOne({ correo: 'comunidad@infuni.es' }) || 
-                           await Usuario.create({ nombre: 'Comunidad INFUNI', correo: 'comunidad@infuni.es', password: '---' });
-            usuarioId = anonimo._id;
+        const usuarioExiste = await Usuario.findById(usuarioId);
+        if (!usuarioExiste) {
+            return res.status(401).json({ error: 'Usuario no encontrado o sesión no válida.' });
         }
 
         const nuevaOpinion = new Opinion({ texto, valoracion: Number(valoracion), ciudadId, usuarioId });
