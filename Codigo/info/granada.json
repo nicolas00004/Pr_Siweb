@@ -1,0 +1,52 @@
+{
+    "id": "granada",
+    "nombre": "Granada",
+    "etiquetas": {
+        "historia": "🏛️ Historia y Universidad",
+        "transporte": "🚲 Movilidad",
+        "alojamiento": "🏠 Vivienda y Barrios"
+    },
+    "historia": "Granada fue la capital del antiguo reino nazarí y el último bastión musulmán en la península ibérica hasta 1492. Su universidad, fundada en 1531 por Carlos V, es una de las más prestigiosas e históricas de Europa.",
+    "alojamiento": "Es una ciudad muy asequible para estudiantes. El precio medio de una habitación ronda los 220€ al mes. Las zonas más demandadas son Pedro Antonio (mucha fiesta), Cartuja (cerco de las facultades de Humanidades) y el Realejo.",
+    "barrios": "Pedro Antonio de Alarcón es el núcleo estudiantil y seguro, pero ruidoso. El Albaicín es precioso e histórico, pero a veces menos accesible. Plaza de Toros está muy bien para medicina e informática.",
+    "universidades": [
+        {
+            "nombre": "Universidad de Granada (UGR) - Facultad de Ciencias",
+            "descripcion": "Uno de los campus más activos y modernos de la universidad."
+        },
+        {
+            "nombre": "UGR - Facultad de Derecho",
+            "descripcion": "Ubicada en un edificio del siglo XVI en pleno centro de la ciudad."
+        },
+        {
+            "nombre": "Campus de Cartuja",
+            "descripcion": "Zona que agrupa facultades de humanidades y ciencias sociales con vistas a la Sierra."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "La Alhambra",
+            "categoria": "cultura",
+            "descripcion": "Palacio y fortaleza nazarí, Patrimonio de la Humanidad."
+        },
+        {
+            "nombre": "Mirador de San Nicolás",
+            "categoria": "cultura",
+            "descripcion": "Vistas inigualables a la Alhambra con el atardecer."
+        },
+        {
+            "nombre": "Calle Elvira",
+            "categoria": "ocio",
+            "descripcion": "Famosa por sus bares de tapas tradicionales y ambiente bohemio."
+        },
+        {
+            "nombre": "Mae West",
+            "categoria": "ocioNocturno",
+            "descripcion": "Discoteca emblemática en el centro comercial Neptuno."
+        }
+    ],
+    "imagenes": [
+        "../img/granada_1.jpg",
+        "../img/granada_2.jpg"
+    ]
+}

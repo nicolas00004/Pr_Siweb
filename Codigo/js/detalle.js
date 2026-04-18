@@ -8,9 +8,14 @@ const API_BASE = 'http://localhost:3000';
 let globalCiudadData = null;
 
 function obtenerImagenCiudad(ciudad, index = 0) {
+    // Si tenemos array de imágenes locales en el JSON, las usamos
+    if (ciudad.imagenes && ciudad.imagenes.length > 0) {
+        return ciudad.imagenes[index % ciudad.imagenes.length];
+    }
+    // Fallback a imagen de la DB o Unsplash
     const keywords = ['cityscape', 'university', 'streets', 'architecture', 'culture'];
     const kw = keywords[index % keywords.length];
-    return ciudad.imagen && index === 0 ? ciudad.imagen : `https://source.unsplash.com/800x600/?${encodeURIComponent(ciudad.nombre || 'city')},${kw}`;
+    return ciudad.imagen ? ciudad.imagen : `https://source.unsplash.com/800x600/?${encodeURIComponent(ciudad.nombre || 'city')},${kw}`;
 }
 
 async function cargarDetalle() {
@@ -28,10 +33,11 @@ async function cargarDetalle() {
         breadcrumbCiudad.innerText = globalCiudadData.nombre;
 
         // --- RENDERIZAR CABECERA (TÍTULO Y TABS) ---
+        const etiquetas = globalCiudadData.etiquetas || {};
         headerSeccion.innerHTML = `
             <h1 class="fade-in">${globalCiudadData.nombre}</h1>
             <div class="tabs-container fade-in" id="tabs-destinos">
-                <button class="tab-btn active" data-seccion="historia">🏛️ Historia</button>
+                <button class="tab-btn active" data-seccion="historia">${etiquetas.historia ? '🏛️ ' + etiquetas.historia.split(' ').slice(1).join(' ') : '🏛️ Historia'}</button>
                 <button class="tab-btn" data-seccion="campus">🎓 Campus</button>
                 <button class="tab-btn" data-seccion="sitios">📍 Sitios</button>
                 <button class="tab-btn" data-seccion="guia">📖 Guía</button>
@@ -72,6 +78,7 @@ function renderizarSeccion(seccionId) {
     let html = '';
     
     if (seccionId === 'historia') {
+        const etiquetas = globalCiudadData.etiquetas || {};
         html = `
             <div class="mini-pagina fade-in">
                 <section class="seccion-destino">
@@ -79,15 +86,16 @@ function renderizarSeccion(seccionId) {
                         <img src="${obtenerImagenCiudad(globalCiudadData, 0)}" alt="${globalCiudadData.nombre}">
                     </div>
                     <div class="seccion-text">
-                        <h2>🏛️ Historia y Universidad</h2>
+                        <h2>${etiquetas.historia || "🏛️ Historia y Universidad"}</h2>
                         <p>${globalCiudadData.historia || "Datos históricos en construcción para esta ciudad."}</p>
                     </div>
                 </section>
                 
                 <section class="seccion-destino">
                     <div class="seccion-text">
-                        <h2>💡 Tips de Expertos</h2>
-                        <p>No olvides verificar siempre los horarios locales y la disponibilidad de servicios en la zona universitaria. Cada rincón tiene su magia esperando ser descubierta.</p>
+                        <h2>${etiquetas.alojamiento || "🏠 Vivienda y Alojamiento"}</h2>
+                        <p>${globalCiudadData.alojamiento || "Información sobre alojamiento en proceso."}</p>
+                        ${globalCiudadData.barrios ? `<p style="margin-top:15px;"><strong>Principales Barrios:</strong> ${globalCiudadData.barrios}</p>` : ''}
                     </div>
                     <div class="seccion-img">
                         <img src="${obtenerImagenCiudad(globalCiudadData, 1)}" alt="Tip extra">

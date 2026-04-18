@@ -76,6 +76,9 @@ async function cargarDatos() {
 }
 
 function obtenerImagenCiudad(ciudad) {
+    if (ciudad.imagenes && ciudad.imagenes.length > 0) {
+        return ciudad.imagenes[0];
+    }
     return ciudad.imagen || `https://source.unsplash.com/400x300/?${encodeURIComponent(ciudad.nombre)},city`;
 }
 

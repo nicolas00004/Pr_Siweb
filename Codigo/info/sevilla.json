@@ -1,0 +1,43 @@
+{
+    "id": "sevilla",
+    "nombre": "Sevilla",
+    "etiquetas": {
+        "historia": "🏛️ Tradición y Color",
+        "transporte": "🚲 Carril Bici y Tranvía",
+        "alojamiento": "🏠 Vida en el Aljarafe y Triana"
+    },
+    "historia": "La capital hispalense destaca por su duende y color. Con un patrimonio abrumador (la Giralda, el Alcázar), es una ciudad bañada por el Guadalquivir con influencias romanas, visigodas y árabes.",
+    "alojamiento": "Algo más cara que Granada (300€-400€ por habitación). Los barrios de Viapol, Triana o la Macarena son muy codiciados por la comunidad estudiantil.",
+    "barrios": "Triana tiene un alma castiza inigualable. Reina Mercedes es el campus principal con ambiente puramente universitario.",
+    "universidades": [
+        {
+            "nombre": "Universidad de Sevilla (US)",
+            "descripcion": "Ubicada en la antigua Real Fábrica de Tabacos, un edificio histórico espectacular."
+        },
+        {
+            "nombre": "Universidad Pablo de Olavide (UPO)",
+            "descripcion": "Campus integrado con un enfoque moderno y dinámico."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "La Giralda",
+            "categoria": "cultura",
+            "descripcion": "Torre campanario de la catedral, símbolo máximo de Sevilla."
+        },
+        {
+            "nombre": "Plaza de España",
+            "categoria": "ocio",
+            "descripcion": "Conjunto arquitectónico monumental encuadrado en el Parque de María Luisa."
+        },
+        {
+            "nombre": "Antiquarium",
+            "categoria": "cultura",
+            "descripcion": "Museo arqueológico bajo las Setas de la Encarnación."
+        }
+    ],
+    "imagenes": [
+        "../img/sevilla_1.jpg",
+        "../img/sevilla_2.jpg"
+    ]
+}

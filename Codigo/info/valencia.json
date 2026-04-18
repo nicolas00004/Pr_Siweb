@@ -1,0 +1,43 @@
+{
+    "id": "valencia",
+    "nombre": "Valencia",
+    "etiquetas": {
+        "historia": "🏛️ Historia y Ciudad de las Artes",
+        "transporte": "🚲 Valenbisi y Tranvía",
+        "alojamiento": "🏠 Proximidad a la Playa"
+    },
+    "historia": "Fundada por los romanos, Valencia es la tercera ciudad de España. Es famosa por su combinación de historia gótica y el futurismo de la Ciudad de las Artes y las Ciencias, además de sus famosas Fallas.",
+    "alojamiento": "Zona de Benimaclet (muy universitaria) o Blasco Ibáñez. Habitaciones alrededor de 350€-500€. Cabañal es popular para estar cerca del mar.",
+    "barrios": "Ruzafa es el barrio hipster por excelencia. El Carmen es el centro histórico con calles laberínticas y mucho arte urbano.",
+    "universidades": [
+        {
+            "nombre": "Universitat de València (UV)",
+            "descripcion": "Una de las instituciones académicas más antiguas de España."
+        },
+        {
+            "nombre": "Universitat Politècnica de València (UPV)",
+            "descripcion": "Campus moderno con excelentes instalaciones deportivas y tecnológicas."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Ciudad de las Artes y las Ciencias",
+            "categoria": "cultura",
+            "descripcion": "Completo arquitectónico, cultural y de entretenimiento de Santiago Calatrava."
+        },
+        {
+            "nombre": "Mercado Central",
+            "categoria": "ocio",
+            "descripcion": "Obra maestra del modernismo valenciano y paraíso gastronómico."
+        },
+        {
+            "nombre": "Marina de Valencia",
+            "categoria": "ocio",
+            "descripcion": "Zona renovada junto al puerto ideal para pasear y eventos."
+        }
+    ],
+    "imagenes": [
+        "../img/valencia_1.jpg",
+        "../img/valencia_2.jpg"
+    ]
+}

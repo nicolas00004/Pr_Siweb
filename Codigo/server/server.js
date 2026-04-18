@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const { exec } = require('child_process');
 const app = express();
 
@@ -15,6 +16,8 @@ app.use(express.json());
 
 // Servir archivos estáticos (html, css, js)
 app.use(express.static(path.join(__dirname, '..')));
+app.use('/info', express.static(path.join(__dirname, '../info')));
+app.use('/img', express.static(path.join(__dirname, '../img')));
 
 // Conexión a MongoDB
 mongoose.connect('mongodb://localhost:27017/bdd')
@@ -170,15 +173,34 @@ app.get('/api/ciudades/:id', async (req, res) => {
         const ciudad = await Ciudad.findById(req.params.id).populate('paisId');
         if (!ciudad) return res.status(404).json({ error: "Ciudad no encontrada" });
         
-        // Buscar universidades y sitios asociados de forma paralela
-        const [universidades, sitios] = await Promise.all([
-            Universidad.find({ ciudadId: req.params.id }),
-            Sitio.find({ ciudadId: req.params.id })
-        ]);
-
         const resp = ciudad.toObject();
-        resp.universidades = universidades;
-        resp.sitios = sitios;
+
+        // Intentar cargar información extendida desde JSON
+        const fileName = resp.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-');
+        const jsonPath = path.join(__dirname, '../info', `${fileName}.json`);
+
+        if (fs.existsSync(jsonPath)) {
+            try {
+                const docJson = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+                // Combinar datos del JSON (tienen prioridad para info estática)
+                resp.historia = docJson.historia || resp.historia;
+                resp.alojamiento = docJson.alojamiento || resp.alojamiento;
+                resp.universidades = docJson.universidades || [];
+                resp.sitios = docJson.sitios || [];
+                resp.etiquetas = docJson.etiquetas || {};
+                resp.imagenes = docJson.imagenes || [];
+            } catch (e) {
+                console.error(`Error procesando JSON para ${fileName}:`, e);
+            }
+        } else {
+            // Fallback a la lógica antigua (buscar en colecciones MongoDB si no hay JSON)
+            const [universidades, sitios] = await Promise.all([
+                Universidad.find({ ciudadId: req.params.id }),
+                Sitio.find({ ciudadId: req.params.id })
+            ]);
+            resp.universidades = universidades;
+            resp.sitios = sitios;
+        }
         
         res.json(resp);
     } catch (err) { res.status(500).json(err); }
