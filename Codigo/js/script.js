@@ -38,7 +38,8 @@ async function cargarDatos() {
 
         // 2. Si hay usuario, cargar sus datos completos
         if (userInfo) {
-            const resU = await fetch(`${API_BASE}/api/usuarios/${userInfo.id}`);
+            const userId = getUserId();
+            const resU = await fetch(`${API_BASE}/api/usuarios/${userId}`);
             userFull = await resU.json();
             userFavoritasIds = (userFull.ciudadesFavoritas || []).map(f => f._id || f);
             
@@ -105,8 +106,8 @@ function renderizarCiudades(datos) {
                     <h3>${c.nombre}</h3>
                     <div class="card-info">
                         <span class="pill">💶 ${c.presupuesto}€ / mes</span>
-                        <span class="pill">🎭 Ambiente: ${c.ambiente || 'N/A'}</span>
-                        <span class="pill">🛡️ Seguridad: ${"⭐".repeat(Math.round(c.seguridad || 0))}</span>
+                        <span class="pill">🎭 Ambiente: ${c.tipoAmbiente || 'N/A'}</span>
+                        <span class="pill">🛡️ Seguridad: ${"⭐".repeat(Math.round(c.metricas ? c.metricas.seguridad / 2 : 0))}</span>
                     </div>
                     <a href="detalle.html?id=${c._id}" class="btn-ver" onclick="event.stopPropagation()">Ver detalles completos</a>
                 </div>
@@ -123,7 +124,7 @@ async function toggleFavoritoRapido(ciudadId) {
     }
 
     try {
-        const res = await fetch(`${API_BASE}/api/usuarios/${user.id}/favorito`, {
+        const res = await fetch(`${API_BASE}/api/usuarios/${getUserId()}/favorito`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ciudadId })
@@ -161,7 +162,7 @@ function aplicarFiltros() {
 
     const filtradas = ciudades.filter(c => {
         const entraPresupuesto = c.presupuesto <= maxPresupuesto;
-        const entraAmbiente = ambienteFilter === 'todos' || c.ambiente === ambienteFilter;
+        const entraAmbiente = ambienteFilter === 'todos' || c.tipoAmbiente === ambienteFilter;
         return entraPresupuesto && entraAmbiente;
     });
 
@@ -185,8 +186,9 @@ function renderizarMapa(datos) {
 
     // Añadir nuevos markers
     datos.forEach(c => {
-        if (c.lat && c.lng) {
-            const marker = L.marker([c.lat, c.lng]).addTo(map);
+        if (c.coordenadas && c.coordenadas.coordinates) {
+            const [lng, lat] = c.coordenadas.coordinates;
+            const marker = L.marker([lat, lng]).addTo(map);
             marker.bindPopup(`
                 <div style="font-family: inherit;">
                     <strong style="color:var(--primary-color);">${c.nombre}</strong><br>
@@ -216,7 +218,13 @@ function calcularRanking() {
 
         seleccionados.forEach(crit => {
             const peso = currentWeights[crit] || 1;
-            const scoreBD = c[crit] || 0; // transporte, ocio, ocioNocturno, etc.
+            // Mapeo de nombres si es necesario
+            const mapCrit = {
+                'ocioNocturno': 'ambienteNocturno',
+                'transporte': 'calidadTransporte'
+            };
+            const critKey = mapCrit[crit] || crit;
+            const scoreBD = (c.metricas ? c.metricas[critKey] : 0) || 0;
             
             scoreTotal += scoreBD * peso;
             pesoTotal += peso;
@@ -311,26 +319,14 @@ document.getElementById('btnResetAHP').onclick = () => {
     renderizarSliders();
     aplicarFiltros();
 };
-function showToast(message, type = 'default') {
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.style.cssText = `
-        position: fixed; bottom: 20px; right: 20px; 
-        padding: 12px 24px; border-radius: 12px; 
-        background: ${type === 'success' ? '#10b981' : '#334155'}; 
-        color: white; z-index: 9999; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-        animation: slideUp 0.3s ease;
-    `;
-    toast.innerText = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-}
+// La función showToast está definida globalmente en auth.js
+// No se redefine aquí para evitar conflictos
 
-const style = document.createElement('style');
-style.innerHTML = `
+const _animStyle = document.createElement('style');
+_animStyle.innerHTML = `
     @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 `;
-document.head.appendChild(style);
+document.head.appendChild(_animStyle);
 
 function iniciarSSE() {
     const ev = new EventSource('http://localhost:3000/api/ciudades/stream');
@@ -371,14 +367,31 @@ const formFeedback = document.getElementById('form-feedback');
 formNuevaCiudad.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Construir objeto con datos
+    // Construir objeto con datos adaptados al schema actual de CiudadSchema
+    const alquiler = Number(document.getElementById('f_presupuesto').value) * 0.7; // aprox. 70% alquiler
+    const ocio     = Number(document.getElementById('f_presupuesto').value) * 0.3; // aprox. 30% ocio
+    const lat = Number(document.getElementById('f_lat').value) || 40.4168;
+    const lng = Number(document.getElementById('f_lng').value) || -3.7038;
+
     const nuevaCiudad = {
-        nombre: document.getElementById('f_nombre').value,
-        presupuesto: Number(document.getElementById('f_presupuesto').value),
-        ambiente: document.getElementById('f_ambiente').value,
-        seguridad: Number(document.getElementById('f_seguridad').value),
-        ocio: Number(document.getElementById('f_ocio').value),
-        descripcion: document.getElementById('f_descripcion').value
+        nombre:       document.getElementById('f_nombre').value,
+        tipoAmbiente: document.getElementById('f_ambiente').value,
+        historia:     document.getElementById('f_historia').value,
+        alojamiento:  document.getElementById('f_alojamiento').value,
+        metricas: {
+            seguridad:          Number(document.getElementById('f_seguridad').value),
+            costeAlquilerMedio: Math.round(alquiler),
+            costeOcioMedio:     Math.round(ocio),
+            ambienteNocturno:   Number(document.getElementById('f_ocio').value),
+            calidadTransporte:  3,
+            calidadAcademica:   3,
+            conectividad:       3,
+            turismo:            3
+        },
+        coordenadas: {
+            type: 'Point',
+            coordinates: [lng, lat]
+        }
     };
     
     try {

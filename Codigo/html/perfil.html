@@ -88,10 +88,10 @@
             const userInfo = JSON.parse(userInfoStr);
             
             document.getElementById('userNameLabel').innerText = userInfo.nombre;
-            document.getElementById('userEmailLabel').innerText = userInfo.correo;
+            document.getElementById('userEmailLabel').innerText = userInfo.email;
             document.getElementById('userAvatar').innerText = userInfo.nombre.charAt(0).toUpperCase();
 
-            fetch(`${API}/api/usuarios/${userInfo.id}`)
+            fetch(`${API}/api/usuarios/${userInfo.id || userInfo._id}`)
                 .then(res => res.json())
                 .then(usuarioDB => {
                     const favContainer = document.getElementById('favoritosContainer');
@@ -114,8 +114,8 @@
                                         <button onclick="quitarFavorito('${c._id}')" style="background:none; border:none; cursor:pointer; font-size:1.2rem;" title="Quitar">❌</button>
                                     </div>
                                     <div class="fav-stats" onclick="window.location.href='detalle.html?id=${c._id}'">
-                                        <span>💶 ${c.presupuesto}€</span>
-                                        <span>🛡️ ${"⭐".repeat(c.seguridad || 0)}</span>
+                                        <span>💶 ${c.presupuesto || ((c.metricas?.costeAlquilerMedio || 0) + (c.metricas?.costeOcioMedio || 0))}€/mes</span>
+                                        <span>🛡️ ${"⭐".repeat(Math.round((c.metricas?.seguridad || 0) / 2))}</span>
                                     </div>
                                 </div>
                             </div>
@@ -163,7 +163,7 @@
             if(!confirm("¿Quitar esta ciudad de tus favoritos?")) return;
             const userInfo = JSON.parse(localStorage.getItem('usuarioInfo'));
             try {
-                const res = await fetch(`${API}/api/usuarios/${userInfo.id}/favorito`, {
+                const res = await fetch(`${API}/api/usuarios/${userInfo.id || userInfo._id}/favorito`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ ciudadId })
@@ -176,7 +176,7 @@
             if(!confirm("¿Eliminar esta búsqueda guardada?")) return;
             const userInfo = JSON.parse(localStorage.getItem('usuarioInfo'));
             try {
-                const res = await fetch(`${API}/api/usuarios/${userInfo.id}/busquedas/${busquedaId}`, {
+                const res = await fetch(`${API}/api/usuarios/${userInfo.id || userInfo._id}/busquedas/${busquedaId}`, {
                     method: 'DELETE'
                 });
                 if(res.ok) location.reload();

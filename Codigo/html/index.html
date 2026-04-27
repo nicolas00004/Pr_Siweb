@@ -181,8 +181,30 @@
                     </div>
                     
                     <div class="form-group full-width">
-                        <label for="f_descripcion">Pequeña Guía/Descripción</label>
-                        <textarea id="f_descripcion" name="descripcion" rows="4" placeholder="Cuéntanos lo mejor de la ciudad..." required></textarea>
+                        <label for="f_descripcion">Resumen / Descripción corta</label>
+                        <textarea id="f_descripcion" name="descripcion" rows="2" placeholder="Una frase que defina la ciudad..." required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="f_historia">Historia y Cultura (Extendido)</label>
+                            <textarea id="f_historia" name="historia" rows="4" placeholder="Cuéntanos sobre el pasado y la esencia de la ciudad..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="f_alojamiento">Vivienda y Consejos de Alojamiento</label>
+                            <textarea id="f_alojamiento" name="alojamiento" rows="4" placeholder="¿Cómo es el mercado de alquiler? ¿Barrios recomendados?"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="f_lat">Latitud (Mapa)</label>
+                            <input type="number" id="f_lat" name="lat" step="any" placeholder="Ej: 40.4168">
+                        </div>
+                        <div class="form-group">
+                            <label for="f_lng">Longitud (Mapa)</label>
+                            <input type="number" id="f_lng" name="lng" step="any" placeholder="Ej: -3.7038">
+                        </div>
                     </div>
                     
                     <button type="submit" class="btn-submit">🌟 Añadir a la Red</button>

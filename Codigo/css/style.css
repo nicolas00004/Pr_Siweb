@@ -625,6 +625,25 @@ footer p.copyright {
     color: #ef4444;
 }
 
+/* Ajustes para el formulario expandido */
+.form-moderno textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-group input[type="number"] {
+    width: 100%;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 /* EXTRA: DISEÑO EDITORIAL PARA DETALLE.HTML (Ficha completa) */
 .articulo-wiki {
     display: grid;

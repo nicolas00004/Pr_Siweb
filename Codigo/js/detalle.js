@@ -30,7 +30,10 @@ async function cargarDetalle() {
         globalCiudadData = await respuesta.json();
 
         // Actualizar Breadcrumbs
-        breadcrumbCiudad.innerText = globalCiudadData.nombre;
+        if (breadcrumbCiudad) {
+            breadcrumbCiudad.innerText = globalCiudadData.nombre;
+            breadcrumbCiudad.classList.add('fade-in');
+        }
 
         // --- RENDERIZAR CABECERA (TÍTULO Y TABS) ---
         const etiquetas = globalCiudadData.etiquetas || {};
@@ -221,8 +224,6 @@ function renderizarSeccion(seccionId) {
         `;
         contenedor.innerHTML = html;
         cargarOpiniones(id);
-        contenedor.innerHTML = html;
-        cargarOpiniones(id);
     }
 }
 
@@ -240,10 +241,10 @@ async function cargarOpiniones(ciudadId) {
             opDiv.innerHTML = ops.map(o => `
                 <div style="border-bottom: 1px solid #f1f5f9; padding: 20px 0;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <strong style="color: var(--primary-color);">${o.usuarioId ? o.usuarioId.nombre : 'Estudiante'}</strong>
-                        <span style="color: #fbbf24;">${"★".repeat(o.valoracion)}${"☆".repeat(5-o.valoracion)}</span>
+                        <strong style="color: var(--primary-color);">${o.id_usuario ? o.id_usuario.nombre : 'Estudiante'}</strong>
+                        <span style="color: #fbbf24;">${"★".repeat(o.puntuacion)}${"☆".repeat(5-o.puntuacion)}</span>
                     </div>
-                    <p style="color: var(--text-dark); line-height: 1.6;">"${o.texto}"</p>
+                    <p style="color: var(--text-dark); line-height: 1.6;">"${o.texto_opinion}"</p>
                 </div>
             `).join('');
         }

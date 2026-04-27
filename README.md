@@ -82,15 +82,47 @@ El sistema utiliza un esquema relacional sobre MongoDB para garantizar la integr
 
 ---
 
-## 🚀 Instalación Rápida
+## 🚀 Instalación y Puesta en Marcha
 
-1. **Instalar dependencias**: `npm install`
-2. **Preparar la DB**: En `Codigo/server`, ejecutar `node seed.js`. 
-   > *Esto creará el usuario de prueba y poblará las 5 ciudades base con datos globales.*
-3. **Lanzar**: `node server.js` y entrar en `http://localhost:3000`.
+Dado que INFUNI utiliza una arquitectura avanzada con un **Sharded Cluster de MongoDB** en Docker, sigue estos pasos para levantar el entorno completo:
 
-### 🔑 Usuario de Prueba
+### 1. Levantar la Base de Datos Distribuida (Docker)
+1. Abre una terminal y navega a la carpeta de configuración de MongoDB:
+   ```bash
+   cd "Codigo/infuni-mongodb"
+   ```
+2. Levanta los contenedores en segundo plano:
+   ```bash
+   docker compose up -d
+   ```
+3. Inicializa el clúster particionado ejecutando el script de configuración:
+   ```bash
+   bash init-cluster.sh
+   ```
+   *(Espera a que el script finalice y muestre "Cluster listo ✓")*
+
+### 2. Instalar el Backend y Sembrar Datos
+1. Vuelve a la carpeta raíz del proyecto y luego a `Codigo/server`:
+   ```bash
+   cd ../server
+   npm install
+   ```
+2. Poblar la base de datos con los datos iniciales y el schema unificado:
+   ```bash
+   node seed.js
+   ```
+   *(Esto creará la base de datos `infuni`, usuarios, y fusionará las ciudades con los archivos JSON)*
+
+### 3. Iniciar la Aplicación
+1. Arranca el servidor Node.js:
+   ```bash
+   node server.js
+   ```
+2. Abre tu navegador y accede a: **`http://localhost:3000`**
+
+### 🔑 Usuarios de Prueba
 - **Email**: `maria@universidad.es`
+- **Email**: `carlos@universidad.es`
 - **Password**: `123456`
 
 ---

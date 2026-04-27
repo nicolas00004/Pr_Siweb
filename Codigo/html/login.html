@@ -57,7 +57,7 @@
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const correo = document.getElementById('emailInput').value.trim();
+            const email = document.getElementById('emailInput').value.trim();
             const password = document.getElementById('passInput').value;
             const errorMsg = document.getElementById('errorMsg');
             
@@ -67,7 +67,7 @@
                 const response = await fetch(`${API}/api/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ correo, password })
+                    body: JSON.stringify({ email, password })
                 });
 
                 const data = await response.json();
@@ -76,7 +76,7 @@
                     localStorage.setItem('usuarioInfo', JSON.stringify({
                         id: data._id,
                         nombre: data.nombre,
-                        correo: data.correo
+                        email: data.email
                     }));
                     window.location.href = 'perfil.html';
                 } else {

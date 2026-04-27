@@ -67,7 +67,7 @@ function showToast(msg, type = 'success') {
 // Helper global para obtener el ID del usuario
 function getUserId() {
     const user = JSON.parse(localStorage.getItem('usuarioInfo'));
-    return user ? user.id : null;
+    return user ? user._id || user.id : null;
 }
 
 /**

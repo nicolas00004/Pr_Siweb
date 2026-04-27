@@ -206,13 +206,13 @@
                 foroContainer.innerHTML = opiniones.map(op => `
                     <div class="hilo-card">
                         <div class="hilo-header">
-                            <div class="hilo-autor">👤 ${op.usuarioId ? (op.usuarioId.nombre || 'Estudiante') : 'Anónimo'}</div>
-                            <div class="hilo-ciudad">📍 ${op.ciudadId ? op.ciudadId.nombre : 'General'}</div>
+                            <div class="hilo-autor">👤 ${op.id_usuario ? (op.id_usuario.nombre || 'Estudiante') : 'Anónimo'}</div>
+                            <div class="hilo-ciudad">📍 ${op.id_ciudad ? op.id_ciudad.nombre : 'General'}</div>
                         </div>
-                        <div class="hilo-texto">${op.texto}</div>
+                        <div class="hilo-texto">${op.texto_opinion}</div>
                         <div class="hilo-footer">
-                            <span>⭐ ${op.valoracion}/5</span>
-                            <span>🕒 ${new Date(op.fecha).toLocaleDateString()}</span>
+                            <span>${'⭐'.repeat(op.puntuacion)} ${op.puntuacion}/5</span>
+                            <span>🕒 ${new Date(op.fecha_publicacion).toLocaleDateString('es-ES')}</span>
                         </div>
                     </div>
                 `).join('');
@@ -232,8 +232,7 @@
                 ciudadId: document.getElementById('ciudadForo').value,
                 valoracion: document.getElementById('valForo').value,
                 texto: document.getElementById('textoForo').value,
-                usuarioId: localUser.id || null,
-                usuarioNombre: localUser.nombre || 'Estudiante Erasmus'
+                usuarioId: localUser.id || localUser._id || null
             };
 
             try {
