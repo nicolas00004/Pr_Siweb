@@ -201,28 +201,29 @@ function renderizarMapa(datos) {
     });
 }
 
+const CATEGORIAS_AHP = [
+    { name: '🌟 Destino de Élite', min: 4.5, color: '#fbbf24' },
+    { name: '✅ Muy Recomendado', min: 3.8, color: '#10b981' },
+    { name: '🆗 Aceptable', min: 2.5, color: '#3b82f6' },
+    { name: '⚠️ No Recomendado', min: 0, color: '#ef4444' }
+];
+
 function calcularRanking() {
     const seleccionados = Array.from(document.querySelectorAll('.criterio-chip input:checked'))
                                .map(input => input.value);
     
     if (seleccionados.length === 0) {
-        rankingBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px;">Selecciona al menos un criterio para ver el ranking.</td></tr>';
+        rankingBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">Selecciona al menos un criterio para ver el ranking.</td></tr>';
         return;
     }
 
-    // Usar pesos actuales (ajustados por sliders)
-    // El ranking se calcula con los valores guardados en la BASE DE DATOS
     const rankingData = ciudades.map(c => {
         let scoreTotal = 0;
         let pesoTotal = 0;
 
         seleccionados.forEach(crit => {
             const peso = currentWeights[crit] || 1;
-            // Mapeo de nombres si es necesario
-            const mapCrit = {
-                'ocioNocturno': 'ambienteNocturno',
-                'transporte': 'calidadTransporte'
-            };
+            const mapCrit = { 'ocioNocturno': 'ambienteNocturno', 'transporte': 'calidadTransporte' };
             const critKey = mapCrit[crit] || crit;
             const scoreBD = (c.metricas ? c.metricas[critKey] : 0) || 0;
             
@@ -230,22 +231,30 @@ function calcularRanking() {
             pesoTotal += peso;
         });
 
-        return { ...c, globalScore: scoreTotal / (pesoTotal || 1) };
+        const scoreFinal = scoreTotal / (pesoTotal || 1);
+        const categoria = AHPEngine.classify(scoreFinal, CATEGORIAS_AHP);
+        const catInfo = CATEGORIAS_AHP.find(cat => cat.name === categoria) || { color: '#64748b' };
+
+        return { ...c, globalScore: scoreFinal, categoria, catColor: catInfo.color };
     });
 
     rankingData.sort((a, b) => b.globalScore - a.globalScore);
-    const top3 = rankingData.slice(0, 3);
-
-    rankingBody.innerHTML = top3.map((c, i) => `
+    
+    rankingBody.innerHTML = rankingData.map((c, i) => `
         <tr class="ranking-row" onclick="window.location.href='detalle.html?id=${c._id}'">
-            <td><span class="rank-number">${i + 1}º</span></td>
-            <td>
+            <td data-label="POS"><span class="rank-number">${i + 1}º</span></td>
+            <td data-label="CIUDAD">
                 <div class="rank-city">
                     <img src="${obtenerImagenCiudad(c)}" alt="${c.nombre}">
                     <span>${c.nombre} ${c.rol === 'trabajador' ? '💼' : ''}</span>
                 </div>
             </td>
-            <td class="rank-score">${c.globalScore.toFixed(1)} / 5</td>
+            <td data-label="CLASIFICACIÓN">
+                <span class="pill" style="background: ${c.catColor}; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">
+                    ${c.categoria}
+                </span>
+            </td>
+            <td data-label="PUNTUACIÓN" class="rank-score">${c.globalScore.toFixed(1)} / 5</td>
         </tr>
     `).join('');
 }
@@ -319,6 +328,95 @@ document.getElementById('btnResetAHP').onclick = () => {
     renderizarSliders();
     aplicarFiltros();
 };
+
+// --- LÓGICA MODO EXPERTO (MATRIZ AHP) ---
+const btnExpert = document.getElementById('btnExpertAHP');
+const panelMatrix = document.getElementById('ahpMatrixPanel');
+const tableMatrix = document.getElementById('ahpMatrixTable');
+const consistencyInfo = document.getElementById('ahpConsistencyInfo');
+
+btnExpert.onclick = () => {
+    const isVisible = panelMatrix.style.display === 'block';
+    panelMatrix.style.display = isVisible ? 'none' : 'block';
+    if (!isVisible) renderizarMatrizAHP();
+};
+
+function renderizarMatrizAHP() {
+    const criteria = Object.keys(currentWeights);
+    const n = criteria.length;
+    
+    // Crear matriz de identidad si no existe o sincronizar
+    let html = '<thead><tr><th></th>' + criteria.map(c => `<th style="text-transform:capitalize;">${c}</th>`).join('') + '</tr></thead><tbody>';
+    
+    criteria.forEach((rowCrit, i) => {
+        html += `<tr><td style="font-weight:700; text-transform:capitalize;">${rowCrit}</td>`;
+        criteria.forEach((colCrit, j) => {
+            if (i === j) {
+                html += `<td style="background:#e2e8f0; text-align:center;">1</td>`;
+            } else if (i < j) {
+                // Input para comparar row vs col
+                html += `<td><input type="number" step="0.1" min="0.1" max="9" value="1" 
+                          onchange="actualizarMatrizAHP(${i}, ${j}, this.value)" 
+                          style="width:50px; padding:4px; border-radius:4px; border:1px solid #cbd5e1;"></td>`;
+            } else {
+                // Recíproco (se calcula auto)
+                html += `<td id="ahp_${i}_${j}" style="color:var(--text-muted); text-align:center;">1</td>`;
+            }
+        });
+        html += '</tr>';
+    });
+    
+    html += '</tbody>';
+    tableMatrix.innerHTML = html;
+    recalcularPrioridadesAHP();
+}
+
+let ahpMatrixInternal = [];
+
+function actualizarMatrizAHP(row, col, val) {
+    const v = parseFloat(val);
+    if (isNaN(v) || v <= 0) return;
+    
+    document.getElementById(`ahp_${col}_${row}`).innerText = (1/v).toFixed(2);
+    recalcularPrioridadesAHP();
+}
+
+function recalcularPrioridadesAHP() {
+    const criteria = Object.keys(currentWeights);
+    const n = criteria.length;
+    const matrix = Array.from({ length: n }, () => Array(n).fill(1));
+    
+    // Leer valores de la tabla
+    criteria.forEach((_, i) => {
+        criteria.forEach((_, j) => {
+            if (i < j) {
+                const input = tableMatrix.querySelector(`tr:nth-child(${i+1}) td:nth-child(${j+2}) input`);
+                const val = parseFloat(input.value) || 1;
+                matrix[i][j] = val;
+                matrix[j][i] = 1/val;
+            }
+        });
+    });
+
+    const newWeights = AHPEngine.calculateWeights(matrix);
+    const consistency = AHPEngine.checkConsistency(matrix, newWeights);
+
+    // Actualizar currentWeights (normalizados a escala 1-5 para compatibilidad con sliders)
+    const maxW = Math.max(...newWeights);
+    criteria.forEach((key, idx) => {
+        currentWeights[key] = (newWeights[idx] / maxW) * 5;
+    });
+
+    // Actualizar UI
+    renderizarSliders();
+    aplicarFiltros();
+
+    consistencyInfo.innerHTML = `
+        <span style="color: ${consistency.consistent ? '#10b981' : '#ef4444'}">
+            ${consistency.consistent ? '✅ Consistente' : '⚠️ Inconsistente'} (CR: ${consistency.cr})
+        </span>
+    `;
+}
 // La función showToast está definida globalmente en auth.js
 // No se redefine aquí para evitar conflictos
 

@@ -30,6 +30,76 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* Layout Dashboard para evitar scroll */
+.dashboard-layout {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 20px;
+    padding: 20px;
+    height: calc(100vh - 80px);
+    overflow: hidden;
+}
+
+@media (max-width: 1100px) {
+    .dashboard-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+        overflow: visible;
+    }
+}
+
+.scroll-panel {
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+/* Sub-grid para resultados en paralelo */
+.results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    height: 100%;
+}
+
+@media (max-width: 1300px) {
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+#hero.compact-hero {
+    padding: 20px 5% !important;
+    border-radius: 0 0 20px 20px;
+    margin-bottom: 10px;
+}
+
+#hero.compact-hero h2 {
+    font-size: 1.5rem !important;
+    margin-bottom: 5px;
+}
+
+#hero.compact-hero p {
+    font-size: 0.9rem !important;
+    margin-bottom: 10px;
+}
+
+main {
+    padding: 40px 5% 60px;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.home-main {
+    padding: 0;
+    max-width: none;
+}
+
+@media (max-width: 768px) {
+    main {
+        padding: 20px 5% 40px;
+    }
+}
+
 /* NAVEGACIÓN - Efecto Glassmorphism */
 header {
     background-color: var(--glass-bg);
@@ -150,7 +220,7 @@ header {
     background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(59, 130, 246, 0.6) 100%),
         url('https://images.unsplash.com/photo-1523050853063-bd388f9c7d13?auto=format&fit=crop&w=1920&q=80') center/cover;
     color: var(--white);
-    padding: 120px 5% 100px;
+    padding: 60px 5% 40px;
     text-align: center;
     border-radius: 0 0 40px 40px;
     margin-bottom: 20px;
@@ -158,9 +228,9 @@ header {
 }
 
 #hero h2 {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 800;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     letter-spacing: -1px;
 }
@@ -822,7 +892,25 @@ footer p.copyright {
 }
 
 /* Responsive adjustments */
+@media (max-width: 992px) {
+    .nav-global ul {
+        gap: 0;
+    }
+    
+    #hero h2 {
+        font-size: 2.5rem;
+    }
+
+    .articulo-wiki {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 768px) {
+    header {
+        padding: 0.8rem 5%;
+    }
+
     .nav-global {
         flex-direction: column;
         gap: 15px;
@@ -832,10 +920,93 @@ footer p.copyright {
         width: 100%;
         justify-content: center;
         flex-wrap: wrap;
+        gap: 2px;
+    }
+
+    .nav-global li {
+        padding: 5px 10px;
+    }
+
+    #hero {
+        padding: 60px 5% 40px;
+        border-radius: 0 0 20px 20px;
     }
 
     #hero h2 {
-        font-size: 2.2rem;
+        font-size: 2rem;
+    }
+
+    .criterios-grid {
+        gap: 10px;
+    }
+
+    .criterio-chip {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+
+    .ranking-container {
+        padding: 20px;
+    }
+
+    .ranking-table thead {
+        display: none;
+    }
+
+    .ranking-table td {
+        display: block;
+        text-align: right;
+        padding: 10px 5px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .ranking-table td::before {
+        content: attr(data-label);
+        float: left;
+        font-weight: 700;
+        color: var(--text-muted);
+    }
+
+    .rank-city {
+        justify-content: flex-end;
+    }
+
+    .rank-score {
+        text-align: right;
+    }
+
+    .filtros {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+    }
+
+    input[type="range"] {
+        width: 100%;
+    }
+
+    .seccion-destino {
+        flex-direction: column !important;
+        gap: 30px;
+    }
+
+    .seccion-img {
+        height: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    #hero h2 {
+        font-size: 1.6rem;
+    }
+
+    .nav-global .logo h1 {
+        font-size: 1.5rem;
+    }
+
+    .btn-login {
+        padding: 8px 16px;
+        font-size: 0.9rem;
     }
 }
 

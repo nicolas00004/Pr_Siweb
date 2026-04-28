@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destinos - INFUNI</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="nav-global">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: inherit;">
+                    <h1>INF<span>UNI</span></h1>
+                </a>
+            </div>
+            <ul>
+                <li><a href="index.html">Inicio (Dashboard)</a></li>
+                <li><a href="destinos.html" class="active">Explorar Destinos</a></li>
+                <li><a href="herramientas.html">Herramientas</a></li>
+                <li><a href="comunidad.html">Comunidad</a></li>
+                <li><a href="login.html" class="btn-login" id="btnSesion">Inicia Sesión 👤</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="comparador">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <div>
+                    <h2 style="margin: 0;">🌍 Explorar Todos los Destinos</h2>
+                    <p style="color: var(--text-muted);">Encuentra información detallada sobre cada ciudad universitaria.</p>
+                </div>
+                <div class="filtros" style="margin: 0;">
+                    <label>Filtrar por Ambiente:
+                        <select id="selectAmbiente" style="padding: 8px; border-radius: 10px; border: 1.5px solid #cbd5e1;">
+                            <option value="todos">Todos</option>
+                            <option value="tranquilo">Tranquilo</option>
+                            <option value="fiesta">Fiesta</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+            <div class="grid-ciudades" id="contenedorCiudades">
+                <!-- Se cargará mediante JS -->
+                <p style="text-align: center; padding: 50px;">Cargando destinos...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 INFUNI S.L. - Jóvenes por el mundo</p>
+    </footer>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+        let ciudades = [];
+
+        async function cargarCiudades() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ciudades`);
+                ciudades = await res.json();
+                renderizarCiudades(ciudades);
+            } catch (err) {
+                console.error("Error:", err);
+            }
+        }
+
+        function renderizarCiudades(lista) {
+            const container = document.getElementById('contenedorCiudades');
+            container.innerHTML = lista.map(c => `
+                <div class="card" onclick="window.location.href='detalle.html?id=${c._id}'">
+                    <div class="card-img" style="background-image: url('${c.imagen || `https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=800&q=80`}')"></div>
+                    <div class="card-body">
+                        <h3>${c.nombre}</h3>
+                        <p>${c.historia.substring(0, 80)}...</p>
+                        <div class="card-footer">
+                            <span class="precio">${c.presupuesto || 700}€/mes</span>
+                            <button class="btn-ver">Ver Detalles</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('selectAmbiente').addEventListener('change', (e) => {
+            const val = e.target.value;
+            const filtradas = val === 'todos' ? ciudades : ciudades.filter(c => c.tipoAmbiente === val);
+            renderizarCiudades(filtradas);
+        });
+
+        cargarCiudades();
+    </script>
+    <script src="../js/auth.js"></script>
+</body>
+</html>
