@@ -33,11 +33,13 @@ body {
 /* Layout Dashboard para evitar scroll */
 .dashboard-layout {
     display: grid;
-    grid-template-columns: 350px 1fr;
-    gap: 20px;
-    padding: 20px;
-    height: calc(100vh - 80px);
+    grid-template-columns: 320px 1fr;
+    gap: 25px;
+    padding: 0 20px 20px 20px;
+    height: calc(100vh - 220px);
+    min-height: 500px;
     overflow: hidden;
+    max-width: 100% !important;
 }
 
 @media (max-width: 1100px) {
@@ -49,16 +51,18 @@ body {
 }
 
 .scroll-panel {
+    height: 100%;
     overflow-y: auto;
-    padding-right: 10px;
+    padding-right: 5px;
 }
 
 /* Sub-grid para resultados en paralelo */
 .results-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1.2fr;
     gap: 20px;
     height: 100%;
+    align-items: start;
 }
 
 @media (max-width: 1300px) {
@@ -67,10 +71,18 @@ body {
     }
 }
 
+#mapa-destinos {
+    height: 100% !important;
+    min-height: 450px;
+    width: 100%;
+    border-radius: 20px;
+    z-index: 1;
+}
+
 #hero.compact-hero {
     padding: 20px 5% !important;
     border-radius: 0 0 20px 20px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 #hero.compact-hero h2 {
@@ -81,6 +93,12 @@ body {
 #hero.compact-hero p {
     font-size: 0.9rem !important;
     margin-bottom: 10px;
+}
+
+main.home-main {
+    padding: 0 !important;
+    max-width: 100% !important;
+    margin: 0;
 }
 
 main {
@@ -1255,6 +1273,118 @@ footer p.copyright {
 
 /* MEJORAS DE ESTILO BUSCADOR Y TABS PREMIUM */
 
+.matrix-cell-medium {
+    background: rgba(59, 130, 246, 0.05) !important;
+}
+
+/* --- MODAL COMPARADOR --- */
+.modal-comparador {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content-comp {
+    background: white;
+    width: 95%;
+    max-width: 1000px;
+    max-height: 90vh;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    animation: slideUp 0.3s ease-out;
+}
+
+.modal-header-comp {
+    padding: 20px 30px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header-comp h3 {
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.comparador-grid {
+    padding: 30px;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.comp-card {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.comp-city-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.comp-city-header img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 10px;
+}
+
+.comp-metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.comp-metric-bar {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    width: 60%;
+    overflow: hidden;
+}
+
+.comp-metric-fill {
+    height: 100%;
+    background: var(--accent-color);
+}
+
+.close-btn {
+    background: #f1f5f9;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.close-btn:hover {
+    background: #e2e8f0;
+    color: #ef4444;
+}
+
 .header-search {
     background: rgba(241, 245, 249, 0.7) !important;
     backdrop-filter: blur(8px);
@@ -1583,4 +1713,97 @@ footer p.copyright {
 
 .leaflet-container a.leaflet-popup-close-button {
     padding: 8px 8px 0 0 !important;
+}
+/* --- RESPONSIVIDAD ADICIONAL --- */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    z-index: 1100;
+}
+
+@media (max-width: 992px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-global ul#navMenu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: var(--white);
+        flex-direction: column;
+        padding: 80px 20px 40px;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1050;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .nav-global ul#navMenu.active {
+        right: 0;
+    }
+
+    .nav-global ul#navMenu li {
+        padding: 0;
+    }
+
+    .nav-global ul#navMenu a {
+        display: block;
+        padding: 12px 15px;
+        border-radius: 10px;
+        font-size: 1.1rem;
+    }
+
+    .nav-global ul#navMenu .btn-login {
+        margin-top: 20px;
+        text-align: center;
+        border-radius: 12px;
+    }
+
+    /* Dropdowns en móvil */
+    .nav-global ul#navMenu ul {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        padding-left: 20px;
+        background: #f8fafc;
+        margin-top: 5px;
+        display: none; /* Se podría implementar toggle para estos también */
+    }
+    
+    /* Mostrar submenús en móvil de forma sencilla */
+    .nav-global ul#navMenu li:hover > ul {
+        display: block;
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-layout {
+        padding: 0 10px 10px 10px;
+    }
+
+    #hero.compact-hero {
+        border-radius: 0;
+        margin-bottom: 10px;
+    }
+
+    .ranking-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .ranking-table td {
+        font-size: 0.9rem;
+    }
 }

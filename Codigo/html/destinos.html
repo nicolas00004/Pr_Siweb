@@ -14,7 +14,8 @@
                     <h1>INF<span>UNI</span></h1>
                 </a>
             </div>
-            <ul>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <ul id="navMenu">
                 <li><a href="index.html">Inicio (Dashboard)</a></li>
                 <li><a href="destinos.html" class="active">Explorar Destinos</a></li>
                 <li><a href="herramientas.html">Herramientas</a></li>
@@ -69,19 +70,23 @@
 
         function renderizarCiudades(lista) {
             const container = document.getElementById('contenedorCiudades');
-            container.innerHTML = lista.map(c => `
+            container.innerHTML = lista.map(c => {
+                const imgUrl = (c.imagenes && c.imagenes.length > 0) ? c.imagenes[0] : (c.imagen || `https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=800&q=80`);
+                const historiaTexto = c.historia ? c.historia.substring(0, 80) + '...' : 'Sin descripción disponible...';
+                return `
                 <div class="card" onclick="window.location.href='detalle.html?id=${c._id}'">
-                    <div class="card-img" style="background-image: url('${c.imagen || `https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=800&q=80`}')"></div>
+                    <div class="card-img" style="background-image: url('${imgUrl}')"></div>
                     <div class="card-body">
                         <h3>${c.nombre}</h3>
-                        <p>${c.historia.substring(0, 80)}...</p>
+                        <p>${historiaTexto}</p>
                         <div class="card-footer">
                             <span class="precio">${c.presupuesto || 700}€/mes</span>
                             <button class="btn-ver">Ver Detalles</button>
                         </div>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         document.getElementById('selectAmbiente').addEventListener('change', (e) => {
@@ -93,5 +98,6 @@
         cargarCiudades();
     </script>
     <script src="../js/auth.js"></script>
+    <script src="../js/responsive.js"></script>
 </body>
 </html>

@@ -23,7 +23,8 @@
                     <h1>INF<span>UNI</span></h1>
                 </a>
             </div>
-            <ul>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <ul id="navMenu">
                 <li><a href="index.html" class="active">Inicio</a></li>
                 <li><a href="destinos.html">Destinos</a></li>
                 <li>
@@ -59,25 +60,6 @@
             <aside class="scroll-panel">
                 <div id="ahpControls" style="display: block; width: 100%; margin: 0; padding: 20px; background: var(--glass-bg); border-radius: 20px; border: 1px solid var(--glass-border);">
                     
-                    <h3 style="margin: 0 0 15px 0; color: var(--primary-color); font-size: 1.1rem;">🎯 Criterios Activos</h3>
-                    <div class="criterios-sidebar" id="criteriosContainer" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 25px;">
-                        <label class="criterio-chip active" style="margin:0; width:100%; justify-content: flex-start; font-size: 0.85rem; padding: 6px 12px;">
-                            <input type="checkbox" checked value="seguridad"> 🛡️ Seguridad
-                        </label>
-                        <label class="criterio-chip active" style="margin:0; width:100%; justify-content: flex-start; font-size: 0.85rem; padding: 6px 12px;">
-                            <input type="checkbox" checked value="ocio"> 🎭 Ocio
-                        </label>
-                        <label class="criterio-chip active" style="margin:0; width:100%; justify-content: flex-start; font-size: 0.85rem; padding: 6px 12px;">
-                            <input type="checkbox" checked value="transporte"> 🚲 Transporte
-                        </label>
-                        <label class="criterio-chip active" style="margin:0; width:100%; justify-content: flex-start; font-size: 0.85rem; padding: 6px 12px;">
-                            <input type="checkbox" checked value="ocioNocturno"> 🌙 Ocio Nocturno
-                        </label>
-                        <label class="criterio-chip active" style="margin:0; width:100%; justify-content: flex-start; font-size: 0.85rem; padding: 6px 12px;">
-                            <input type="checkbox" checked value="calidadAcademica"> 🎓 Calidad Académica
-                        </label>
-                    </div>
-
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h3 style="margin: 0; color: var(--primary-color); font-size: 1.1rem;">⚙️ Pesos (AHP)</h3>
                         <div id="savedSearchesContainer" style="display: none; align-items: center; gap: 5px;">
@@ -115,13 +97,19 @@
             <section class="scroll-panel">
                 <div class="results-grid">
                     <div class="ranking-container" style="background: white; border-radius: 20px; box-shadow: var(--shadow-sm); padding: 15px; height: fit-content;">
-                        <div class="ranking-header" style="margin-bottom: 10px;">
-                            <h2 style="font-size: 1.1rem; margin: 0;">🏆 Ranking Sugerido</h2>
-                            <p style="font-size: 0.75rem; color: var(--text-muted);">AHP-Sort II</p>
+                        <div class="ranking-header" style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <h2 style="font-size: 1.1rem; margin: 0;">🏆 Ranking Sugerido</h2>
+                                <p style="font-size: 0.75rem; color: var(--text-muted);">AHP-Sort II</p>
+                            </div>
+                            <button id="btnComparar" class="btn-ver" style="display:none; margin:0; padding: 5px 12px; font-size: 0.8rem; background: var(--accent-color); color:white; border:none;">
+                                ⚖️ Comparar (<span id="compareCount">0</span>)
+                            </button>
                         </div>
                         <table class="ranking-table">
                             <thead>
                                 <tr>
+                                    <th style="width: 30px;"></th>
                                     <th>Pos</th>
                                     <th>Ciudad</th>
                                     <th>Clasificación</th>
@@ -238,8 +226,22 @@
         <p>&copy; 2026 INFUNI S.L. - Jóvenes por el mundo</p>
     </footer>
 
+    <!-- MODAL DE COMPARACIÓN -->
+    <div id="modalComparador" class="modal-comparador" style="display: none;">
+        <div class="modal-content-comp">
+            <div class="modal-header-comp">
+                <h3>⚖️ Comparativa de Destinos</h3>
+                <button onclick="cerrarComparador()" class="close-btn">&times;</button>
+            </div>
+            <div id="comparadorBody" class="comparador-grid">
+                <!-- Contenido generado por JS -->
+            </div>
+        </div>
+    </div>
+
     <script src="../js/script.js"></script>
     <script src="../js/auth.js"></script>
+    <script src="../js/responsive.js"></script>
 </body>
 
 </html>

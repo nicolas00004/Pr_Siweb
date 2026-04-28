@@ -53,9 +53,10 @@
                     <h1>INF<span>UNI</span></h1>
                 </a>
             </div>
-            <ul>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <ul id="navMenu">
                 <li><a href="index.html">Inicio</a></li>
-                <li><a href="index.html#comparador">Destinos</a></li>
+                <li><a href="destinos.html">Destinos</a></li>
                 <li>
                     <a href="herramientas.html">Herramientas ▾</a>
                     <ul>
@@ -64,7 +65,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="comunidad.html">Comunidad ▾</a>
+                    <a href="comunidad.html" class="active">Comunidad ▾</a>
                     <ul>
                         <li><a href="#foro">Foro de preguntas rápidas</a></li>
                         <li><a href="index.html#comunidad">Añadir nueva ciudad</a></li>
@@ -274,5 +275,6 @@
         cargarOpiniones();
     </script>
 <script src="../js/auth.js"></script>
+<script src="../js/responsive.js"></script>
 </body>
 </html>
