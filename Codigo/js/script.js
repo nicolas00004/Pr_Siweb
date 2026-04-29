@@ -29,7 +29,11 @@ let currentWeights = {
 let seleccionParaComparar = [];
 let rankingDataGlobal = [];
 
-const ORIGIN = [40.4168, -3.7038]; // Madrid
+let ORIGIN = [40.4168, -3.7038]; // Madrid por defecto
+const sliderDistancia = document.getElementById('rangoDistancia');
+const etiquetaDistancia = document.getElementById('valorDistancia');
+const btnGeo = document.getElementById('btnGeo');
+const originText = document.getElementById('originText');
 
 function calcularDistancia(lat1, lon1, lat2, lon2) {
     const R = 6371; // Radio de la Tierra en km
@@ -71,8 +75,8 @@ async function cargarDatos() {
             }
 
             // Mostrar bienvenida personalizada
-            const heroH2 = document.querySelector('#hero h2');
-            if (heroH2) heroH2.innerText = `👋 ¡Hola ${userFull.nombre}! Personaliza tu búsqueda`;
+            const welcomeUser = document.getElementById('welcomeUser');
+            if (welcomeUser) welcomeUser.innerText = `👋 ¡Hola ${userFull.nombre}! Personaliza tu búsqueda en tiempo real.`;
         }
 
         renderizarSliders();
@@ -181,12 +185,24 @@ async function toggleFavoritoRapido(ciudadId) {
 
 function aplicarFiltros() {
     const maxPresupuesto = slider ? parseInt(slider.value) : Infinity;
+    const maxDistancia = sliderDistancia ? parseInt(sliderDistancia.value) : Infinity;
     const ambienteFilter = selectorAmbiente ? selectorAmbiente.value : 'todos';
 
     const filtradas = ciudades.filter(c => {
         const entraPresupuesto = c.presupuesto <= maxPresupuesto;
         const entraAmbiente = ambienteFilter === 'todos' || c.tipoAmbiente === ambienteFilter;
-        return entraPresupuesto && entraAmbiente;
+        
+        let entraDistancia = true;
+        if (sliderDistancia && c.coordenadas && c.coordenadas.coordinates) {
+            const [lng, lat] = c.coordenadas.coordinates;
+            const dist = calcularDistancia(ORIGIN[0], ORIGIN[1], lat, lng);
+            // Si el slider está al máximo (2000), no filtramos por distancia
+            if (maxDistancia < 2000) {
+                entraDistancia = dist <= maxDistancia;
+            }
+        }
+
+        return entraPresupuesto && entraAmbiente && entraDistancia;
     });
 
     renderizarCiudades(filtradas);
@@ -713,6 +729,39 @@ if (selectorAmbiente) {
     selectorAmbiente.addEventListener('change', aplicarFiltros);
 }
 
+if (sliderDistancia) {
+    sliderDistancia.addEventListener('input', () => {
+        const val = parseInt(sliderDistancia.value);
+        if (etiquetaDistancia) {
+            etiquetaDistancia.textContent = val >= 2000 ? "Cualquiera" : `${val}km`;
+        }
+        aplicarFiltros();
+    });
+}
+
+if (btnGeo) {
+    btnGeo.onclick = () => {
+        if (!navigator.geolocation) {
+            showToast("❌ Tu navegador no soporta geolocalización", "error");
+            return;
+        }
+        btnGeo.innerText = "📍 Localizando...";
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                ORIGIN = [pos.coords.latitude, pos.coords.longitude];
+                if (originText) originText.innerText = "(ubicación actual)";
+                btnGeo.innerText = "✅ Ubicación fijada";
+                aplicarFiltros();
+            },
+            (err) => {
+                console.error(err);
+                showToast("❌ Error al obtener ubicación", "error");
+                btnGeo.innerText = "Usar mi ubicación";
+            }
+        );
+    };
+}
+
 // Inicialización
 cargarDatos().then(() => iniciarSSE());
 
@@ -761,16 +810,16 @@ if (formNuevaCiudad) {
             });
             
             if (respuesta.ok) {
+                const data = await respuesta.json();
                 if (formFeedback) {
-                    formFeedback.textContent = "¡Ciudad añadida con éxito! Gracias por tu aportación.";
+                    formFeedback.textContent = "📩 " + data.mensaje;
                     formFeedback.className = "feedback-msg feedback-success";
                 }
-                formNuevaCiudad.reset(); // Limpiar el formulario
+                formNuevaCiudad.reset(); 
                 
-                // Ocultar mensaje después de unos segundos
                 setTimeout(() => {
                     if (formFeedback) formFeedback.textContent = "";
-                }, 5000);
+                }, 8000);
             } else {
                 throw new Error("Error en la respuesta del servidor");
             }

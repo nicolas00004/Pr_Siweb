@@ -328,14 +328,27 @@ app.get('/api/usuarios/:id', async (req, res) => {
     }
 });
 
-// He añadido esta ruta POST para que puedas probar el tiempo real
+// Ruta para proponer una nueva ciudad (Verificación vía "email")
 app.post('/api/ciudades', async (req, res) => {
     try {
-        const nueva = new Ciudad(req.body);
-        await nueva.save();
-        res.status(201).json(nueva);
-        notificarCambiosGlobal(); // <--- Notificamos manualmente
-    } catch (err) { res.status(400).json(err); }
+        const ciudadPropuesta = req.body;
+        
+        // Simulación de envío de correo corporativo
+        console.log("--------------------------------------------------");
+        console.log("📧 NUEVA PROPUESTA DE CIUDAD RECIBIDA");
+        console.log("Destinatario: verificacion@infuni.com");
+        console.log("Asunto: Verificación de veracidad - " + ciudadPropuesta.nombre);
+        console.log("Cuerpo del mensaje:");
+        console.log(JSON.stringify(ciudadPropuesta, null, 2));
+        console.log("--------------------------------------------------");
+
+        res.status(202).json({ 
+            mensaje: "Propuesta enviada correctamente al equipo de verificación corporativa.",
+            estado: "Pendiente de revisión"
+        });
+    } catch (err) { 
+        res.status(400).json({ error: "Error al procesar la propuesta de ciudad." }); 
+    }
 });
 
 app.delete('/api/ciudades/:id', async (req, res) => {

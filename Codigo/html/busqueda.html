@@ -54,53 +54,97 @@
     </header>
 
     <main class="home-main">
-        <section id="hero" class="home-search compact-hero">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
+        <!-- NUEVA CABECERA DE CONTROLES (REEMPLAZA AL HERO Y AL SIDEBAR) -->
+        <section class="dashboard-header-controls">
+            <div class="controls-top-bar">
+                <div class="controls-title">
                     <h2>🥇 INFUNI Dashboard</h2>
-                    <p>Configura tus preferencias y encuentra tu destino ideal al instante.</p>
+                    <p id="welcomeUser">Configura tus preferencias y encuentra tu destino ideal al instante.</p>
                 </div>
-                <a href="ayuda-ahp.html" class="help-badge-link" title="Saber más sobre el cálculo AHP" style="text-decoration: none; background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; border: 1px solid rgba(255,255,255,0.3); transition: all 0.3s;">❓</a>
+                <div class="controls-actions">
+                    <div id="savedSearchesContainer" style="display: none; align-items: center; gap: 10px; background: #f1f5f9; padding: 5px 15px; border-radius: 50px;">
+                        <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">📁 MIS BÚSQUEDAS:</span>
+                        <select id="selectBusqueda" style="padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; border: none; background: transparent;"></select>
+                    </div>
+                    <a href="ayuda-ahp.html" class="help-badge-link" title="Saber más sobre el cálculo AHP" style="text-decoration: none; background: #eff6ff; color: var(--accent-color); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; border: 1px solid #dbeafe; transition: all 0.3s;">❓</a>
+                </div>
             </div>
-        </section>
 
-        <div class="dashboard-layout">
-            <!-- COLUMNA IZQUIERDA: CONTROLES -->
-            <aside class="scroll-panel">
-                <div id="ahpControls" style="display: block; width: 100%; margin: 0; padding: 20px; background: var(--glass-bg); border-radius: 20px; border: 1px solid var(--glass-border);">
-
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 style="margin: 0; color: var(--primary-color); font-size: 1.1rem;">⚙️ Pesos (AHP)</h3>
-                        <div id="savedSearchesContainer" style="display: none; align-items: center; gap: 5px;">
-                            <select id="selectBusqueda" style="padding: 3px 8px; border-radius: 8px; font-size: 0.8rem;"></select>
+            <div class="controls-grid-main">
+                <!-- COLUMNA 1: FILTROS BÁSICOS -->
+                <div class="control-group-box">
+                    <h4>🔍 Filtros Básicos</h4>
+                    <div class="control-item">
+                        <div class="control-label">
+                            <label>💶 Presupuesto Máx.</label>
+                            <span id="valorPresupuesto">1500€</span>
+                        </div>
+                        <input type="range" id="rangoPresupuesto" min="300" max="2500" step="50" value="1500">
+                    </div>
+                    <div class="control-item">
+                        <div class="control-label">
+                            <label>📍 Distancia Máx.</label>
+                            <span id="valorDistancia">Cualquiera</span>
+                        </div>
+                        <input type="range" id="rangoDistancia" min="50" max="2000" step="50" value="2000">
+                        <div class="geo-tools">
+                            <button id="btnGeo">📍 Usar mi ubicación</button>
+                            <span id="originText">(desde Madrid)</span>
                         </div>
                     </div>
+                    <div class="control-item">
+                        <label class="simple-label">🎭 Ambiente</label>
+                        <select id="selectAmbiente">
+                            <option value="todos">Todos los ambientes</option>
+                            <option value="fiesta">Vida Nocturna / Social</option>
+                            <option value="tranquilo">Tranquilo / Naturaleza</option>
+                        </select>
+                    </div>
+                </div>
 
-                    <div class="weights-grid" id="weightsGrid" style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px;">
+                <!-- COLUMNA 2: PESOS AHP -->
+                <div class="control-group-box ahp-weights-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4>⚙️ Pesos (AHP)</h4>
+                        <div style="display: flex; gap: 5px;">
+                            <button id="btnExpertAHP" class="btn-tiny">📊 Matriz</button>
+                            <button id="btnResetAHP" class="btn-tiny">🔄 Reset</button>
+                        </div>
+                    </div>
+                    <div class="weights-grid-horizontal" id="weightsGrid">
                         <!-- Sliders generados por JS -->
                     </div>
+                </div>
 
-                    <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-                        <select id="selectRol" style="padding: 8px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.85rem;">
-                            <option value="estudiante">🧑‍🎓 Soy Estudiante</option>
-                            <option value="trabajador">💼 Soy Trabajador</option>
+                <!-- COLUMNA 3: ROL Y GUARDAR -->
+                <div class="control-group-box role-save-section">
+                    <h4>👤 Perfil y Guardado</h4>
+                    <div class="control-item">
+                        <label class="simple-label">Soy...</label>
+                        <select id="selectRol">
+                            <option value="estudiante">🧑‍🎓 Estudiante</option>
+                            <option value="trabajador">💼 Trabajador / Pro</option>
                         </select>
-                        <div style="display: flex; gap: 8px;">
-                            <button id="btnExpertAHP" class="btn-ver" style="margin: 0; flex: 1; font-size: 0.8rem; padding: 8px;">📊 Matriz AHP</button>
-                            <button id="btnResetAHP" class="btn-ver" style="margin: 0; flex: 0.5; font-size: 0.8rem; padding: 8px;">🔄 Reset</button>
-                        </div>
-                        <button id="btnGuardarBusqueda" class="btn-submit" style="margin: 0; width: 100%; display: none; font-size: 0.85rem; padding: 10px;">💾 Guardar Búsqueda</button>
                     </div>
-
-                    <div id="ahpMatrixPanel" style="display: none; margin-top: 15px; padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
-                        <h4 style="margin-bottom: 10px; font-size: 0.9rem;">📐 Matriz AHP</h4>
+                    <button id="btnGuardarBusqueda" class="btn-submit" style="display: none; margin-top: 15px; font-size: 0.85rem; padding: 12px;">💾 Guardar Configuración</button>
+                    
+                    <!-- PANEL MATRIZ (MODAL O DESPLEGABLE) -->
+                    <div id="ahpMatrixPanel" class="floating-matrix-panel" style="display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h4 style="margin:0;">📐 Matriz AHP</h4>
+                            <button onclick="document.getElementById('ahpMatrixPanel').style.display='none'" style="border:none; background:none; cursor:pointer;">✖</button>
+                        </div>
                         <div style="overflow-x: auto;">
                             <table id="ahpMatrixTable" style="width: 100%; border-collapse: collapse; font-size: 0.75rem;"></table>
                         </div>
                         <div id="ahpConsistencyInfo" style="margin-top: 10px; font-size: 0.75rem;"></div>
                     </div>
                 </div>
-            </aside>
+            </div>
+        </section>
+
+        <div class="dashboard-layout full-width-layout">
+            <!-- YA NO HAY ASIDE, LOS CONTROLES ESTÁN ARRIBA -->
 
             <!-- COLUMNA DERECHA: RESULTADOS -->
             <section class="scroll-panel">
