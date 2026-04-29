@@ -37,13 +37,30 @@
                     <h1>INF<span>UNI</span></h1>
                 </a>
             </div>
-            <ul>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <ul id="navMenu">
                 <li><a href="index.html">Inicio</a></li>
-                <li><a href="index.html#comparador">Destinos</a></li>
-                <li><a href="herramientas.html">Herramientas ▾</a></li>
-                <li><a href="comunidad.html">Comunidad ▾</a></li>
+                <li><a href="busqueda.html">Buscar</a></li>
+                <li><a href="destinos.html">Destinos</a></li>
                 <li>
-                    <!-- Este botón cambiará porque estamos en sesión -->
+                    <a href="herramientas.html">Herramientas ▾</a>
+                    <ul>
+                        <li><a href="herramientas.html#comparador">Comparador Personalizado</a></li>
+                        <li><a href="herramientas.html#calculadora">Calculadora de Gastos</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="comunidad.html">Comunidad ▾</a>
+                    <ul>
+                        <li><a href="comunidad.html#foro">Foro de preguntas rápidas</a></li>
+                        <li><a href="busqueda.html#comunidad">Añadir nueva ciudad</a></li>
+                        <li><a href="comunidad.html#escribir">Escribir una reseña</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="ayuda-ahp.html" title="Ayuda sobre el método AHP">Ayuda ❓</a>
+                </li>
+                <li>
                     <a href="perfil.html" class="btn-login" style="background: var(--primary-color);">Mi Panel 👤</a>
                 </li>
             </ul>
@@ -107,7 +124,7 @@
                     } else {
                         favContainer.innerHTML = arrayFavoritas.map(c => `
                             <div class="fav-card">
-                                <div class="fav-img" style="background-image: url('${c.imagen || `https://source.unsplash.com/400x300/?${encodeURIComponent(c.nombre)},city`}')" onclick="window.location.href='detalle.html?id=${c._id}'"></div>
+                                <div class="fav-img" style="background-image: url('${c.imagen || `https://picsum.photos/seed/${encodeURIComponent(c.nombre)}/400/300`}')" onclick="window.location.href='detalle.html?id=${c._id}'"></div>
                                 <div class="fav-body">
                                     <div style="display: flex; justify-content: space-between; align-items: center;">
                                         <h4 class="fav-title" style="cursor:pointer;" onclick="window.location.href='detalle.html?id=${c._id}'">${c.nombre}</h4>

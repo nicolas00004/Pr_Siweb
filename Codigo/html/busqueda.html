@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Destinos | INFUNI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Leaflet para el Mapa -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="../js/ahp-engine.js"></script>
+</head>
+
+<body>
+
+    <header>
+        <nav class="nav-global">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: inherit;">
+                    <h1>INF<span>UNI</span></h1>
+                </a>
+            </div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <ul id="navMenu">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="busqueda.html" class="active">Buscar</a></li>
+                <li><a href="destinos.html">Destinos</a></li>
+                <li>
+                    <a href="herramientas.html">Herramientas ▾</a>
+                    <ul>
+                        <li><a href="herramientas.html#comparador">Comparador Personalizado</a></li>
+                        <li><a href="herramientas.html#calculadora">Calculadora de Gastos</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="comunidad.html">Comunidad ▾</a>
+                    <ul>
+                        <li><a href="comunidad.html#foro">Foro de preguntas rápidas</a></li>
+                        <li><a href="#comunidad">Añadir nueva ciudad</a></li>
+                        <li><a href="comunidad.html#escribir">Escribir una reseña</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="ayuda-ahp.html" title="Ayuda sobre el método AHP">Ayuda ❓</a>
+                </li>
+                <li>
+                    <a href="login.html" class="btn-login" id="btnSesion">Inicia Sesión 👤</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="home-main">
+        <section id="hero" class="home-search compact-hero">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2>🥇 INFUNI Dashboard</h2>
+                    <p>Configura tus preferencias y encuentra tu destino ideal al instante.</p>
+                </div>
+                <a href="ayuda-ahp.html" class="help-badge-link" title="Saber más sobre el cálculo AHP" style="text-decoration: none; background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; border: 1px solid rgba(255,255,255,0.3); transition: all 0.3s;">❓</a>
+            </div>
+        </section>
+
+        <div class="dashboard-layout">
+            <!-- COLUMNA IZQUIERDA: CONTROLES -->
+            <aside class="scroll-panel">
+                <div id="ahpControls" style="display: block; width: 100%; margin: 0; padding: 20px; background: var(--glass-bg); border-radius: 20px; border: 1px solid var(--glass-border);">
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="margin: 0; color: var(--primary-color); font-size: 1.1rem;">⚙️ Pesos (AHP)</h3>
+                        <div id="savedSearchesContainer" style="display: none; align-items: center; gap: 5px;">
+                            <select id="selectBusqueda" style="padding: 3px 8px; border-radius: 8px; font-size: 0.8rem;"></select>
+                        </div>
+                    </div>
+
+                    <div class="weights-grid" id="weightsGrid" style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px;">
+                        <!-- Sliders generados por JS -->
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                        <select id="selectRol" style="padding: 8px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-size: 0.85rem;">
+                            <option value="estudiante">🧑‍🎓 Soy Estudiante</option>
+                            <option value="trabajador">💼 Soy Trabajador</option>
+                        </select>
+                        <div style="display: flex; gap: 8px;">
+                            <button id="btnExpertAHP" class="btn-ver" style="margin: 0; flex: 1; font-size: 0.8rem; padding: 8px;">📊 Matriz AHP</button>
+                            <button id="btnResetAHP" class="btn-ver" style="margin: 0; flex: 0.5; font-size: 0.8rem; padding: 8px;">🔄 Reset</button>
+                        </div>
+                        <button id="btnGuardarBusqueda" class="btn-submit" style="margin: 0; width: 100%; display: none; font-size: 0.85rem; padding: 10px;">💾 Guardar Búsqueda</button>
+                    </div>
+
+                    <div id="ahpMatrixPanel" style="display: none; margin-top: 15px; padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <h4 style="margin-bottom: 10px; font-size: 0.9rem;">📐 Matriz AHP</h4>
+                        <div style="overflow-x: auto;">
+                            <table id="ahpMatrixTable" style="width: 100%; border-collapse: collapse; font-size: 0.75rem;"></table>
+                        </div>
+                        <div id="ahpConsistencyInfo" style="margin-top: 10px; font-size: 0.75rem;"></div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- COLUMNA DERECHA: RESULTADOS -->
+            <section class="scroll-panel">
+                <div class="results-grid">
+                    <div class="ranking-container" style="background: white; border-radius: 20px; box-shadow: var(--shadow-sm); padding: 15px; height: fit-content;">
+                        <div class="ranking-header" style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <h2 style="font-size: 1.1rem; margin: 0;">🏆 Ranking Sugerido</h2>
+                                <p style="font-size: 0.75rem; color: var(--text-muted);">AHP-Sort II</p>
+                            </div>
+                            <button id="btnComparar" class="btn-ver" style="display:none; margin:0; padding: 5px 12px; font-size: 0.8rem; background: var(--accent-color); color:white; border:none;">
+                                ⚖️ Comparar (<span id="compareCount">0</span>)
+                            </button>
+                        </div>
+                        <table class="ranking-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 30px;"></th>
+                                    <th>Pos</th>
+                                    <th>Ciudad</th>
+                                    <th>Clasificación</th>
+                                    <th style="text-align: right;">Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rankingBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div style="background: white; border-radius: 20px; box-shadow: var(--shadow-sm); padding: 15px;">
+                        <h3 style="font-size: 1.1rem; margin: 0 0 10px 0;">🗺️ Mapa de Resultados</h3>
+                        <div id="mapa-destinos" style="width: 100%; height: calc(100% - 40px); min-height: 400px; border-radius: 15px; border: 1px solid #e2e8f0;"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section id="comunidad" class="seccion-comunidad">
+            <div class="comunidad-container">
+                <div class="comunidad-header">
+                    <h2>¿Falta tu ciudad?</h2>
+                    <p>Ayuda a otros estudiantes a descubrir su próximo destino añadiendo nueva información a nuestra
+                        comunidad.</p>
+                </div>
+
+                <form id="formNuevaCiudad" class="form-moderno">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="f_nombre">Nombre del Destino</label>
+                            <input type="text" id="f_nombre" name="nombre" placeholder="Ej: Ámsterdam" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="f_presupuesto">Presupuesto / mes (€)</label>
+                            <input type="number" id="f_presupuesto" name="presupuesto" placeholder="Ej: 800" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="f_ambiente">Estilo de Vida Predominante</label>
+                            <select id="f_ambiente" name="ambiente" required>
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                <option value="fiesta">Vida Nocturna y Social</option>
+                                <option value="tranquilo">Paz, Naturaleza e Inmersión</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="f_seguridad">Nivel de Seguridad (1-5)</label>
+                            <input type="number" id="f_seguridad" name="seguridad" min="1" max="5" value="5" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="f_ocio">Nivel de Ocio/Opciones (1-5)</label>
+                            <input type="number" id="f_ocio" name="ocio" min="1" max="5" value="5" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="f_descripcion">Resumen / Descripción corta</label>
+                        <textarea id="f_descripcion" name="descripcion" rows="2"
+                            placeholder="Una frase que defina la ciudad..." required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="f_historia">Historia y Cultura (Extendido)</label>
+                            <textarea id="f_historia" name="historia" rows="4"
+                                placeholder="Cuéntanos sobre el pasado y la esencia de la ciudad..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="f_alojamiento">Vivienda y Consejos de Alojamiento</label>
+                            <textarea id="f_alojamiento" name="alojamiento" rows="4"
+                                placeholder="¿Cómo es el mercado de alquiler? ¿Barrios recomendados?"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="f_lat">Latitud (Mapa)</label>
+                            <input type="number" id="f_lat" name="lat" step="any" placeholder="Ej: 40.4168">
+                        </div>
+                        <div class="form-group">
+                            <label for="f_lng">Longitud (Mapa)</label>
+                            <input type="number" id="f_lng" name="lng" step="any" placeholder="Ej: -3.7038">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">🌟 Añadir a la Red</button>
+                    <div id="form-feedback" class="feedback-msg"></div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Guías de Destino</h4>
+                <ul>
+                    <li><a href="ayuda-ahp.html">Primeros pasos</a></li>
+                    <li><a href="destinos.html">Explorar destinos</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Comunidad</h4>
+                <ul>
+                    <li><a href="comunidad.html#foro">Foro</a></li>
+                    <li><a href="comunidad.html#escribir">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacidad.html">Política de Privacidad</a></li>
+                    <li><a href="terminos.html">Términos y Condiciones</a></li>
+                    <li><a href="cookies.html">Política de Cookies</a></li>
+                </ul>
+            </div>
+        </div>
+        <p>&copy; 2026 INFUNI S.L. - Jóvenes por el mundo</p>
+    </footer>
+
+    <!-- MODAL DE COMPARACIÓN -->
+    <div id="modalComparador" class="modal-comparador" style="display: none;">
+        <div class="modal-content-comp">
+            <div class="modal-header-comp">
+                <h3>⚖️ Comparativa de Destinos</h3>
+                <button onclick="cerrarComparador()" class="close-btn">&times;</button>
+            </div>
+            <div id="comparadorBody" class="comparador-grid">
+                <!-- Contenido generado por JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/script.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/responsive.js"></script>
+</body>
+
+</html>

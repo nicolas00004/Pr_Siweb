@@ -101,7 +101,7 @@ function obtenerImagenCiudad(ciudad) {
     if (ciudad.imagenes && ciudad.imagenes.length > 0) {
         return ciudad.imagenes[0];
     }
-    return ciudad.imagen || `https://source.unsplash.com/400x300/?${encodeURIComponent(ciudad.nombre)},city`;
+    return ciudad.imagen || `https://picsum.photos/seed/${encodeURIComponent(ciudad.nombre)}/400/300`;
 }
 
 function renderizarCiudades(datos) {
@@ -694,7 +694,7 @@ _animStyle.innerHTML = `
 document.head.appendChild(_animStyle);
 
 function iniciarSSE() {
-    const ev = new EventSource('http://localhost:3000/api/ciudades/stream');
+    const ev = new EventSource(`${API_BASE}/api/ciudades/stream`);
     ev.onmessage = (e) => {
         ciudades = JSON.parse(e.data);
         aplicarFiltros(); 
@@ -752,7 +752,7 @@ if (formNuevaCiudad) {
         };
         
         try {
-            const respuesta = await fetch('http://localhost:3000/api/ciudades', {
+            const respuesta = await fetch(`${API_BASE}/api/ciudades`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

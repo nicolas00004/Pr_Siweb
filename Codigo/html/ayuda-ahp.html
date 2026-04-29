@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayuda AHP-Sort II | INFUNI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .help-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: var(--shadow-lg);
+        }
+        .help-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .help-section {
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .help-section h2 {
+            color: var(--primary-color);
+            border-left: 4px solid var(--accent-color);
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+        .math-box {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            border: 1px solid #e2e8f0;
+            overflow-x: auto;
+        }
+        .badge-ahp {
+            background: var(--accent-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="nav-global">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: inherit;">
+                    <h1>INF<span>UNI</span></h1>
+                </a>
+            </div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <ul id="navMenu">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="busqueda.html">Buscar</a></li>
+                <li><a href="destinos.html">Destinos</a></li>
+                <li>
+                    <a href="herramientas.html">Herramientas ▾</a>
+                    <ul>
+                        <li><a href="herramientas.html#comparador">Comparador Personalizado</a></li>
+                        <li><a href="herramientas.html#calculadora">Calculadora de Gastos</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="comunidad.html">Comunidad ▾</a>
+                    <ul>
+                        <li><a href="comunidad.html#foro">Foro de preguntas rápidas</a></li>
+                        <li><a href="busqueda.html#comunidad">Añadir nueva ciudad</a></li>
+                        <li><a href="comunidad.html#escribir">Escribir una reseña</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="ayuda-ahp.html" class="active" title="Ayuda sobre el método AHP">Ayuda ❓</a>
+                </li>
+                <li>
+                    <a href="login.html" class="btn-login" id="btnSesion">Inicia Sesión 👤</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="help-main">
+        <div class="help-container">
+            <div class="help-header">
+                <span class="badge-ahp">METODOLOGÍA CIENTÍFICA</span>
+                <h1>Entendiendo el método AHP-Sort II</h1>
+                <p>Cómo INFUNI calcula tu destino ideal con rigor matemático.</p>
+            </div>
+
+            <div class="help-section">
+                <h2>1. ¿Qué es AHP?</h2>
+                <p>El Proceso Analítico Jerárquico (AHP) es una técnica estructurada para ayudar a tomar decisiones complejas. En lugar de elegir "al azar", AHP permite comparar criterios (como Seguridad vs Ocio) de forma relativa para entender qué es lo que realmente te importa.</p>
+            </div>
+
+            <div class="help-section">
+                <h2>2. La Matriz de Saaty</h2>
+                <p>En el panel de experto, verás una matriz donde comparas criterios. Si dices que la Seguridad es "Mucho más importante" que el Ocio, el sistema asigna un valor (ej: 7). La escala utilizada es la siguiente:</p>
+                <table style="width:100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85rem; background: #f8fafc; border-radius: 10px; overflow: hidden;">
+                    <thead style="background: var(--primary-color); color: white;">
+                        <tr>
+                            <th style="padding: 10px;">Valor</th>
+                            <th style="padding: 10px;">Definición</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: center;">1</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">Igual importancia</td></tr>
+                        <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: center;">3</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">Importancia moderada de uno sobre otro</td></tr>
+                        <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: center;">5</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">Importancia fuerte</td></tr>
+                        <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: center;">7</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">Importancia muy fuerte o demostrada</td></tr>
+                        <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: center;">9</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">Importancia extrema</td></tr>
+                    </tbody>
+                </table>
+                <p>El motor calcula el <strong>Vector de Prioridades</strong> mediante la Media Geométrica Normalizada:</p>
+                <div class="math-box">
+                    Peso_i = GM_i / Σ(GM) <br>
+                    Donde GM es la raíz n-ésima del producto de la fila.
+                </div>
+            </div>
+
+            <div class="help-section">
+                <h2>3. Ejemplo Visual de Decisión</h2>
+                <div style="display: flex; gap: 20px; align-items: center; background: #eff6ff; padding: 20px; border-radius: 20px; border: 1px solid #bfdbfe;">
+                    <div style="flex: 1; text-align: center;">
+                        <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 10px;">🛡️ Seguridad</div>
+                        <div style="font-size: 1.5rem;">← 7 →</div>
+                        <p style="font-size: 0.7rem; color: var(--text-muted);">Seguridad es mucho más importante</p>
+                    </div>
+                    <div style="flex: 1; text-align: center;">
+                        <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 10px;">🎉 Ocio</div>
+                        <div style="color: var(--accent-color); font-weight: bold;">Peso Resultante:</div>
+                        <p>Seguridad: 87% | Ocio: 13%</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <h2>3. ¿Qué es el Ratio de Consistencia (CR)?</h2>
+                <p>AHP verifica que no te contradigas. Si A > B y B > C, entonces A debe ser > C. Si el CR es mayor a 0.1, el sistema te avisará que tus preferencias son inconsistentes y resaltará la celda en rojo para que la revises.</p>
+            </div>
+
+            <div class="help-section">
+                <h2>4. Fase Sort II (Clasificación)</h2>
+                <p>A diferencia del AHP tradicional que solo ordena, AHP-Sort II clasifica las ciudades en categorías (Élite, Recomendado, etc.) comparando su puntuación final contra <strong>Perfiles Límite</strong>. Así, no solo sabes qué ciudad es la primera, sino si realmente es una opción excelente para ti.</p>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="index.html" class="btn-ver" style="display: inline-block; padding: 12px 30px; background: var(--primary-color); color: white; text-decoration: none; border-radius: 15px;">¡Entendido, volver a buscar!</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Plataforma</h4>
+                <ul>
+                    <li><a href="busqueda.html">Buscar destino</a></li>
+                    <li><a href="destinos.html">Explorar ciudades</a></li>
+                    <li><a href="herramientas.html">Herramientas</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Comunidad</h4>
+                <ul>
+                    <li><a href="comunidad.html#foro">Foro</a></li>
+                    <li><a href="comunidad.html#escribir">Escribir una reseña</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacidad.html">Política de Privacidad</a></li>
+                    <li><a href="terminos.html">Términos y Condiciones</a></li>
+                    <li><a href="cookies.html">Política de Cookies</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+        <p>&copy; 2026 INFUNI S.L. - Jóvenes por el mundo</p>
+    </footer>
+</body>
+</html>

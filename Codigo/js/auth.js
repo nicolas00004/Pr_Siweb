@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Redirección si ya está logueado e intenta entrar a login/registro
     if ((path.includes('login.html') || path.includes('registro.html')) && userInfo) {
-        window.location.href = '/html/index.html';
+        window.location.href = '/html/busqueda.html';
     }
 
     // 4. Crear contenedor de notificaciones si no existe

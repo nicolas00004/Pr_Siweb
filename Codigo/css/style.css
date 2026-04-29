@@ -1538,6 +1538,14 @@ footer p.copyright {
     margin-top: 20px;
 }
 
+.near-threshold {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
 .ranking-table th {
     text-align: left;
     padding: 15px;
@@ -1628,45 +1636,6 @@ footer p.copyright {
 }
 
 /* --- MEJORAS DE CRITERIOS Y RANKING --- */
-.criterios-grid {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-}
-
-.criterio-chip {
-    padding: 12px 24px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1.5px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50px;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    user-select: none;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.criterio-chip:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-    border-color: var(--accent-color);
-}
-
-.criterio-chip.active {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    color: white;
-}
-
-.criterio-chip input {
-    display: none;
-}
 
 /* Glassmorphism para Controles AHP */
 #ahpControls {

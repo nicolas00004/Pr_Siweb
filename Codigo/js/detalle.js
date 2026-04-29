@@ -15,7 +15,7 @@ function obtenerImagenCiudad(ciudad, index = 0) {
     // Fallback a imagen de la DB o Unsplash
     const keywords = ['cityscape', 'university', 'streets', 'architecture', 'culture'];
     const kw = keywords[index % keywords.length];
-    return ciudad.imagen ? ciudad.imagen : `https://source.unsplash.com/800x600/?${encodeURIComponent(ciudad.nombre || 'city')},${kw}`;
+    return ciudad.imagen ? ciudad.imagen : `https://picsum.photos/seed/${encodeURIComponent(ciudad.nombre || 'city')}/800/600`;
 }
 
 async function cargarDetalle() {
