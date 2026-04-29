@@ -59,6 +59,70 @@
             color: var(--primary-color);
             box-shadow: var(--shadow-sm);
         }
+
+        /* Custom Sliders */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            margin-top: -7px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 3px;
+        }
+
+        /* Ranking Cards */
+        .rank-card {
+            display: flex;
+            align-items: center;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease-out;
+        }
+        .rank-card:hover {
+            transform: translateX(5px);
+            border-color: #cbd5e1;
+            box-shadow: var(--shadow-sm);
+        }
+        .rank-pos {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            width: 35px;
+        }
+        .rank-pos.top-1 { color: #fbbf24; }
+        .rank-pos.top-2 { color: #94a3b8; }
+        .rank-pos.top-3 { color: #b45309; }
+        .rank-info { flex: 1; }
+        .rank-name { font-weight: 700; color: var(--primary-color); display: block; font-size: 1.05rem; }
+        .rank-val { font-size: 0.9rem; color: var(--accent-color); font-weight: 600; }
+        
+        .btn-submit:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
     </style>
 </head>
 <body>
@@ -109,7 +173,7 @@
             <div class="tool-panel" id="comparador" style="grid-column: 1 / -1;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h3>📊 Comparador de Destinos Multidestino</h3>
-                    <button class="btn-submit" id="btnAddCity" style="width: auto; padding: 10px 20px; font-size: 0.9rem;">+ Añadir Ciudad</button>
+                    <button class="btn-submit" id="btnAddCity" onclick="addCompareColumn()" style="width: auto; padding: 10px 20px; font-size: 0.9rem; margin-top: 0;">+ Añadir Ciudad</button>
                 </div>
                 
                 <p style="margin-bottom: 20px; color: var(--text-muted);">Compara hasta 4 ciudades simultáneamente para ver cuál se ajusta mejor a tu presupuesto y estilo de vida.</p>
@@ -207,16 +271,32 @@
         <!-- SECCIÓN DE RANKINGS DINÁMICOS -->
         <div style="margin-top: 60px;">
             <h3 style="color: var(--primary-color); text-align: center; margin-bottom: 30px;">🏆 Rankings en Tiempo Real</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-                <div class="tool-panel" id="rankBaratas">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+                <div class="tool-panel fade-in" style="padding: 30px;" id="rankBaratas">
                     <h4>💰 Más Económicas</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Menor presupuesto mensual est.</p>
                     <div id="listBaratas" style="margin-top: 15px;">
                         <!-- Dinámico -->
                     </div>
                 </div>
-                <div class="tool-panel" id="rankSeguras">
+                <div class="tool-panel fade-in" style="padding: 30px; animation-delay: 0.1s;" id="rankSeguras">
                     <h4>🛡️ Más Seguras</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Mayor puntuación en seguridad</p>
                     <div id="listSeguras" style="margin-top: 15px;">
+                        <!-- Dinámico -->
+                    </div>
+                </div>
+                <div class="tool-panel fade-in" style="padding: 30px; animation-delay: 0.2s;" id="rankOcio">
+                    <h4>🎭 Mejor Ocio</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Mejor oferta de actividades</p>
+                    <div id="listOcio" style="margin-top: 15px;">
+                        <!-- Dinámico -->
+                    </div>
+                </div>
+                <div class="tool-panel fade-in" style="padding: 30px; animation-delay: 0.3s;" id="rankTurismo">
+                    <h4>🌍 Más Turísticas</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Mejor patrimonio monumental</p>
+                    <div id="listTurismo" style="margin-top: 15px;">
                         <!-- Dinámico -->
                     </div>
                 </div>
@@ -256,6 +336,13 @@
             if (colCount >= 4) return; // Límite de 4 ciudades
             colCount++;
             const id = `city_col_${colCount}`;
+
+            // Actualizar estado del botón
+            const btnAdd = document.getElementById('btnAddCity');
+            if (colCount >= 4) {
+                btnAdd.disabled = true;
+                btnAdd.innerText = "Límite Alcanzado";
+            }
 
             // Crear Header (Select)
             const th = document.createElement('th');
@@ -361,7 +448,44 @@
             if (elDel) elDel.remove();
             
             colCount--;
+            
+            // Reactivar botón si bajamos del límite
+            const btnAdd = document.getElementById('btnAddCity');
+            btnAdd.disabled = false;
+            btnAdd.innerText = "+ Añadir Ciudad";
+
             destacarGanadores();
+        }
+
+        function renderRankings() {
+            if (!todasCiudades || todasCiudades.length === 0) return;
+
+            // Función auxiliar para renderizar tarjetas
+            const createCard = (c, i, isPresupuesto) => `
+                <div class="rank-card">
+                    <div class="rank-pos top-${i+1}">#${i+1}</div>
+                    <div class="rank-info">
+                        <span class="rank-name">${c.nombre}</span>
+                        <span class="rank-val">${isPresupuesto ? c.presupuesto + '€ / mes' : '⭐'.repeat(c.valor || 0)}</span>
+                    </div>
+                </div>
+            `;
+
+            // Baratas (menor presupuesto)
+            const baratas = [...todasCiudades].sort((a, b) => a.presupuesto - b.presupuesto).slice(0, 3);
+            document.getElementById('listBaratas').innerHTML = baratas.map((c, i) => createCard(c, i, true)).join('');
+
+            // Seguras (mayor seguridad)
+            const seguras = [...todasCiudades].map(c => ({...c, valor: c.seguridad})).sort((a, b) => (b.valor || 0) - (a.valor || 0)).slice(0, 3);
+            document.getElementById('listSeguras').innerHTML = seguras.map((c, i) => createCard(c, i, false)).join('');
+
+            // Ocio (mayor ocio)
+            const ocio = [...todasCiudades].map(c => ({...c, valor: c.ocio})).sort((a, b) => (b.valor || 0) - (a.valor || 0)).slice(0, 3);
+            document.getElementById('listOcio').innerHTML = ocio.map((c, i) => createCard(c, i, false)).join('');
+
+            // Turismo (mayor turismo)
+            const turismo = [...todasCiudades].map(c => ({...c, valor: c.turismo})).sort((a, b) => (b.valor || 0) - (a.valor || 0)).slice(0, 3);
+            document.getElementById('listTurismo').innerHTML = turismo.map((c, i) => createCard(c, i, false)).join('');
         }
 
         // 3. LÓGICA CALCULADORA UNIVERSAL

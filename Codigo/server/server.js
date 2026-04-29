@@ -136,7 +136,19 @@ const OpinionSchema = new mongoose.Schema({
     texto_opinion: { type: String, required: true },
     id_usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
     id_ciudad: { type: mongoose.Schema.Types.ObjectId, ref: 'Ciudad', required: true },
-    fecha_publicacion: { type: Date, default: Date.now }
+    fecha_publicacion: { type: Date, default: Date.now },
+    pesos: {
+        transporte: { type: Number, default: 5 },
+        ocio: { type: Number, default: 5 },
+        ocioNocturno: { type: Number, default: 5 },
+        seguridad: { type: Number, default: 5 },
+        calidadAcademica: { type: Number, default: 5 }
+    },
+    respuestas: [{
+        texto_respuesta: { type: String, required: true },
+        id_usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
+        fecha: { type: Date, default: Date.now }
+    }]
 });
 
 const Pais = mongoose.model('Pais', PaisSchema, 'paises');
@@ -342,6 +354,7 @@ app.get('/api/opiniones', async (req, res) => {
         const ops = await Opinion.find()
             .populate('id_usuario', 'nombre apellidos')
             .populate('id_ciudad', 'nombre')
+            .populate('respuestas.id_usuario', 'nombre apellidos')
             .sort({ fecha_publicacion: -1 })
             .limit(20);
         res.json(ops);
@@ -362,7 +375,7 @@ app.get('/api/opiniones/:ciudadId', async (req, res) => {
 // Crear nueva opinión
 app.post('/api/opiniones', async (req, res) => {
     try {
-        const { texto, valoracion, ciudadId, usuarioId } = req.body;
+        const { texto, valoracion, ciudadId, usuarioId, pesos } = req.body;
         
         if (!texto || !valoracion || !ciudadId) {
             return res.status(400).json({ error: 'Faltan campos obligatorios' });
@@ -386,7 +399,8 @@ app.post('/api/opiniones', async (req, res) => {
             texto_opinion: texto, 
             puntuacion: Number(valoracion), 
             id_ciudad: ciudadId, 
-            id_usuario: usuarioId 
+            id_usuario: usuarioId,
+            pesos: pesos || { transporte: 5, ocio: 5, ocioNocturno: 5, seguridad: 5, calidadAcademica: 5 }
         });
         await nuevaOpinion.save();
 
@@ -399,6 +413,31 @@ app.post('/api/opiniones', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Error al guardar la opinión' });
+    }
+});
+
+// Añadir respuesta a una opinión
+app.post('/api/opiniones/:id/respuestas', async (req, res) => {
+    try {
+        const { texto, usuarioId } = req.body;
+        const opinionId = req.params.id;
+
+        if (!texto || !usuarioId) {
+            return res.status(400).json({ error: 'Faltan campos obligatorios' });
+        }
+
+        const opinion = await Opinion.findById(opinionId);
+        if (!opinion) return res.status(404).json({ error: 'Opinión no encontrada' });
+
+        opinion.respuestas.push({
+            texto_respuesta: texto,
+            id_usuario: usuarioId
+        });
+
+        await opinion.save();
+        res.status(201).json({ mensaje: 'Respuesta añadida con éxito' });
+    } catch (err) {
+        res.status(500).json({ error: 'Error al añadir respuesta' });
     }
 });
 

@@ -101,7 +101,14 @@ const OpinionSchema = new mongoose.Schema({
     texto_opinion: { type: String, required: true },               // no 'texto'
     id_usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },  // no 'usuarioId'
     id_ciudad: { type: mongoose.Schema.Types.ObjectId, ref: 'Ciudad', required: true },    // no 'ciudadId'
-    fecha_publicacion: { type: Date, default: Date.now }           // no 'fecha'
+    fecha_publicacion: { type: Date, default: Date.now },           // no 'fecha'
+    pesos: {
+        transporte: { type: Number, default: 5 },
+        ocio: { type: Number, default: 5 },
+        ocioNocturno: { type: Number, default: 5 },
+        seguridad: { type: Number, default: 5 },
+        calidadAcademica: { type: Number, default: 5 }
+    }
 });
 
 // Colecciones: deben coincidir exactamente con server.js
@@ -402,14 +409,16 @@ async function poblarBD() {
             texto_opinion: '¡Granada es increíble y súper barata! El ambiente estudiantil es inmejorable.',
             puntuacion: 5,
             id_usuario: usuario1._id,
-            id_ciudad: ciudadGranada._id
+            id_ciudad: ciudadGranada._id,
+            pesos: { transporte: 3, ocio: 5, ocioNocturno: 5, seguridad: 4, calidadAcademica: 4 }
         });
 
         await Opinion.create({
             texto_opinion: 'Madrid tiene todo pero el precio del alquiler es una locura. Si puedes permitírtelo, merece cada euro.',
             puntuacion: 4,
             id_usuario: usuario1._id,
-            id_ciudad: ciudadMadrid._id
+            id_ciudad: ciudadMadrid._id,
+            pesos: { transporte: 5, ocio: 4, ocioNocturno: 5, seguridad: 4, calidadAcademica: 5 }
         });
 
         // Actualizar valoracionMedia de las ciudades con opinión

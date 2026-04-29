@@ -6,27 +6,70 @@
     <title>Mi Perfil - INFUNI</title>
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        .perfil-grid { display: grid; grid-template-columns: 280px 1fr; gap: 40px; margin-top: 40px; align-items: start; }
+        .perfil-grid { display: grid; grid-template-columns: 320px 1fr; gap: 40px; margin-top: 40px; align-items: start; }
         @media (max-width: 900px) { .perfil-grid { grid-template-columns: 1fr; } }
         
-        .panel-lateral { background: var(--white); border-radius: 20px; box-shadow: var(--shadow-sm); border: 1px solid #e2e8f0; padding: 30px; text-align: center; }
-        .avatar-circle { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); color: white; display: flex; align-items: center; justify-content: center; font-size: 3rem; margin: 0 auto 20px auto; font-weight: bold; }
-        .user-name { font-size: 1.5rem; color: var(--primary-color); margin-bottom: 5px; }
-        .user-email { color: var(--text-muted); margin-bottom: 25px; }
-        .btn-logout { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; width: 100%; transition: all 0.3s; }
-        .btn-logout:hover { background: #dc2626; }
+        /* Panel Lateral */
+        .panel-lateral { background: var(--white); border-radius: 24px; box-shadow: var(--shadow-md); overflow: hidden; border: 1px solid rgba(0,0,0,0.05); text-align: center; }
+        .panel-cover { height: 120px; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); }
+        .panel-info { padding: 0 30px 30px 30px; position: relative; }
+        .avatar-circle { width: 120px; height: 120px; border-radius: 50%; background: var(--white); border: 5px solid var(--white); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin: -60px auto 15px auto; overflow: hidden; background-color: #f1f5f9; display: flex; align-items: center; justify-content: center;}
+        .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+        .user-name { font-size: 1.6rem; color: var(--primary-color); font-weight: 800; margin-bottom: 5px; }
+        .user-email { color: var(--text-muted); margin-bottom: 25px; font-size: 0.95rem; }
         
-        .panel-derecho h3 { margin-bottom: 25px; color: var(--primary-color); font-size: 1.8rem; border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; display: inline-block; }
+        .user-stats-box { background: var(--bg-light); border-radius: 16px; padding: 15px; display: flex; justify-content: space-around; margin-bottom: 25px; }
+        .stat-item { display: flex; flex-direction: column; }
+        .stat-item .val { font-size: 1.4rem; font-weight: 800; color: var(--primary-color); }
+        .stat-item .lbl { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .favoritos-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .fav-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid #e2e8f0; transition: transform 0.3s; cursor: pointer; }
-        .fav-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: var(--accent-color); }
-        .fav-img { height: 150px; background-size: cover; background-position: center; }
-        .fav-body { padding: 20px; }
-        .fav-title { font-size: 1.3rem; margin-bottom: 10px; color: var(--primary-color); }
-        .fav-stats span { display: inline-block; background: var(--bg-light); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; color: var(--text-dark); margin-right: 5px; margin-bottom: 5px; }
+        .btn-logout { background: transparent; color: #ef4444; border: 2px solid #ef4444; padding: 12px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; width: 100%; transition: all 0.3s; font-size: 1rem; }
+        .btn-logout:hover { background: #ef4444; color: white; box-shadow: 0 4px 10px rgba(239,68,68,0.3); }
         
-        .empty-state { text-align: center; padding: 40px; background: var(--bg-light); border-radius: 15px; border: 2px dashed #cbd5e1; }
+        /* Panel Derecho */
+        .welcome-header { margin-bottom: 40px; }
+        .welcome-header h2 { font-size: 2.5rem; color: var(--primary-color); font-weight: 800; margin-bottom: 5px; letter-spacing: -0.5px; }
+        .welcome-header p { color: var(--text-muted); font-size: 1.1rem; }
+        
+        .section-title { display: flex; align-items: center; margin-bottom: 25px; color: var(--primary-color); font-size: 1.5rem; font-weight: 700; gap: 10px; }
+        .section-title span { background: #eff6ff; color: var(--accent-color); padding: 5px 12px; border-radius: 12px; font-size: 1.2rem; }
+        
+        .favoritos-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; margin-bottom: 50px; }
+        
+        /* Fav Card Modernizada */
+        .fav-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.04); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+        .fav-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); }
+        .fav-img { height: 180px; background-size: cover; background-position: center; position: relative; cursor: pointer; }
+        .fav-img::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%); }
+        .btn-delete-fav { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ef4444; border: none; cursor: pointer; font-size: 1rem; transition: all 0.2s; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .btn-delete-fav:hover { background: #ef4444; color: white; transform: scale(1.1); }
+        .fav-body { padding: 20px; cursor: pointer;}
+        .fav-title { font-size: 1.4rem; margin-bottom: 12px; color: var(--primary-color); font-weight: 800; }
+        .fav-stats { display: flex; gap: 10px; flex-wrap: wrap; }
+        .fav-stats span { display: inline-flex; align-items: center; gap: 6px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 12px; font-size: 0.85rem; color: var(--text-dark); font-weight: 600; }
+        
+        /* Búsqueda Card (Ticket Style) */
+        .search-card { background: var(--white); border-radius: 20px; padding: 25px; box-shadow: var(--shadow-sm); border: 1px solid #e2e8f0; display: flex; flex-direction: column; transition: all 0.3s; position: relative; overflow: hidden; }
+        .search-card::before { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: var(--accent-color); }
+        .search-card:hover { transform: translateX(5px); box-shadow: var(--shadow-md); border-color: #cbd5e1; }
+        .search-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .search-title { font-size: 1.3rem; font-weight: 800; color: var(--primary-color); margin: 0; }
+        .search-role { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-top: 5px; }
+        .role-est { background: #dbeafe; color: #1e40af; }
+        .role-nom { background: #f3e8ff; color: #6b21a8; }
+        .search-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 20px; }
+        .search-grid-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .search-grid-item .icon { font-size: 1.2rem; margin-bottom: 2px; }
+        .search-grid-item .lbl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
+        .search-grid-item .dots { display: flex; gap: 3px; margin-top: 5px; }
+        .dot { width: 6px; height: 6px; border-radius: 50%; background: #cbd5e1; }
+        .dot.active { background: var(--accent-color); }
+        .btn-load { background: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: background 0.3s; text-align: center; width: 100%; }
+        .btn-load:hover { background: var(--accent-color); }
+        .btn-delete-search { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 1.2rem; transition: color 0.2s; padding: 5px; }
+        .btn-delete-search:hover { color: #ef4444; }
+
+        .empty-state { text-align: center; padding: 60px 40px; background: var(--white); border-radius: 20px; border: 2px dashed #cbd5e1; }
     </style>
 </head>
 <body>
@@ -71,20 +114,42 @@
         <div class="perfil-grid">
             
             <aside class="panel-lateral">
-                <div class="avatar-circle" id="userAvatar">?</div>
-                <h2 class="user-name" id="userNameLabel">Cargando...</h2>
-                <p class="user-email" id="userEmailLabel">espere un momento</p>
-                <button class="btn-logout" id="btnLogout">Cerrar Sesión</button>
+                <div class="panel-cover"></div>
+                <div class="panel-info">
+                    <div class="avatar-circle" id="userAvatar">
+                        <!-- Imagen cargada por JS -->
+                    </div>
+                    <h2 class="user-name" id="userNameLabel">Cargando...</h2>
+                    <p class="user-email" id="userEmailLabel">espere un momento</p>
+                    
+                    <div class="user-stats-box">
+                        <div class="stat-item">
+                            <span class="val" id="countFavs">0</span>
+                            <span class="lbl">Favoritos</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="val" id="countSearch">0</span>
+                            <span class="lbl">Búsquedas</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-logout" id="btnLogout">Cerrar Sesión</button>
+                </div>
             </aside>
 
             <div class="panel-derecho">
-                <h3>Tus Ciudades Favoritas ❤️</h3>
-                <div id="favoritosContainer" class="favoritos-list" style="margin-bottom: 50px;">
+                <div class="welcome-header">
+                    <h2 id="welcomeTitle">¡Hola!</h2>
+                    <p>Aquí tienes el resumen de tu actividad en INFUNI.</p>
+                </div>
+
+                <div class="section-title"><span>❤️</span> Tus Ciudades Favoritas</div>
+                <div id="favoritosContainer" class="favoritos-list">
                     <!-- Cargado por JS -->
                     <div class="empty-state">Cargando tus preferencias...</div>
                 </div>
 
-                <h3>Tus Búsquedas Guardadas 💾</h3>
+                <div class="section-title"><span>💾</span> Tus Búsquedas Guardadas</div>
                 <div id="busquedasContainer" class="favoritos-list">
                     <!-- Cargado por JS -->
                     <div class="empty-state">Cargando tus búsquedas...</div>
@@ -106,13 +171,19 @@
             
             document.getElementById('userNameLabel').innerText = userInfo.nombre;
             document.getElementById('userEmailLabel').innerText = userInfo.email;
-            document.getElementById('userAvatar').innerText = userInfo.nombre.charAt(0).toUpperCase();
+            
+            const seed = encodeURIComponent(userInfo.nombre);
+            document.getElementById('userAvatar').innerHTML = `<img src="https://api.dicebear.com/7.x/adventurer/svg?seed=${seed}&backgroundColor=c0aede,ffdfbf" alt="Avatar">`;
+            document.getElementById('welcomeTitle').innerText = `¡Hola, ${userInfo.nombre}! 👋`;
 
             fetch(`${API}/api/usuarios/${userInfo.id || userInfo._id}`)
                 .then(res => res.json())
                 .then(usuarioDB => {
                     const favContainer = document.getElementById('favoritosContainer');
                     const arrayFavoritas = usuarioDB.ciudadesFavoritas || [];
+
+                    document.getElementById('countFavs').innerText = arrayFavoritas.length;
+                    document.getElementById('countSearch').innerText = (usuarioDB.busquedas || []).length;
 
                     if (arrayFavoritas.length === 0) {
                         favContainer.innerHTML = `
@@ -124,14 +195,12 @@
                     } else {
                         favContainer.innerHTML = arrayFavoritas.map(c => `
                             <div class="fav-card">
+                                <button class="btn-delete-fav" onclick="quitarFavorito('${c._id}')" title="Quitar de favoritos">✖</button>
                                 <div class="fav-img" style="background-image: url('${c.imagen || `https://picsum.photos/seed/${encodeURIComponent(c.nombre)}/400/300`}')" onclick="window.location.href='detalle.html?id=${c._id}'"></div>
-                                <div class="fav-body">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <h4 class="fav-title" style="cursor:pointer;" onclick="window.location.href='detalle.html?id=${c._id}'">${c.nombre}</h4>
-                                        <button onclick="quitarFavorito('${c._id}')" style="background:none; border:none; cursor:pointer; font-size:1.2rem;" title="Quitar">❌</button>
-                                    </div>
-                                    <div class="fav-stats" onclick="window.location.href='detalle.html?id=${c._id}'">
-                                        <span>💶 ${c.presupuesto || ((c.metricas?.costeAlquilerMedio || 0) + (c.metricas?.costeOcioMedio || 0))}€/mes</span>
+                                <div class="fav-body" onclick="window.location.href='detalle.html?id=${c._id}'">
+                                    <h4 class="fav-title">${c.nombre}</h4>
+                                    <div class="fav-stats">
+                                        <span>💶 ${c.presupuesto || ((c.metricas?.costeAlquilerMedio || 0) + (c.metricas?.costeOcioMedio || 0))}€/m</span>
                                         <span>🛡️ ${"⭐".repeat(Math.round((c.metricas?.seguridad || 0) / 2))}</span>
                                     </div>
                                 </div>
@@ -150,23 +219,60 @@
                                 <p style="margin-top: 15px; color: var(--text-muted);">No tienes búsquedas guardadas todavía.</p>
                             </div>`;
                     } else {
-                        busContainer.innerHTML = arrayBusquedas.map(b => `
-                            <div class="fav-card">
-                                <div class="fav-body">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                        <h4 class="fav-title" style="margin:0;">${b.nombre}</h4>
-                                        <button onclick="eliminarBusqueda('${b._id}')" style="background:none; border:none; cursor:pointer;" title="Eliminar">🗑️</button>
+                        const getDots = (val) => {
+                            let dots = '';
+                            for(let i=1; i<=5; i++) {
+                                dots += `<div class="dot ${i <= val ? 'active' : ''}"></div>`;
+                            }
+                            return dots;
+                        };
+
+                        busContainer.innerHTML = arrayBusquedas.map(b => {
+                            const isEst = b.rol === 'estudiante';
+                            return `
+                            <div class="search-card">
+                                <div class="search-header">
+                                    <div>
+                                        <h4 class="search-title">${b.nombre}</h4>
+                                        <span class="search-role ${isEst ? 'role-est' : 'role-nom'}">${isEst ? '🎓 Estudiante' : '💻 Nómada/Pro'}</span>
                                     </div>
-                                    <div class="fav-stats">
-                                        <span style="background: var(--primary-color); color:white; padding: 2px 8px; border-radius: 10px;">${b.rol === 'estudiante' ? '🎓 Estudiante' : '💼 Trabajador'}</span>
-                                        <div style="font-size:0.75rem; margin-top:10px; color:var(--text-muted); line-height:1.4;">
-                                            ${Object.entries(b.pesos).map(([k, v]) => `<span style="display:inline-block; margin-right:8px;"><b>${k.charAt(0).toUpperCase()}</b>:${v}</span>`).join('')}
-                                        </div>
-                                    </div>
-                                    <button onclick="localStorage.setItem('tempBusqueda', '${JSON.stringify(b).replace(/'/g, "\\'")}'); window.location.href='index.html'" class="btn-ver" style="margin-top:15px; width:100%; border-radius:10px; font-size:0.85rem;">Cargar Configuración</button>
+                                    <button class="btn-delete-search" onclick="eliminarBusqueda('${b._id}')" title="Eliminar búsqueda">🗑️</button>
                                 </div>
+                                <div class="search-grid">
+                                    <div class="search-grid-item">
+                                        <span class="icon">💰</span>
+                                        <span class="lbl">Presup.</span>
+                                        <div class="dots">${getDots(b.pesos.presupuesto || 0)}</div>
+                                    </div>
+                                    <div class="search-grid-item">
+                                        <span class="icon">🎭</span>
+                                        <span class="lbl">Ambient.</span>
+                                        <div class="dots">${getDots(b.pesos.ambiente || 0)}</div>
+                                    </div>
+                                    <div class="search-grid-item">
+                                        <span class="icon">🛡️</span>
+                                        <span class="lbl">Segurid.</span>
+                                        <div class="dots">${getDots(b.pesos.seguridad || 0)}</div>
+                                    </div>
+                                    <div class="search-grid-item">
+                                        <span class="icon">🎡</span>
+                                        <span class="lbl">Ocio</span>
+                                        <div class="dots">${getDots(b.pesos.ocio || 0)}</div>
+                                    </div>
+                                    <div class="search-grid-item">
+                                        <span class="icon">🌐</span>
+                                        <span class="lbl">Wi-Fi</span>
+                                        <div class="dots">${getDots(b.pesos.conectividad || 0)}</div>
+                                    </div>
+                                    <div class="search-grid-item">
+                                        <span class="icon">🏛️</span>
+                                        <span class="lbl">Turismo</span>
+                                        <div class="dots">${getDots(b.pesos.turismo || 0)}</div>
+                                    </div>
+                                </div>
+                                <button onclick="localStorage.setItem('tempBusqueda', '${JSON.stringify(b).replace(/'/g, "\\'")}'); window.location.href='index.html'" class="btn-load">🚀 Cargar Configuración</button>
                             </div>
-                        `).join('');
+                        `}).join('');
                     }
                 })
                 .catch(err => {

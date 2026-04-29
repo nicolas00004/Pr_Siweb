@@ -43,6 +43,60 @@
             font-family: inherit; margin-bottom: 5px;
         }
         .sidebar-form textarea { resize: vertical; min-height: 120px; }
+        
+        .slider-item { margin-bottom: 10px; }
+        .slider-item input[type="range"] { width: 100%; margin: 5px 0; }
+        
+        .pesos-tag-container { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+        .peso-tag { 
+            font-size: 0.75rem; background: #e0f2fe; color: #0369a1; 
+            padding: 2px 8px; border-radius: 12px; font-weight: 600;
+        }
+
+        .respuesta-card {
+            background: #f1f5f9;
+            margin-top: 10px;
+            padding: 15px;
+            border-radius: 10px;
+            margin-left: 30px;
+            border-left: 3px solid #cbd5e1;
+            font-size: 0.9rem;
+        }
+        .respuesta-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+        .btn-reply {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0;
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-reply:hover { text-decoration: underline; }
+        
+        .reply-form {
+            margin-top: 15px;
+            display: none;
+        }
+        .reply-form textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1.5px solid #cbd5e1;
+            font-family: inherit;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -174,6 +228,40 @@
                     <label>Tu experiencia / Duda</label>
                     <textarea placeholder="Cuéntale al resto de futuros estudiantes..." required id="textoForo"></textarea>
 
+                    <label>Tus Criterios de Búsqueda (Pesos)</label>
+                    <div style="background: var(--bg-light); padding: 15px; border-radius: 15px; margin-bottom: 10px;">
+                        <div class="slider-item">
+                            <label style="font-size: 0.75rem; margin-top: 0; display: flex; justify-content: space-between;">
+                                <span>🚌 Transporte</span> <span id="val_transporte" style="color:var(--accent-color); font-weight:bold;">5</span>
+                            </label>
+                            <input type="range" id="peso_transporte" min="1" max="10" value="5" oninput="document.getElementById('val_transporte').innerText=this.value">
+                        </div>
+                        <div class="slider-item">
+                            <label style="font-size: 0.75rem; margin-top: 0; display: flex; justify-content: space-between;">
+                                <span>🎭 Ocio</span> <span id="val_ocio" style="color:var(--accent-color); font-weight:bold;">5</span>
+                            </label>
+                            <input type="range" id="peso_ocio" min="1" max="10" value="5" oninput="document.getElementById('val_ocio').innerText=this.value">
+                        </div>
+                        <div class="slider-item">
+                            <label style="font-size: 0.75rem; margin-top: 0; display: flex; justify-content: space-between;">
+                                <span>🌃 Ocio Nocturno</span> <span id="val_ocioNocturno" style="color:var(--accent-color); font-weight:bold;">5</span>
+                            </label>
+                            <input type="range" id="peso_ocioNocturno" min="1" max="10" value="5" oninput="document.getElementById('val_ocioNocturno').innerText=this.value">
+                        </div>
+                        <div class="slider-item">
+                            <label style="font-size: 0.75rem; margin-top: 0; display: flex; justify-content: space-between;">
+                                <span>🛡️ Seguridad</span> <span id="val_seguridad" style="color:var(--accent-color); font-weight:bold;">5</span>
+                            </label>
+                            <input type="range" id="peso_seguridad" min="1" max="10" value="5" oninput="document.getElementById('val_seguridad').innerText=this.value">
+                        </div>
+                        <div class="slider-item">
+                            <label style="font-size: 0.75rem; margin-top: 0; display: flex; justify-content: space-between;">
+                                <span>🎓 Académica</span> <span id="val_academica" style="color:var(--accent-color); font-weight:bold;">5</span>
+                            </label>
+                            <input type="range" id="peso_academica" min="1" max="10" value="5" oninput="document.getElementById('val_academica').innerText=this.value">
+                        </div>
+                    </div>
+
                     <button type="submit" class="btn-submit" style="margin-top: 15px; width: 100%;">Publicar Hilo</button>
                     <p id="foroFeedback" style="margin-top: 10px; font-weight: bold; text-align: center;"></p>
                 </form>
@@ -208,21 +296,88 @@
                     return;
                 }
 
-                foroContainer.innerHTML = opiniones.map(op => `
+                foroContainer.innerHTML = opiniones.map(op => {
+                    const p = op.pesos || { transporte: 5, ocio: 5, ocioNocturno: 5, seguridad: 5, calidadAcademica: 5 };
+                    const respuestasHTML = (op.respuestas || []).map(r => `
+                        <div class="respuesta-card">
+                            <div class="respuesta-header">
+                                <span>💬 ${r.id_usuario ? (r.id_usuario.nombre || 'Estudiante') : 'Anónimo'}</span>
+                                <span style="font-size: 0.75rem;">${new Date(r.fecha).toLocaleDateString('es-ES')}</span>
+                            </div>
+                            <div>${r.texto_respuesta}</div>
+                        </div>
+                    `).join('');
+
+                    const userLoggedIn = localStorage.getItem('usuarioInfo');
+
+                    return `
                     <div class="hilo-card">
                         <div class="hilo-header">
                             <div class="hilo-autor">👤 ${op.id_usuario ? (op.id_usuario.nombre || 'Estudiante') : 'Anónimo'}</div>
                             <div class="hilo-ciudad">📍 ${op.id_ciudad ? op.id_ciudad.nombre : 'General'}</div>
                         </div>
                         <div class="hilo-texto">${op.texto_opinion}</div>
+                        
+                        <div class="pesos-tag-container">
+                            <span class="peso-tag">🚌 ${p.transporte}</span>
+                            <span class="peso-tag">🎭 ${p.ocio}</span>
+                            <span class="peso-tag">🌃 ${p.ocioNocturno}</span>
+                            <span class="peso-tag">🛡️ ${p.seguridad}</span>
+                            <span class="peso-tag">🎓 ${p.calidadAcademica}</span>
+                        </div>
+
                         <div class="hilo-footer">
                             <span>${'⭐'.repeat(op.puntuacion)} ${op.puntuacion}/5</span>
                             <span>🕒 ${new Date(op.fecha_publicacion).toLocaleDateString('es-ES')}</span>
                         </div>
+
+                        <div id="respuestas-${op._id}">
+                            ${respuestasHTML}
+                        </div>
+
+                        ${userLoggedIn ? `
+                            <button class="btn-reply" onclick="toggleReplyForm('${op._id}')">↩️ Responder</button>
+                            <div class="reply-form" id="form-reply-${op._id}">
+                                <textarea id="text-reply-${op._id}" placeholder="Escribe tu respuesta..."></textarea>
+                                <button class="btn-submit" style="width: auto; padding: 8px 15px; font-size: 0.85rem;" onclick="enviarRespuesta('${op._id}')">Enviar</button>
+                            </div>
+                        ` : ''}
                     </div>
-                `).join('');
+                `}).join('');
             } catch (err) { 
                 foroContainer.innerHTML = '<p>Error cargando la comunidad.</p>';
+            }
+        }
+
+        function toggleReplyForm(id) {
+            const form = document.getElementById(`form-reply-${id}`);
+            form.style.display = form.style.display === 'block' ? 'none' : 'block';
+        }
+
+        async function enviarRespuesta(opinionId) {
+            const textoInput = document.getElementById(`text-reply-${opinionId}`);
+            const texto = textoInput.value.trim();
+            const localUser = JSON.parse(localStorage.getItem('usuarioInfo') || '{}');
+            const usuarioId = localUser.id || localUser._id;
+
+            if (!texto) return alert("Escribe algo para responder.");
+
+            try {
+                const res = await fetch(`${API_BASE}/api/opiniones/${opinionId}/respuestas`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ texto, usuarioId })
+                });
+
+                if (res.ok) {
+                    textoInput.value = "";
+                    cargarOpiniones();
+                } else {
+                    const err = await res.json();
+                    alert(err.error || "Error al enviar la respuesta.");
+                }
+            } catch (err) {
+                alert("Error de conexión.");
             }
         }
 
@@ -237,7 +392,14 @@
                 ciudadId: document.getElementById('ciudadForo').value,
                 valoracion: document.getElementById('valForo').value,
                 texto: document.getElementById('textoForo').value,
-                usuarioId: localUser.id || localUser._id || null
+                usuarioId: localUser.id || localUser._id || null,
+                pesos: {
+                    transporte: parseInt(document.getElementById('peso_transporte').value),
+                    ocio: parseInt(document.getElementById('peso_ocio').value),
+                    ocioNocturno: parseInt(document.getElementById('peso_ocioNocturno').value),
+                    seguridad: parseInt(document.getElementById('peso_seguridad').value),
+                    calidadAcademica: parseInt(document.getElementById('peso_academica').value)
+                }
             };
 
             try {
