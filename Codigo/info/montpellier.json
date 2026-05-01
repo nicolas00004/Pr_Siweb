@@ -1,0 +1,43 @@
+{
+    "id": "montpellier",
+    "nombre": "Montpellier",
+    "etiquetas": {
+        "historia": "🏛️ Ciudad Médica y Medieval",
+        "transporte": "🚃 Tranvía de Diseño",
+        "alojamiento": "🏠 Ambientes Estudiantiles"
+    },
+    "historia": "Una de las ciudades más dinámicas del sur de Francia. Su universidad, fundada en 1289, es una de las más antiguas del mundo, famosa por su histórica facultad de medicina y su vibrante ambiente juvenil.",
+    "alojamiento": "Mercado muy activo por la alta densidad de estudiantes. Zonas como Hôpitaux-Facultés son ideales por cercanía, mientras que Port Marianne ofrece modernidad (500€-750€).",
+    "barrios": "L'Écusson es el centro peatonal lleno de callejuelas medievales. Antigone destaca por su impresionante arquitectura neoclásica diseñada por Ricardo Bofill.",
+    "universidades": [
+        {
+            "nombre": "Université de Montpellier",
+            "descripcion": "Referente mundial en Medicina, Ecología y Derecho."
+        },
+        {
+            "nombre": "Université Paul-Valéry (Montpellier III)",
+            "descripcion": "Especializada en Artes, Letras, Lenguas y Ciencias Humanas."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Place de la Comédie",
+            "categoria": "ocio",
+            "descripcion": "El corazón neurálgico de la ciudad, siempre lleno de vida y artistas callejeros."
+        },
+        {
+            "nombre": "Jardin des Plantes",
+            "categoria": "cultura",
+            "descripcion": "El jardín botánico más antiguo de Francia, ideal para estudiar al aire libre."
+        },
+        {
+            "nombre": "Rockstore",
+            "categoria": "ocioNocturno",
+            "descripcion": "Mítica sala de conciertos con un Cadillac incrustado en la fachada."
+        }
+    ],
+    "imagenes": [
+        "../img/montpellier_1.jpg",
+        "../img/montpellier_2.jpg"
+    ]
+}
