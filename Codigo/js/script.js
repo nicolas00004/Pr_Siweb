@@ -10,6 +10,10 @@ const btnGuardar = document.getElementById('btnGuardarBusqueda');
 const selectBusqueda = document.getElementById('selectBusqueda');
 const selectRol = document.getElementById('selectRol');
 const savedSearchesContainer = document.getElementById('savedSearchesContainer');
+const inputBusquedaTexto = document.getElementById('inputBusquedaTexto');
+const selectOrden = document.getElementById('selectOrden');
+const resultadosCount = document.getElementById('resultadosCount');
+let minSeguridad = 0;
 
 // Mapa global
 let map = null;
@@ -24,7 +28,9 @@ let currentWeights = {
     ocio: 1,
     ocioNocturno: 1,
     seguridad: 1,
-    calidadAcademica: 1
+    calidadAcademica: 1,
+    conectividad: 1,
+    asequibilidad: 1
 };
 let seleccionParaComparar = [];
 let rankingDataGlobal = [];
@@ -51,11 +57,10 @@ async function cargarDatos() {
         const res = await fetch(`${API_BASE}/api/ciudades`);
         ciudades = await res.json();
         renderizarSliders();
-        aplicarFiltros(); 
-        inicializarMapa();
-        
-        // Ajuste Leaflet para layout Dashboard
-        setTimeout(() => { if(window.map) window.map.invalidateSize(); }, 1000);
+        aplicarFiltros();
+
+        // Ajuste Leaflet para layout Dashboard (el mapa se inicializa lazy en renderizarMapa)
+        setTimeout(() => { if (map) map.invalidateSize(); }, 1000);
         
         const userInfo = JSON.parse(localStorage.getItem('usuarioInfo'));
 
@@ -67,12 +72,14 @@ async function cargarDatos() {
             userFavoritasIds = (userFull.ciudadesFavoritas || []).map(f => f._id || f);
             
             // Mostrar controles extendidos
-            ahpControls.style.display = 'block';
-            btnGuardar.style.display = 'block';
-            
-            if (userFull.busquedas && userFull.busquedas.length > 0) {
-                renderizarSelectBusquedas();
-            }
+            if (ahpControls) ahpControls.style.display = 'block';
+            document.getElementById('saveSearchSection').style.display = 'block';
+            document.getElementById('saveLoginPrompt').style.display = 'none';
+            const btnGuardarTop = document.getElementById('btnGuardarBusquedaTop');
+            if (btnGuardarTop) btnGuardarTop.style.display = 'inline-block';
+
+            // Siempre renderizar (muestra el mensaje vacío o las pills)
+            renderizarSelectBusquedas();
 
             // Mostrar bienvenida personalizada
             const welcomeUser = document.getElementById('welcomeUser');
@@ -187,27 +194,43 @@ function aplicarFiltros() {
     const maxPresupuesto = slider ? parseInt(slider.value) : Infinity;
     const maxDistancia = sliderDistancia ? parseInt(sliderDistancia.value) : Infinity;
     const ambienteFilter = selectorAmbiente ? selectorAmbiente.value : 'todos';
+    const textoBusqueda = inputBusquedaTexto ? inputBusquedaTexto.value.trim().toLowerCase() : '';
 
     const filtradas = ciudades.filter(c => {
-        const entraPresupuesto = c.presupuesto <= maxPresupuesto;
-        const entraAmbiente = ambienteFilter === 'todos' || c.tipoAmbiente === ambienteFilter;
-        
-        let entraDistancia = true;
-        if (sliderDistancia && c.coordenadas && c.coordenadas.coordinates) {
-            const [lng, lat] = c.coordenadas.coordinates;
-            const dist = calcularDistancia(ORIGIN[0], ORIGIN[1], lat, lng);
-            // Si el slider está al máximo (2000), no filtramos por distancia
-            if (maxDistancia < 2000) {
-                entraDistancia = dist <= maxDistancia;
-            }
+        // Filtro de texto
+        if (textoBusqueda && !c.nombre.toLowerCase().includes(textoBusqueda)) return false;
+
+        // Filtro de presupuesto
+        if (c.presupuesto > maxPresupuesto) return false;
+
+        // Filtro de ambiente
+        if (ambienteFilter !== 'todos' && c.tipoAmbiente !== ambienteFilter) return false;
+
+        // Filtro de seguridad mínima
+        if (minSeguridad > 0) {
+            const seg = c.metricas?.seguridad ?? 0;
+            if (minSeguridad === 5 ? seg < 5 : seg < minSeguridad) return false;
         }
 
-        return entraPresupuesto && entraAmbiente && entraDistancia;
+        // Filtro de distancia
+        if (maxDistancia < 2000 && c.coordenadas?.coordinates) {
+            const [lng, lat] = c.coordenadas.coordinates;
+            const dist = calcularDistancia(ORIGIN[0], ORIGIN[1], lat, lng);
+            if (dist > maxDistancia) return false;
+        }
+
+        return true;
     });
 
+    // Actualizar contador
+    if (resultadosCount) {
+        resultadosCount.textContent = `${filtradas.length} ciudad${filtradas.length !== 1 ? 'es' : ''}`;
+    }
+
     renderizarCiudades(filtradas);
-    const ranking = calcularRanking();
-    renderizarMapa(filtradas, ranking);
+    const ranking = calcularRanking(filtradas);
+    // Los marcadores solo se muestran tras pulsar "Buscar Destinos"
+    renderizarMapa(rankingVisible ? filtradas : [], rankingVisible ? ranking : []);
 }
 
 function renderizarMapa(datos, rankingData = []) {
@@ -269,23 +292,51 @@ const CATEGORIAS_AHP = [
     { name: '⚠️ No Recomendado', min: 0, color: '#ef4444' }
 ];
 
-function calcularRanking() {
-    if (!rankingBody) return;
+let rankingVisible = false;
+
+function mostrarRanking() {
+    rankingVisible = true;
+    const btn = document.getElementById('btnBuscarDestinos');
+    if (btn) {
+        btn.innerHTML = '🔄 Actualizar';
+        btn.style.background = '#10b981';
+    }
+    aplicarFiltros();
+    document.querySelector('.ranking-container')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function calcularRanking(ciudadesInput = ciudades) {
+    if (!rankingBody) return [];
     const seleccionados = Object.keys(currentWeights);
 
-    const rankingData = ciudades.map(c => {
+    // Pre-calcular normalización invertida para asequibilidad (mayor coste → menor score)
+    const costes = ciudadesInput.map(c => c.metricas?.costeAlquilerMedio).filter(v => v != null && v > 0);
+    const minCoste = costes.length ? Math.min(...costes) : 0;
+    const maxCoste = costes.length ? Math.max(...costes) : 1;
+    const rangoCoste = (maxCoste - minCoste) || 1;
+
+    const rankingData = ciudadesInput.map(c => {
         let scoreTotal = 0;
         let pesoTotal = 0;
 
         seleccionados.forEach(crit => {
-            const mapCrit = { 
-                'ocioNocturno': 'ambienteNocturno', 
+            const mapCrit = {
+                'ocioNocturno': 'ambienteNocturno',
                 'transporte': 'calidadTransporte',
-                'ocio': 'turismo'
+                'ocio': 'turismo',
+                'conectividad': 'conectividad'
             };
-            const critKey = mapCrit[crit] || crit;
-            const metricValue = (c.metricas ? c.metricas[critKey] : null);
-            
+            let metricValue;
+            if (crit === 'asequibilidad') {
+                const coste = c.metricas?.costeAlquilerMedio;
+                if (coste != null && coste > 0) {
+                    metricValue = 1 + 4 * (maxCoste - coste) / rangoCoste;
+                }
+            } else {
+                const critKey = mapCrit[crit] || crit;
+                metricValue = c.metricas ? c.metricas[critKey] : null;
+            }
+
             // --- MANEJO DE DATOS FALTANTES ---
             // Solo sumamos el peso si la ciudad tiene la métrica
             if (metricValue !== null && metricValue !== undefined) {
@@ -305,18 +356,43 @@ function calcularRanking() {
         const estaCercaDeSubir = proximaCat && (proximaCat.min - scoreFinal < 0.15);
         const estaCercaDeBajar = (scoreFinal - catInfo.min < 0.1) && catInfo.min > 0;
 
-        return { 
-            ...c, 
-            globalScore: scoreFinal, 
-            categoria, 
+        const costeC = c.metricas?.costeAlquilerMedio;
+        const _asequibilidad = (costeC != null && costeC > 0) ? 1 + 4 * (maxCoste - costeC) / rangoCoste : null;
+
+        return {
+            ...c,
+            globalScore: scoreFinal,
+            categoria,
             catColor: catInfo.color,
-            alertaUmbral: estaCercaDeSubir ? 'Subir' : (estaCercaDeBajar ? 'Bajar' : null)
+            alertaUmbral: estaCercaDeSubir ? 'Subir' : (estaCercaDeBajar ? 'Bajar' : null),
+            _asequibilidad
         };
     });
 
-    rankingData.sort((a, b) => b.globalScore - a.globalScore);
+    const orden = selectOrden ? selectOrden.value : 'ahp';
+    rankingData.sort((a, b) => {
+        if (orden === 'presupuesto') return (a.presupuesto || 9999) - (b.presupuesto || 9999);
+        if (orden === 'seguridad')   return (b.metricas?.seguridad || 0) - (a.metricas?.seguridad || 0);
+        if (orden === 'nombre')      return a.nombre.localeCompare(b.nombre);
+        return b.globalScore - a.globalScore; // 'ahp' (default)
+    });
     rankingDataGlobal = rankingData; // Guardar para el comparador
-    
+
+    // Si el usuario aún no ha pulsado Buscar, mostrar placeholder y devolver datos para el mapa
+    if (!rankingVisible) {
+        rankingBody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align:center; padding:40px 20px;">
+                    <div style="color:var(--text-muted);">
+                        <div style="font-size:2.5rem; margin-bottom:12px; opacity:0.4;">🔍</div>
+                        <p style="font-size:0.9rem; font-weight:600; margin-bottom:6px;">Configura tus preferencias</p>
+                        <p style="font-size:0.8rem;">y pulsa <strong style="color:var(--accent-color);">Buscar Destinos</strong> para ver el ranking</p>
+                    </div>
+                </td>
+            </tr>`;
+        return rankingData;
+    }
+
     rankingBody.innerHTML = rankingData.map((c, i) => `
         <tr class="ranking-row" onclick="window.location.href='detalle.html?id=${c._id}'">
             <td onclick="event.stopPropagation()" style="width:30px; text-align:center;">
@@ -342,7 +418,10 @@ function calcularRanking() {
             <td data-label="PUNTUACIÓN" class="rank-score">
                 <div style="display:flex; flex-direction:column; align-items:flex-end;">
                     <span>${c.globalScore.toFixed(2)} / 5</span>
-                    <span style="font-size:0.65rem; color:var(--text-muted); font-weight:normal;">Métricas: ${Object.keys(c.metricas || {}).length}</span>
+                    <div style="width:60px; height:4px; background:#e2e8f0; border-radius:2px; margin-top:5px; overflow:hidden;">
+                        <div style="width:${Math.min(100,(c.globalScore/5)*100)}%; height:100%; background:${c.catColor}; border-radius:2px;"></div>
+                    </div>
+                    <span style="font-size:0.65rem; color:var(--text-muted); font-weight:normal; margin-top:3px;">Métricas: ${Object.keys(c.metricas || {}).length}</span>
                 </div>
             </td>
         </tr>
@@ -388,10 +467,14 @@ function abrirComparador() {
     const mejoresValores = {};
     const criterios = Object.keys(currentWeights);
     
+    const _mapCritComp = { 'ocioNocturno': 'ambienteNocturno', 'transporte': 'calidadTransporte', 'ocio': 'turismo', 'conectividad': 'conectividad' };
     criterios.forEach(key => {
-        const mapCrit = { 'ocioNocturno': 'ambienteNocturno', 'transporte': 'calidadTransporte', 'ocio': 'turismo' };
-        const critKey = mapCrit[key] || key;
-        mejoresValores[key] = Math.max(...seleccionadas.map(c => (c.metricas ? c.metricas[critKey] : 0) || 0));
+        if (key === 'asequibilidad') {
+            mejoresValores[key] = Math.max(...seleccionadas.map(r => rankingDataGlobal.find(rd => rd._id === r._id)?._asequibilidad || 0));
+        } else {
+            const critKey = _mapCritComp[key] || key;
+            mejoresValores[key] = Math.max(...seleccionadas.map(c => (c.metricas ? c.metricas[critKey] : 0) || 0));
+        }
     });
 
     body.innerHTML = seleccionadas.map(c => {
@@ -408,8 +491,10 @@ function abrirComparador() {
         // --- GENERAR VEREDICTO ---
         const metricasOrdenadas = criterios
             .map(key => {
-                const mapCrit = { 'ocioNocturno': 'ambienteNocturno', 'transporte': 'calidadTransporte', 'ocio': 'turismo' };
-                const critKey = mapCrit[key] || key;
+                if (key === 'asequibilidad') {
+                    return { key, val: rankingDataGlobal.find(rd => rd._id === c._id)?._asequibilidad || 0 };
+                }
+                const critKey = _mapCritComp[key] || key;
                 return { key, val: (c.metricas ? c.metricas[critKey] : 0) || 0 };
             })
             .sort((a, b) => b.val - a.val);
@@ -443,16 +528,20 @@ function abrirComparador() {
                 
                 <div class="comp-metrics-list" style="margin-top:15px; background:white; padding:15px; border-radius:15px; box-shadow:inset 0 2px 4px rgba(0,0,0,0.02);">
                     ${criterios.map(key => {
-                        const mapCrit = { 'ocioNocturno': 'ambienteNocturno', 'transporte': 'calidadTransporte', 'ocio': 'turismo' };
-                        const critKey = mapCrit[key] || key;
-                        const val = (c.metricas ? c.metricas[critKey] : 0) || 0;
+                        let val;
+                        if (key === 'asequibilidad') {
+                            val = rankingDataGlobal.find(rd => rd._id === c._id)?._asequibilidad || 0;
+                        } else {
+                            const critKey = _mapCritComp[key] || key;
+                            val = (c.metricas ? c.metricas[critKey] : 0) || 0;
+                        }
                         const esMejor = val === mejoresValores[key] && val > 0;
-                        
+
                         return `
                             <div style="margin-bottom:12px;">
                                 <div class="comp-metric" style="margin-bottom:4px;">
-                                    <span style="text-transform:capitalize; font-size:0.75rem; color:var(--text-muted); display:flex; align-items:center; gap:5px; font-weight:500;">
-                                        ${key} ${esMejor ? '⭐' : ''}
+                                    <span style="font-size:0.75rem; color:var(--text-muted); display:flex; align-items:center; gap:5px; font-weight:500;">
+                                        ${CRIT_LABELS[key] || key} ${esMejor ? '⭐' : ''}
                                     </span>
                                     <span style="font-size:0.8rem; font-weight:700; color:${esMejor ? 'var(--accent-color)' : '#1e293b'}">${val}/5</span>
                                 </div>
@@ -486,19 +575,29 @@ if (btnCompararGlobal) {
     btnCompararGlobal.onclick = abrirComparador;
 }
 
+const CRIT_LABELS = {
+    transporte:       '🚌 Transporte',
+    ocio:             '🎭 Ocio y Turismo',
+    ocioNocturno:     '🌙 Vida Nocturna',
+    seguridad:        '🛡️ Seguridad',
+    calidadAcademica: '🎓 Calidad Académica',
+    conectividad:     '📶 Conectividad',
+    asequibilidad:    '💰 Asequibilidad'
+};
+
 function renderizarSliders() {
     if (!weightsGrid) return;
     weightsGrid.innerHTML = Object.keys(currentWeights).map(key => {
         const val = currentWeights[key];
         const percentage = (val / 5) * 100;
         return `
-        <div class="weight-control">
+        <div class="weight-control" data-key="${key}">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-                <label style="font-size:0.85rem; font-weight:600; text-transform:capitalize;">${key}</label>
-                <span style="font-size:0.75rem; color:var(--primary-color); font-weight:bold;">${val.toFixed(1)}</span>
+                <label style="font-size:0.85rem; font-weight:600;">${CRIT_LABELS[key] || key}</label>
+                <span class="weight-value" style="font-size:0.8rem; color:var(--accent-color); font-weight:bold; background:#eff6ff; padding:2px 8px; border-radius:10px; min-width:34px; text-align:center;">${val.toFixed(1)}</span>
             </div>
-            <input type="range" min="1" max="5" step="0.1" value="${val}" 
-                   class="weight-slider" data-crit="${key}" 
+            <input type="range" min="1" max="5" step="0.1" value="${val}"
+                   class="weight-slider" data-crit="${key}"
                    style="width: 100%;">
             <div class="ahp-weight-bar-container">
                 <div class="ahp-weight-bar-fill" style="width: ${percentage}%;"></div>
@@ -508,55 +607,146 @@ function renderizarSliders() {
 
     document.querySelectorAll('.weight-slider').forEach(s => {
         s.oninput = (e) => {
-            currentWeights[e.target.dataset.crit] = parseInt(e.target.value);
+            const crit = e.target.dataset.crit;
+            const v = parseFloat(e.target.value);
+            currentWeights[crit] = v;
+
+            // Actualizar valor visible y barra al instante (sin esperar re-render)
+            const wrap = e.target.closest('.weight-control');
+            if (wrap) {
+                const valSpan = wrap.querySelector('.weight-value');
+                if (valSpan) valSpan.textContent = v.toFixed(1);
+                const fill = wrap.querySelector('.ahp-weight-bar-fill');
+                if (fill) fill.style.width = `${(v / 5) * 100}%`;
+            }
+
             aplicarFiltros();
         };
     });
 }
 
 function renderizarSelectBusquedas() {
-    savedSearchesContainer.style.display = 'flex';
-    selectBusqueda.innerHTML = '<option value="">-- Seleccionar --</option>' + 
-        userFull.busquedas.map((b, idx) => `<option value="${idx}">${b.nombre} (${b.rol})</option>`).join('');
+    // Mantener el select del top-bar para compatibilidad
+    if (savedSearchesContainer && selectBusqueda) {
+        savedSearchesContainer.style.display = 'flex';
+        selectBusqueda.innerHTML = '<option value="">-- Seleccionar --</option>' +
+            userFull.busquedas.map((b, idx) => `<option value="${idx}">${b.nombre} (${b.rol})</option>`).join('');
+    }
+
+    // Renderizar pills en la columna 3
+    const pillsContainer = document.getElementById('savedSearchesPills');
+    if (!pillsContainer) return;
+
+    if (!userFull.busquedas || userFull.busquedas.length === 0) {
+        pillsContainer.innerHTML = '<p style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin-top:4px;">Aún no tienes búsquedas guardadas.</p>';
+        return;
+    }
+
+    pillsContainer.innerHTML = '<p style="font-size:0.72rem; color:var(--text-muted); margin-bottom:6px; font-weight:600;">MIS BÚSQUEDAS:</p>' +
+        userFull.busquedas.map((b, idx) => `
+            <div class="saved-search-pill" onclick="cargarBusqueda(${idx})" title="Cargar esta búsqueda">
+                <div style="min-width:0;">
+                    <span class="pill-search-name">${b.nombre}</span>
+                    <span class="pill-search-meta">${b.rol === 'trabajador' ? '💼' : '🎓'} ${b.rol}</span>
+                </div>
+                <button onclick="event.stopPropagation(); eliminarBusqueda('${b._id}', ${idx})"
+                        class="pill-delete-btn" title="Eliminar búsqueda">✕</button>
+            </div>
+        `).join('');
+}
+
+function cargarBusqueda(idx) {
+    const b = userFull.busquedas[idx];
+    if (!b) return;
+    currentWeights = { ...b.pesos };
+    if (selectRol) selectRol.value = b.rol;
+    renderizarSliders();
+    aplicarFiltros();
+    showToast(`📂 Búsqueda cargada: ${b.nombre}`, "success");
+}
+
+async function eliminarBusqueda(busquedaId, idx) {
+    const nombre = userFull.busquedas[idx]?.nombre || 'esta búsqueda';
+    if (!confirm(`¿Eliminar la búsqueda "${nombre}"?`)) return;
+    try {
+        const res = await fetch(`${API_BASE}/api/usuarios/${userFull._id}/busquedas/${busquedaId}`, {
+            method: 'DELETE'
+        });
+        if (res.ok) {
+            const data = await res.json();
+            userFull.busquedas = data.busquedas;
+            renderizarSelectBusquedas();
+            showToast("🗑️ Búsqueda eliminada", "default");
+        }
+    } catch (e) {
+        console.error(e);
+        showToast("Error al eliminar la búsqueda", "error");
+    }
 }
 
 if (selectBusqueda) {
     selectBusqueda.onchange = (e) => {
         const idx = e.target.value;
         if (idx === "") return;
-        
-        const b = userFull.busquedas[idx];
-        currentWeights = { ...b.pesos };
-        if (selectRol) selectRol.value = b.rol;
-        
-        // Sincronizar sliders y chips
-        renderizarSliders();
-        aplicarFiltros();
+        cargarBusqueda(Number(idx));
     };
+}
+
+async function guardarBusqueda(nombre) {
+    if (!userFull) {
+        showToast("⚠️ Inicia sesión para guardar búsquedas", "error");
+        return false;
+    }
+    if (!nombre) {
+        showToast("⚠️ Escribe un nombre para la búsqueda", "error");
+        return false;
+    }
+    try {
+        const res = await fetch(`${API_BASE}/api/usuarios/${userFull._id}/busquedas`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                nombre,
+                rol: selectRol ? selectRol.value : 'estudiante',
+                pesos: currentWeights
+            })
+        });
+
+        if (res.ok) {
+            userFull.busquedas = await res.json();
+            renderizarSelectBusquedas();
+            showToast("✅ Búsqueda guardada con éxito", "success");
+            return true;
+        }
+    } catch (e) { console.error(e); }
+    return false;
 }
 
 if (btnGuardar) {
     btnGuardar.onclick = async () => {
-        const nombre = prompt("¿Qué nombre quieres ponerle a esta configuración?");
+        const inputNombre = document.getElementById('inputNombreBusqueda');
+        const nombre = inputNombre ? inputNombre.value.trim() : '';
+        if (!nombre) {
+            if (inputNombre) inputNombre.focus();
+            showToast("⚠️ Escribe un nombre para la búsqueda", "error");
+            return;
+        }
+        const ok = await guardarBusqueda(nombre);
+        if (ok && inputNombre) inputNombre.value = '';
+    };
+}
+
+const btnGuardarTop = document.getElementById('btnGuardarBusquedaTop');
+if (btnGuardarTop) {
+    btnGuardarTop.onclick = async () => {
+        if (!userFull) {
+            showToast("⚠️ Inicia sesión para guardar búsquedas", "error");
+            return;
+        }
+        const sugerido = `Búsqueda ${new Date().toLocaleDateString('es-ES')}`;
+        const nombre = (prompt('Nombre para esta búsqueda:', sugerido) || '').trim();
         if (!nombre) return;
-
-        try {
-            const res = await fetch(`${API_BASE}/api/usuarios/${userFull._id}/busquedas`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    nombre,
-                    rol: selectRol ? selectRol.value : 'estudiante',
-                    pesos: currentWeights
-                })
-            });
-
-            if (res.ok) {
-                userFull.busquedas = await res.json();
-                renderizarSelectBusquedas();
-                showToast("✅ Búsqueda guardada con éxito", "success");
-            }
-        } catch (e) { console.error(e); }
+        await guardarBusqueda(nombre);
     };
 }
 
@@ -589,10 +779,10 @@ function renderizarMatrizAHP() {
     const n = criteria.length;
     
     // Crear matriz de identidad si no existe o sincronizar
-    let html = '<thead><tr><th></th>' + criteria.map(c => `<th style="text-transform:capitalize;">${c}</th>`).join('') + '</tr></thead><tbody>';
-    
+    let html = '<thead><tr><th></th>' + criteria.map(c => `<th style="font-size:0.75rem;">${CRIT_LABELS[c] || c}</th>`).join('') + '</tr></thead><tbody>';
+
     criteria.forEach((rowCrit, i) => {
-        html += `<tr><td style="font-weight:700; text-transform:capitalize; padding:8px;">${rowCrit}</td>`;
+        html += `<tr><td style="font-weight:700; font-size:0.75rem; padding:8px;">${CRIT_LABELS[rowCrit] || rowCrit}</td>`;
         criteria.forEach((colCrit, j) => {
             if (i === j) {
                 html += `<td style="background:#f1f5f9; text-align:center; font-weight:bold; border:1px solid #e2e8f0;">1</td>`;
@@ -667,7 +857,7 @@ function recalcularPrioridadesAHP() {
             </div>
             ${!consistency.consistent && consistency.worstCell ? `
                 <div style="font-size:0.75rem; color:#991b1b; padding-top:5px; border-top:1px dashed #fca5a5;">
-                    💡 Revisa la comparación entre <strong>${criteria[consistency.worstCell.row]}</strong> y <strong>${criteria[consistency.worstCell.col]}</strong> (celda resaltada).
+                    💡 Revisa la comparación entre <strong>${CRIT_LABELS[criteria[consistency.worstCell.row]] || criteria[consistency.worstCell.row]}</strong> y <strong>${CRIT_LABELS[criteria[consistency.worstCell.col]] || criteria[consistency.worstCell.col]}</strong> (celda resaltada).
                 </div>
             ` : ''}
         </div>
@@ -759,6 +949,54 @@ if (btnGeo) {
                 btnGeo.innerText = "Usar mi ubicación";
             }
         );
+    };
+}
+
+// --- NUEVOS FILTROS ---
+// Búsqueda por texto
+if (inputBusquedaTexto) {
+    inputBusquedaTexto.addEventListener('input', aplicarFiltros);
+}
+
+// Filtro seguridad mínima (pills)
+const filtroSeguridadEl = document.getElementById('filtroSeguridad');
+if (filtroSeguridadEl) {
+    filtroSeguridadEl.addEventListener('click', (e) => {
+        const btn = e.target.closest('.filter-pill');
+        if (!btn) return;
+        filtroSeguridadEl.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        minSeguridad = parseFloat(btn.dataset.val);
+        const labelVal = document.getElementById('valorSeguridad');
+        if (labelVal) labelVal.textContent = minSeguridad === 0 ? 'Cualquiera' : (minSeguridad === 5 ? 'Solo 5★' : `≥ ${minSeguridad}★`);
+        aplicarFiltros();
+    });
+}
+
+// Ordenar ranking
+if (selectOrden) {
+    selectOrden.addEventListener('change', aplicarFiltros);
+}
+
+// Reset filtros
+const btnResetFiltros = document.getElementById('btnResetFiltros');
+if (btnResetFiltros) {
+    btnResetFiltros.onclick = () => {
+        if (slider) { slider.value = 1500; if (etiquetaPrecio) etiquetaPrecio.textContent = '1500€'; }
+        if (sliderDistancia) { sliderDistancia.value = 2000; if (etiquetaDistancia) etiquetaDistancia.textContent = 'Cualquiera'; }
+        if (selectorAmbiente) selectorAmbiente.value = 'todos';
+        if (inputBusquedaTexto) inputBusquedaTexto.value = '';
+        if (selectOrden) selectOrden.value = 'ahp';
+        minSeguridad = 0;
+        if (filtroSeguridadEl) {
+            filtroSeguridadEl.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+            const primeraPill = filtroSeguridadEl.querySelector('.filter-pill');
+            if (primeraPill) primeraPill.classList.add('active');
+        }
+        const labelVal = document.getElementById('valorSeguridad');
+        if (labelVal) labelVal.textContent = 'Cualquiera';
+        aplicarFiltros();
+        showToast('↩ Filtros restablecidos', 'default');
     };
 }
 

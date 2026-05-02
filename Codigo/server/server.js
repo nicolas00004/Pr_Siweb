@@ -127,6 +127,8 @@ const BusquedaSchema = new mongoose.Schema({
     ocioNocturno: { type: Number, default: 1 },
     seguridad: { type: Number, default: 1 },
     calidadAcademica: { type: Number, default: 1 },
+    conectividad: { type: Number, default: 1 },
+    asequibilidad: { type: Number, default: 1 },
     fecha: { type: Date, default: Date.now }
 });
 
@@ -316,7 +318,9 @@ app.get('/api/usuarios/:id', async (req, res) => {
                     ocio: b.ocio,
                     ocioNocturno: b.ocioNocturno,
                     seguridad: b.seguridad,
-                    calidadAcademica: b.calidadAcademica
+                    calidadAcademica: b.calidadAcademica,
+                    conectividad: b.conectividad ?? 1,
+                    asequibilidad: b.asequibilidad ?? 1
                 }
             }));
         }
@@ -470,7 +474,9 @@ app.post('/api/usuarios/:id/busquedas', async (req, res) => {
             ocio: pesos.ocio,
             ocioNocturno: pesos.ocioNocturno,
             seguridad: pesos.seguridad,
-            calidadAcademica: pesos.calidadAcademica
+            calidadAcademica: pesos.calidadAcademica,
+            conectividad: pesos.conectividad ?? 1,
+            asequibilidad: pesos.asequibilidad ?? 1
         });
 
         await nuevaBusqueda.save();

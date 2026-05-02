@@ -6,14 +6,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginBtn = document.querySelector('.btn-login');
     const navUl = document.querySelector('.nav-global ul');
 
-    // 1. Si el usuario está logueado, actualizamos el header
+    // 1. Si el usuario está logueado, eliminamos "Inicia Sesión" y mostramos perfil + salir
     if (userInfo && loginBtn && navUl) {
-        // Cambiamos el botón de "Área Personal"
-        loginBtn.innerHTML = `Mi Perfil (${userInfo.nombre}) 👤`;
-        loginBtn.href = '/html/perfil.html';
-        loginBtn.classList.add('btn-logged');
+        // Eliminar por completo el <li> del botón "Inicia Sesión"
+        const loginLi = loginBtn.closest('li');
+        if (loginLi) loginLi.remove();
 
-        // Añadimos el botón de cerrar sesión al lado
+        // Añadir item "Mi Perfil" reutilizando .btn-login para padding/radius/color blanco
+        const perfilLi = document.createElement('li');
+        perfilLi.innerHTML = `<a href="/html/perfil.html" class="btn-login btn-logged">Mi Perfil (${userInfo.nombre}) 👤</a>`;
+        navUl.appendChild(perfilLi);
+
+        // Añadir botón de cerrar sesión al lado
         const logoutLi = document.createElement('li');
         logoutLi.innerHTML = `<a href="#" id="globalLogout" style="color: #ef4444; font-weight: bold;">Salir 🚪</a>`;
         navUl.appendChild(logoutLi);

@@ -66,6 +66,15 @@
                         <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">📁 MIS BÚSQUEDAS:</span>
                         <select id="selectBusqueda" style="padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; border: none; background: transparent;"></select>
                     </div>
+                    <button id="btnBuscarDestinos" onclick="mostrarRanking()"
+                            style="background: var(--accent-color); color: white; border: none; border-radius: 50px; padding: 10px 22px; font-weight: 700; font-size: 0.9rem; cursor: pointer; box-shadow: 0 4px 12px rgba(59,130,246,0.35); transition: all 0.2s;"
+                            onmouseover="if(!this.dataset.active)this.style.background='var(--accent-hover)'" onmouseout="if(!this.dataset.active)this.style.background='var(--accent-color)'">
+                        🔍 Buscar Destinos
+                    </button>
+                    <button id="btnGuardarBusquedaTop" style="display:none; background:#10b981; color:white; border:none; border-radius:50px; padding:10px 22px; font-weight:700; font-size:0.9rem; cursor:pointer; box-shadow:0 4px 12px rgba(16,185,129,0.35); transition:all 0.2s;"
+                            onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+                        💾 Guardar Búsqueda
+                    </button>
                     <a href="ayuda-ahp.html" class="help-badge-link" title="Saber más sobre el cálculo AHP" style="text-decoration: none; background: #eff6ff; color: var(--accent-color); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; border: 1px solid #dbeafe; transition: all 0.3s;">❓</a>
                 </div>
             </div>
@@ -73,7 +82,19 @@
             <div class="controls-grid-main">
                 <!-- COLUMNA 1: FILTROS BÁSICOS -->
                 <div class="control-group-box">
-                    <h4>🔍 Filtros Básicos</h4>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <h4 style="margin:0;">🔍 Filtros Básicos</h4>
+                        <button id="btnResetFiltros" class="btn-tiny" title="Restablecer todos los filtros">↩ Reset</button>
+                    </div>
+
+                    <!-- Búsqueda por nombre -->
+                    <div class="control-item">
+                        <input type="text" id="inputBusquedaTexto"
+                               placeholder="Buscar ciudad por nombre…"
+                               style="width:100%; padding:8px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:0.85rem; font-family:inherit; background:#f8fafc; box-sizing:border-box; transition:border-color 0.2s;"
+                               onfocus="this.style.borderColor='var(--accent-color)'" onblur="this.style.borderColor='#e2e8f0'">
+                    </div>
+
                     <div class="control-item">
                         <div class="control-label">
                             <label>💶 Presupuesto Máx.</label>
@@ -81,6 +102,7 @@
                         </div>
                         <input type="range" id="rangoPresupuesto" min="300" max="2500" step="50" value="1500">
                     </div>
+
                     <div class="control-item">
                         <div class="control-label">
                             <label>📍 Distancia Máx.</label>
@@ -92,12 +114,39 @@
                             <span id="originText">(desde Madrid)</span>
                         </div>
                     </div>
+
                     <div class="control-item">
                         <label class="simple-label">🎭 Ambiente</label>
                         <select id="selectAmbiente">
                             <option value="todos">Todos los ambientes</option>
                             <option value="fiesta">Vida Nocturna / Social</option>
                             <option value="tranquilo">Tranquilo / Naturaleza</option>
+                        </select>
+                    </div>
+
+                    <!-- Seguridad mínima -->
+                    <div class="control-item">
+                        <div class="control-label">
+                            <label>🛡️ Seguridad mínima</label>
+                            <span id="valorSeguridad" style="font-size:0.75rem; color:var(--primary-color); font-weight:700;">Cualquiera</span>
+                        </div>
+                        <div class="filter-pills-row" id="filtroSeguridad">
+                            <button class="filter-pill active" data-val="0">Todas</button>
+                            <button class="filter-pill" data-val="2">≥ 2</button>
+                            <button class="filter-pill" data-val="3">≥ 3</button>
+                            <button class="filter-pill" data-val="4">≥ 4</button>
+                            <button class="filter-pill" data-val="5">Solo 5</button>
+                        </div>
+                    </div>
+
+                    <!-- Ordenar resultados -->
+                    <div class="control-item">
+                        <label class="simple-label">↕️ Ordenar ranking por</label>
+                        <select id="selectOrden">
+                            <option value="ahp">🏆 Puntuación AHP</option>
+                            <option value="presupuesto">💶 Menor presupuesto</option>
+                            <option value="seguridad">🛡️ Mayor seguridad</option>
+                            <option value="nombre">🔤 Nombre A-Z</option>
                         </select>
                     </div>
                 </div>
@@ -126,8 +175,31 @@
                             <option value="trabajador">💼 Trabajador / Pro</option>
                         </select>
                     </div>
-                    <button id="btnGuardarBusqueda" class="btn-submit" style="display: none; margin-top: 15px; font-size: 0.85rem; padding: 12px;">💾 Guardar Configuración</button>
-                    
+
+                    <!-- Bloque visible solo si está logueado -->
+                    <div id="saveSearchSection" style="display:none; margin-top:14px;">
+                        <label class="simple-label" style="margin-bottom:8px;">💾 Guardar búsqueda actual</label>
+                        <div style="display:flex; flex-direction:column; gap:8px; align-items:stretch;">
+                            <input type="text" id="inputNombreBusqueda" placeholder="Nombre de la búsqueda…"
+                                   maxlength="40"
+                                   style="width:100%; padding:8px 10px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.8rem; font-family:inherit; background:#f8fafc; box-sizing:border-box;">
+                            <button id="btnGuardarBusqueda"
+                                    style="align-self:center; background:var(--accent-color); color:white; border:none; border-radius:10px; padding:8px 22px; font-size:0.8rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:background 0.2s;"
+                                    onmouseover="this.style.background='var(--accent-hover)'" onmouseout="this.style.background='var(--accent-color)'">
+                                💾 Guardar
+                            </button>
+                        </div>
+
+                        <!-- Lista de búsquedas guardadas como pills -->
+                        <div id="savedSearchesPills" style="margin-top:12px;"></div>
+                    </div>
+
+                    <!-- Aviso para usuarios no logueados -->
+                    <div id="saveLoginPrompt" style="margin-top:14px; padding:12px; background:#f8fafc; border-radius:10px; border:1px dashed #cbd5e1; text-align:center;">
+                        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:6px;">Inicia sesión para guardar y reutilizar tus búsquedas</p>
+                        <a href="login.html" style="font-size:0.8rem; color:var(--accent-color); font-weight:700; text-decoration:none;">→ Iniciar Sesión</a>
+                    </div>
+
                     <!-- PANEL MATRIZ (MODAL O DESPLEGABLE) -->
                     <div id="ahpMatrixPanel" class="floating-matrix-panel" style="display: none;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -153,7 +225,7 @@
                         <div class="ranking-header" style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start;">
                             <div>
                                 <h2 style="font-size: 1.1rem; margin: 0;">🏆 Ranking Sugerido</h2>
-                                <p style="font-size: 0.75rem; color: var(--text-muted);">AHP-Sort II</p>
+                                <p style="font-size: 0.75rem; color: var(--text-muted);">AHP-Sort II · <span id="resultadosCount" style="font-weight:700; color:var(--accent-color);">0 ciudades</span></p>
                             </div>
                             <button id="btnComparar" class="btn-ver" style="display:none; margin:0; padding: 5px 12px; font-size: 0.8rem; background: var(--accent-color); color:white; border:none;">
                                 ⚖️ Comparar (<span id="compareCount">0</span>)
@@ -187,8 +259,14 @@
                     <h2>¿Falta tu ciudad?</h2>
                     <p>Ayuda a otros estudiantes a descubrir su próximo destino añadiendo nueva información a nuestra
                         comunidad.</p>
+                    <button id="btnToggleForm"
+                            onclick="const w=document.getElementById('formComunidadWrapper'); const open=w.style.display!=='none'; w.style.display=open?'none':'block'; this.textContent=open?'▼ Mostrar formulario':'▲ Ocultar formulario';"
+                            style="margin-top:15px; background:var(--accent-color); color:white; border:none; padding:10px 24px; border-radius:50px; font-weight:700; cursor:pointer; font-size:0.9rem; transition:background 0.2s;">
+                        ▼ Mostrar formulario
+                    </button>
                 </div>
 
+                <div id="formComunidadWrapper" style="display:none;">
                 <form id="formNuevaCiudad" class="form-moderno">
                     <div class="form-row">
                         <div class="form-group">
@@ -253,6 +331,7 @@
                     <button type="submit" class="btn-submit">🌟 Añadir a la Red</button>
                     <div id="form-feedback" class="feedback-msg"></div>
                 </form>
+                </div><!-- fin #formComunidadWrapper -->
             </div>
         </section>
     </main>

@@ -353,16 +353,22 @@
         function updateColumn(colId, ciudadId) {
             const ciudad = todasCiudades.find(c => c._id === ciudadId);
             const criterios = ['presupuesto', 'ambiente', 'seguridad', 'ocio', 'conectividad', 'turismo'];
-            
+            // Mapeamos los criterios del comparador a los campos reales del schema
+            const metricaMap = { seguridad: 'seguridad', ocio: 'ambienteNocturno', conectividad: 'conectividad', turismo: 'turismo' };
+
             criterios.forEach(crit => {
                 const element = document.getElementById(`${crit}_${colId}`);
                 if (!element) return;
-                
+
                 if (!ciudad) {
                     element.innerHTML = "---";
                     element.className = "";
                 } else {
-                    let val = ciudad[crit];
+                    let val;
+                    if (crit === 'presupuesto') val = ciudad.presupuesto;
+                    else if (crit === 'ambiente') val = ciudad.tipoAmbiente;
+                    else val = ciudad.metricas?.[metricaMap[crit]];
+
                     if (crit === 'presupuesto') {
                         const pct = Math.min(100, (val / 1500) * 100);
                         element.innerHTML = `
@@ -373,7 +379,7 @@
                         `;
                     }
                     else if (crit === 'ambiente') {
-                        element.innerText = val === 'fiesta' ? '🎭 Vida Social' : '🧘 Tranquilidad';
+                        element.innerText = val === 'fiesta' ? '🎭 Vida Social' : (val ? '🧘 Tranquilidad' : '---');
                     }
                     else if (['seguridad', 'ocio', 'conectividad', 'turismo'].includes(crit)) {
                         const stars = '⭐'.repeat(val || 0);
@@ -450,15 +456,15 @@
             document.getElementById('listBaratas').innerHTML = baratas.map((c, i) => createCard(c, i, true)).join('');
 
             // Seguras (mayor seguridad)
-            const seguras = [...todasCiudades].map(c => ({...c, valor: c.seguridad})).sort((a, b) => (b.valor || 0) - (a.valor || 0)).slice(0, 3);
+            const seguras = [...todasCiudades].map(c => ({...c, valor: c.metricas?.seguridad})).sort((a, b) => (b.valor || 0) - (a.valor || 0)).slice(0, 3);
             document.getElementById('listSeguras').innerHTML = seguras.map((c, i) => createCard(c, i, false)).join('');
 
-            // Ocio (mayor ocio)
-            const ocio = [...todasCiudades].map(c => ({...c, valor: c.ocio})).sort((a, b) => (b.valor || 0) - (a.valor || 0)).slice(0, 3);
+            // Ocio (mayor ambiente nocturno)
+            const ocio = [...todasCiudades].map(c => ({...c, valor: c.metricas?.ambienteNocturno})).sort((a, b) => (b.valor || 0) - (a.valor || 0)).slice(0, 3);
             document.getElementById('listOcio').innerHTML = ocio.map((c, i) => createCard(c, i, false)).join('');
 
             // Turismo (mayor turismo)
-            const turismo = [...todasCiudades].map(c => ({...c, valor: c.turismo})).sort((a, b) => (b.valor || 0) - (a.valor || 0)).slice(0, 3);
+            const turismo = [...todasCiudades].map(c => ({...c, valor: c.metricas?.turismo})).sort((a, b) => (b.valor || 0) - (a.valor || 0)).slice(0, 3);
             document.getElementById('listTurismo').innerHTML = turismo.map((c, i) => createCard(c, i, false)).join('');
         }
 

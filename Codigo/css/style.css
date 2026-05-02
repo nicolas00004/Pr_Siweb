@@ -1694,6 +1694,14 @@ footer p.copyright {
 .ranking-row:nth-child(2) .rank-number { color: #94a3b8; }
 .ranking-row:nth-child(3) .rank-number { color: #b45309; }
 
+/* Resaltado de fila para el podio */
+.ranking-row:nth-child(1) { background: linear-gradient(90deg, #fffbeb 0%, transparent 55%); }
+.ranking-row:nth-child(2) { background: linear-gradient(90deg, #f1f5f9 0%, transparent 55%); }
+.ranking-row:nth-child(3) { background: linear-gradient(90deg, #fef3c7 0%, transparent 55%); }
+.ranking-row:nth-child(1):hover { background: linear-gradient(90deg, #fef9c3 0%, #f8fafc 100%); }
+.ranking-row:nth-child(2):hover { background: linear-gradient(90deg, #e9eef4 0%, #f8fafc 100%); }
+.ranking-row:nth-child(3):hover { background: linear-gradient(90deg, rgba(253,230,138,0.2) 0%, #f8fafc 100%); }
+
 .rank-city {
     display: flex;
     align-items: center;
@@ -1774,6 +1782,89 @@ footer p.copyright {
 }
 .toast-success { border-left-color: #10b981; }
 .toast-error { border-left-color: #ef4444; }
+/* --- PANEL AHP DESTACADO --- */
+.ahp-weights-section {
+    background: #eff6ff !important;
+    border-color: #bfdbfe !important;
+}
+.ahp-weights-section h4 {
+    color: var(--accent-color);
+}
+
+/* --- MAPA STICKY EN DESKTOP ANCHO --- */
+@media (min-width: 1300px) {
+    .results-grid > div:last-child {
+        position: sticky;
+        top: 90px;
+        align-self: start;
+    }
+}
+
+/* --- PILLS DE BÚSQUEDAS GUARDADAS --- */
+.saved-search-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.saved-search-pill:hover {
+    border-color: var(--accent-color);
+    background: #eff6ff;
+    transform: translateX(2px);
+}
+.pill-search-name {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 140px;
+}
+.pill-search-meta {
+    display: block;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    margin-top: 1px;
+}
+.pill-delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #cbd5e1;
+    font-size: 0.85rem;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: color 0.2s, background 0.2s;
+    flex-shrink: 0;
+    line-height: 1;
+}
+.pill-delete-btn:hover {
+    color: #ef4444;
+    background: #fee2e2;
+}
+
+/* --- SKELETON LOADING RANKING --- */
+@keyframes skeleton-pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+.skeleton-row td { padding: 16px 15px; border-bottom: 1px solid #f1f5f9; }
+.skeleton-cell {
+    height: 14px;
+    border-radius: 6px;
+    background: #e2e8f0;
+    animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
 /* --- EXPANSIÓN: MAPA DE DESTINOS --- */
 #mapa-destinos {
     z-index: 1;
@@ -1888,4 +1979,33 @@ footer p.copyright {
     .ranking-table td {
         font-size: 0.9rem;
     }
+}
+
+/* --- FILTROS BÁSICOS: PILLS DE SEGURIDAD --- */
+.filter-pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 4px;
+}
+.filter-pill {
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1.5px solid #e2e8f0;
+    background: #f8fafc;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.18s;
+}
+.filter-pill:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background: #eff6ff;
+}
+.filter-pill.active {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
 }
