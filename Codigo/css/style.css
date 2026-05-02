@@ -2009,3 +2009,159 @@ footer p.copyright {
     border-color: var(--accent-color);
     color: white;
 }
+
+/* ============================================================
+   EFECTOS VISUALES DE BÚSQUEDA (Buscar Destinos → Ranking)
+   ============================================================ */
+
+/* Botón "Buscar Destinos" en estado de carga */
+.btn-loading {
+    pointer-events: none;
+    opacity: 0.85;
+    background: #6366f1 !important;
+}
+.btn-spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: btn-spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+}
+@keyframes btn-spin { to { transform: rotate(360deg); } }
+
+/* Overlay con efecto radar mientras se calcula el ranking */
+.ranking-container { position: relative; }
+.ranking-container.searching {
+    transition: filter 0.3s ease;
+    filter: saturate(0.85);
+}
+.search-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(2px);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 5;
+}
+.search-overlay.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+.search-overlay-inner {
+    text-align: center;
+    color: var(--primary-color);
+}
+.search-overlay-text {
+    margin-top: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--primary-color);
+}
+.search-overlay-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* Radar animado */
+.search-radar {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto;
+    border-radius: 50%;
+    border: 2px solid rgba(59,130,246,0.3);
+    position: relative;
+    box-shadow: inset 0 0 30px rgba(59,130,246,0.15);
+}
+.search-radar::before,
+.search-radar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--accent-color);
+    animation: radar-ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+.search-radar::after { animation-delay: 0.8s; }
+@keyframes radar-ping {
+    0%   { transform: scale(0.4); opacity: 1; }
+    80%  { opacity: 0; }
+    100% { transform: scale(1.4); opacity: 0; }
+}
+
+/* Pulso suave en el mapa mientras se busca */
+.searching-pulse {
+    animation: map-pulse 1.4s ease-in-out infinite;
+    box-shadow: 0 0 0 0 rgba(59,130,246,0.4);
+}
+@keyframes map-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(59,130,246,0.4); }
+    50%  { box-shadow: 0 0 0 14px rgba(59,130,246,0); }
+    100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+}
+
+/* Entrada animada de las filas del ranking */
+.row-fade-in {
+    opacity: 0;
+    transform: translateY(8px);
+    animation: row-in 0.45s ease-out forwards;
+}
+@keyframes row-in {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   BOTÓN COMPARAR — más visible al seleccionar ciudades
+   ============================================================ */
+#btnComparar {
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.2s ease, box-shadow 0.25s ease, background 0.2s ease;
+    border-radius: 50px !important;
+    font-weight: 700;
+}
+
+/* Estado: 1 ciudad seleccionada (insuficiente, dale pista) */
+#btnComparar.compare-hint {
+    background: #f1f5f9 !important;
+    color: var(--text-muted) !important;
+    border: 1.5px dashed #cbd5e1 !important;
+    box-shadow: none;
+}
+
+/* Estado: 2+ ciudades, listo para usar */
+#btnComparar.compare-ready {
+    background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%) !important;
+    color: white !important;
+    padding: 8px 18px !important;
+    font-size: 0.9rem !important;
+    box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45),
+                0 0 0 4px rgba(239, 68, 68, 0.15);
+    transform: scale(1.04);
+}
+#btnComparar.compare-ready:hover {
+    transform: scale(1.08);
+    box-shadow: 0 8px 22px rgba(239, 68, 68, 0.55),
+                0 0 0 6px rgba(239, 68, 68, 0.18);
+}
+
+/* Pulso de aparición cuando alcanzas el mínimo de 2 */
+#btnComparar.compare-pulse {
+    animation: compare-pop 1.8s ease-out;
+}
+@keyframes compare-pop {
+    0%   { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    25%  { transform: scale(1.15); }
+    50%  { box-shadow: 0 0 0 18px rgba(239, 68, 68, 0); }
+    100% { transform: scale(1.04); box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45), 0 0 0 4px rgba(239, 68, 68, 0.15); }
+}

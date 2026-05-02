@@ -146,10 +146,16 @@ const OpinionSchema = new mongoose.Schema({
         seguridad: { type: Number, default: 5 },
         calidadAcademica: { type: Number, default: 5 }
     },
+    likes:    [{ type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' }],
+    dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' }],
     respuestas: [{
         texto_respuesta: { type: String, required: true },
         id_usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
-        fecha: { type: Date, default: Date.now }
+        // null = respuesta de primer nivel (a la opinión); ObjectId = respuesta a otra respuesta
+        parent_id: { type: mongoose.Schema.Types.ObjectId, default: null },
+        fecha: { type: Date, default: Date.now },
+        likes:    [{ type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' }],
+        dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' }]
     }]
 });
 
@@ -433,10 +439,10 @@ app.post('/api/opiniones', async (req, res) => {
     }
 });
 
-// Añadir respuesta a una opinión
+// Añadir respuesta a una opinión (o a otra respuesta si se pasa parentId)
 app.post('/api/opiniones/:id/respuestas', async (req, res) => {
     try {
-        const { texto, usuarioId } = req.body;
+        const { texto, usuarioId, parentId } = req.body;
         const opinionId = req.params.id;
 
         if (!texto || !usuarioId) {
@@ -446,15 +452,85 @@ app.post('/api/opiniones/:id/respuestas', async (req, res) => {
         const opinion = await Opinion.findById(opinionId);
         if (!opinion) return res.status(404).json({ error: 'Opinión no encontrada' });
 
+        // Si parentId viene, validar que esa respuesta exista en la opinión
+        if (parentId) {
+            if (!mongoose.Types.ObjectId.isValid(parentId)) {
+                return res.status(400).json({ error: 'parentId no válido' });
+            }
+            const padre = opinion.respuestas.id(parentId);
+            if (!padre) return res.status(404).json({ error: 'Respuesta padre no encontrada' });
+        }
+
         opinion.respuestas.push({
             texto_respuesta: texto,
-            id_usuario: usuarioId
+            id_usuario: usuarioId,
+            parent_id: parentId || null
         });
 
         await opinion.save();
         res.status(201).json({ mensaje: 'Respuesta añadida con éxito' });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: 'Error al añadir respuesta' });
+    }
+});
+
+// Like/dislike sobre una opinión o sobre una respuesta concreta.
+// Body: { tipo: 'like' | 'dislike', usuarioId, respuestaId? }
+// Comportamiento estilo YouTube: toggle del mismo voto, switch del contrario.
+app.post('/api/opiniones/:id/voto', async (req, res) => {
+    try {
+        const { tipo, usuarioId, respuestaId } = req.body;
+        const opinionId = req.params.id;
+
+        if (!['like', 'dislike'].includes(tipo)) {
+            return res.status(400).json({ error: 'Tipo de voto no válido' });
+        }
+        if (!usuarioId || !mongoose.Types.ObjectId.isValid(usuarioId)) {
+            return res.status(401).json({ error: 'Debes iniciar sesión para votar.' });
+        }
+
+        const opinion = await Opinion.findById(opinionId);
+        if (!opinion) return res.status(404).json({ error: 'Opinión no encontrada' });
+
+        // Determinar el "objetivo": opinión o respuesta concreta dentro de respuestas[]
+        let target = opinion;
+        if (respuestaId) {
+            if (!mongoose.Types.ObjectId.isValid(respuestaId)) {
+                return res.status(400).json({ error: 'respuestaId no válido' });
+            }
+            target = opinion.respuestas.id(respuestaId);
+            if (!target) return res.status(404).json({ error: 'Respuesta no encontrada' });
+        }
+
+        const uid = String(usuarioId);
+        const yaLike    = target.likes.some(u => String(u) === uid);
+        const yaDislike = target.dislikes.some(u => String(u) === uid);
+
+        // Limpiar voto previo del usuario
+        target.likes    = target.likes.filter(u => String(u) !== uid);
+        target.dislikes = target.dislikes.filter(u => String(u) !== uid);
+
+        // Aplicar nuevo voto solo si no era el mismo (toggle)
+        let miVoto = null;
+        if (tipo === 'like' && !yaLike) {
+            target.likes.push(usuarioId);
+            miVoto = 'like';
+        } else if (tipo === 'dislike' && !yaDislike) {
+            target.dislikes.push(usuarioId);
+            miVoto = 'dislike';
+        }
+
+        await opinion.save();
+
+        res.json({
+            likes:    target.likes.length,
+            dislikes: target.dislikes.length,
+            miVoto
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error al registrar el voto' });
     }
 });
 

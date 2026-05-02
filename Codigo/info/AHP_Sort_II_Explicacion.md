@@ -61,41 +61,59 @@ $$PuntuacionGlobal = \frac{\sum_{i} (Métrica_{i} \times w_i)}{\sum_{i} w_i}$$
 
 ## 3. Fase Sort II: Clasificación por Perfiles Límite
 
-AHP Sort II clasifica las alternativas en categorías predefinidas comparando su puntuación global frente a **Perfiles Límite** (thresholds).
+AHP-Sort II clasifica las alternativas en categorías ordinales comparándolas frente a **Perfiles Límite** ($b_1, b_2, ...$): alternativas hipotéticas que marcan la frontera inferior de cada categoría. El umbral de cada categoría es el score que obtendría su perfil límite con los pesos actuales del usuario, por lo que **las fronteras se mueven de forma coherente con sus prioridades** (no son constantes arbitrarias).
 
-### Definición de Categorías
-En el sistema INFUNI se definen 4 categorías con sus umbrales mínimos (`CATEGORIAS_AHP` en `script.js`):
+### Perfiles Límite definidos
+En `script.js`, `LIMITING_PROFILES` contiene un vector de métricas por categoría. Por ejemplo, el perfil límite para **🌟 Destino de Élite** representa una ciudad mínimamente apta para esa categoría:
 
-| Categoría | Umbral Mínimo ($p_j$) | Color |
-| :--- | :--- | :--- |
-| **🌟 Destino de Élite** | $\ge 4.5$ | Dorado |
-| **✅ Muy Recomendado** | $\ge 3.8$ | Verde |
-| **🆗 Aceptable** | $\ge 2.5$ | Azul |
-| **⚠️ No Recomendado** | $\ge 0.0$ | Rojo |
-
-### Algoritmo de Clasificación
-Las categorías están ordenadas de mayor a menor umbral. Para una puntuación $S$, se asigna la primera categoría cuyo umbral se cumple:
-
-```javascript
-for (const cat of categories) {
-    if (score >= cat.min) return cat.name;
+```js
+{
+    calidadTransporte: 4.5, turismo: 4.5, ambienteNocturno: 4.0,
+    seguridad: 4.5, calidadAcademica: 4.5, conectividad: 4.5,
+    asequibilidad: 4.0
 }
 ```
 
-### Alertas de Umbral
-Tras clasificar, el sistema detecta situaciones límite:
-- **Cerca de subir:** si la diferencia con el umbral de la categoría superior es < 0.15, se muestra `✨ Casi en cat. superior`.
-- **Cerca de bajar:** si la diferencia con el umbral inferior de la categoría actual es < 0.10, se muestra `⚠️ Al límite inferior`.
+El umbral dinámico se calcula con la misma fórmula que para una ciudad real:
+$$umbral_j = \frac{\sum_{i} (b_{j,i} \times w_i)}{\sum_{i} w_i}$$
 
-Esto permite al usuario saber qué ciudades son candidatas a cambiar de categoría con pequeñas variaciones en sus pesos.
+Donde $b_{j,i}$ es el valor del criterio $i$ en el perfil $j$.
+
+### Algoritmo de Clasificación
+Las categorías están ordenadas de mejor a peor. Para una puntuación $S$ de una ciudad:
+
+```javascript
+let cat = catFallback; // ⚠️ No Recomendado por defecto
+for (const c of categoriasConUmbrales()) {
+    if (S >= c.min) { cat = c; break; }
+}
+```
+
+### Veto (no-compensación parcial)
+La suma ponderada es **compensatoria**: una métrica baja se puede compensar con otra alta. Para criterios donde esto es indeseable, se aplica un **veto** que **capa la categoría máxima alcanzable** independientemente del score:
+
+| Criterio | Umbral | Capa a |
+| :--- | :---: | :--- |
+| `seguridad` | < 2.0 | 🆗 Aceptable |
+
+Una ciudad con seguridad 1 nunca podrá ser clasificada como "Élite" o "Muy Recomendado", aunque su score global sea muy alto. La razón se muestra en la UI con la etiqueta "🚫 Seguridad insuficiente". Esto introduce semántica de outranking dentro de un marco AHP esencialmente compensatorio.
+
+### Alertas de Umbral (sensibilidad)
+Tras clasificar, el sistema detecta situaciones límite frente a los **umbrales dinámicos**:
+- **Cerca de subir:** diferencia con el umbral de la categoría superior < 0.15 → `✨ Casi en cat. superior`.
+- **Cerca de bajar:** diferencia con el umbral de la categoría actual < 0.10 → `⚠️ Al límite inferior`.
+
+Estas alertas se suprimen cuando la ciudad está vetada (la categoría no la determina el score, sino el veto).
 
 ---
 
 ## Resumen del Flujo de Datos
 
-1. **Entrada:** Matriz de Saaty (modo experto) o Sliders con pesos directos.
-2. **Procesamiento AHP:** Media Geométrica Normalizada → Test de Consistencia (CR) → Reescalado a 1–5.
-3. **Agregación:** Suma ponderada de métricas (solo criterios con datos disponibles), aplicando el mapeo interfaz→BD.
-4. **Clasificación Sort II:** Comparación con perfiles límite y asignación de categoría.
-5. **Alertas de umbral:** Detección de ciudades cerca del borde de categoría.
-6. **Salida:** Ranking visual con alertas, mapa interactivo con marcadores de color por posición en el ranking.
+1. **Entrada:** Matriz de Saaty (modo experto) o sliders con pesos directos.
+2. **Procesamiento AHP:** Media Geométrica Normalizada → Test de Consistencia ($CR$) → Reescalado a 1–5.
+3. **Agregación:** Suma ponderada de métricas (sólo criterios con datos disponibles), aplicando el mapeo interfaz→BD.
+4. **Cálculo de umbrales dinámicos:** El score de cada perfil límite se recalcula con los pesos actuales del usuario.
+5. **Clasificación Sort II:** Comparación del score de cada ciudad con los umbrales dinámicos.
+6. **Veto:** Métricas críticas (seguridad) por debajo del umbral capan la categoría máxima.
+7. **Alertas de umbral:** Detección de ciudades cerca del borde (suprimidas si hay veto).
+8. **Salida:** Ranking visual con clasificación, alertas y vetos; mapa interactivo con marcadores de color por posición.

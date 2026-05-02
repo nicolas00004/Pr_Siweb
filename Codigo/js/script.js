@@ -90,6 +90,7 @@ async function cargarDatos() {
         
         // Cargar búsqueda temporal si viene del perfil
         const temp = localStorage.getItem('tempBusqueda');
+        let lanzarBusquedaAuto = false;
         if (temp) {
             const b = JSON.parse(temp);
             currentWeights = { ...b.pesos };
@@ -97,9 +98,15 @@ async function cargarDatos() {
             localStorage.removeItem('tempBusqueda');
             renderizarSliders();
             showToast(`📂 Cargada búsqueda: ${b.nombre}`, "success");
+            lanzarBusquedaAuto = true;
         }
 
         aplicarFiltros();
+
+        // Si veníamos del perfil, lanzar el ranking directamente (con su animación)
+        if (lanzarBusquedaAuto) {
+            setTimeout(() => mostrarRanking(), 300);
+        }
     } catch (e) {
         console.error('Error cargando ciudades:', e);
         if (contenedor) {
@@ -285,24 +292,146 @@ function renderizarMapa(datos, rankingData = []) {
     });
 }
 
-const CATEGORIAS_AHP = [
-    { name: '🌟 Destino de Élite', min: 4.5, color: '#fbbf24' },
-    { name: '✅ Muy Recomendado', min: 3.8, color: '#10b981' },
-    { name: '🆗 Aceptable', min: 2.5, color: '#3b82f6' },
-    { name: '⚠️ No Recomendado', min: 0, color: '#ef4444' }
+// AHP-Sort II canónico: cada perfil define el LÍMITE INFERIOR de su categoría
+// como un vector de métricas. El umbral real se recalcula con los pesos actuales
+// del usuario, por lo que las fronteras de categoría se mueven con sus prioridades.
+const LIMITING_PROFILES = [
+    {
+        name: '🌟 Destino de Élite', color: '#fbbf24',
+        metricasPerfil: {
+            calidadTransporte: 4.5, turismo: 4.5, ambienteNocturno: 4.0,
+            seguridad: 4.5, calidadAcademica: 4.5, conectividad: 4.5,
+            asequibilidad: 4.0
+        }
+    },
+    {
+        name: '✅ Muy Recomendado', color: '#10b981',
+        metricasPerfil: {
+            calidadTransporte: 3.8, turismo: 3.8, ambienteNocturno: 3.5,
+            seguridad: 4.0, calidadAcademica: 4.0, conectividad: 3.8,
+            asequibilidad: 3.5
+        }
+    },
+    {
+        name: '🆗 Aceptable', color: '#3b82f6',
+        metricasPerfil: {
+            calidadTransporte: 2.5, turismo: 2.5, ambienteNocturno: 2.0,
+            seguridad: 3.0, calidadAcademica: 3.0, conectividad: 2.5,
+            asequibilidad: 2.5
+        }
+    }
+];
+const CATEGORIA_FALLBACK = { name: '⚠️ No Recomendado', color: '#ef4444' };
+
+// Vetos: una métrica crítica por debajo del umbral cap la categoría máxima alcanzable.
+// Rompe la compensación pura del weighted-sum en casos donde una sola dimensión es
+// inaceptable (p. ej. seguridad muy baja no debería poder ser "Élite" por mucho ocio).
+const VETO_RULES = [
+    { criterio: 'seguridad', umbral: 2.0, capCategoria: '🆗 Aceptable', mensaje: '🚫 Seguridad insuficiente' }
 ];
 
+const CRIT_TO_METRIC = {
+    ocioNocturno: 'ambienteNocturno',
+    transporte:   'calidadTransporte',
+    ocio:         'turismo'
+};
+
+// Score que obtiene un perfil límite con los pesos actuales del usuario.
+// Define el umbral dinámico de su categoría.
+function scoreDePerfil(metricasPerfil, weights) {
+    let scoreTotal = 0, pesoTotal = 0;
+    Object.keys(weights).forEach(crit => {
+        const critKey = CRIT_TO_METRIC[crit] || crit;
+        const v = metricasPerfil[critKey];
+        if (v != null) {
+            scoreTotal += v * weights[crit];
+            pesoTotal += weights[crit];
+        }
+    });
+    return scoreTotal / (pesoTotal || 1);
+}
+
+// Devuelve la lista de categorías con su umbral recalculado a partir de los
+// pesos actuales del usuario. Mantiene compatibilidad con consumidores que
+// esperaban la forma { name, color, min } del antiguo CATEGORIAS_AHP.
+function categoriasConUmbrales() {
+    const cats = LIMITING_PROFILES.map(p => ({
+        name: p.name,
+        color: p.color,
+        min: scoreDePerfil(p.metricasPerfil, currentWeights)
+    }));
+    cats.push({ ...CATEGORIA_FALLBACK, min: 0 });
+    return cats;
+}
+
 let rankingVisible = false;
+let buscando = false;
 
 function mostrarRanking() {
-    rankingVisible = true;
+    if (buscando) return;
+    buscando = true;
+
     const btn = document.getElementById('btnBuscarDestinos');
+    const rankingContainer = document.querySelector('.ranking-container');
+    const mapaWrapper = document.getElementById('mapa-destinos')?.parentElement;
+
+    // Estado "buscando" en el botón
     if (btn) {
-        btn.innerHTML = '🔄 Actualizar';
-        btn.style.background = '#10b981';
+        btn.classList.add('btn-loading');
+        btn.dataset.active = '1';
+        btn.innerHTML = '<span class="btn-spinner"></span> Calculando...';
     }
-    aplicarFiltros();
-    document.querySelector('.ranking-container')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Overlay de carga sobre el ranking
+    if (rankingContainer) {
+        rankingContainer.classList.add('searching');
+        let overlay = rankingContainer.querySelector('.search-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'search-overlay';
+            overlay.innerHTML = `
+                <div class="search-overlay-inner">
+                    <div class="search-radar"></div>
+                    <p class="search-overlay-text">🔍 Aplicando AHP-Sort II…</p>
+                    <p class="search-overlay-sub">Calculando umbrales dinámicos y vetos</p>
+                </div>`;
+            rankingContainer.appendChild(overlay);
+        }
+        overlay.classList.add('is-visible');
+    }
+
+    if (mapaWrapper) mapaWrapper.classList.add('searching-pulse');
+
+    // Pequeño retardo para que la animación sea perceptible aunque el cálculo sea instantáneo
+    setTimeout(() => {
+        rankingVisible = true;
+        aplicarFiltros();
+
+        // Animar entrada de las filas del ranking
+        const filas = document.querySelectorAll('#rankingBody tr.ranking-row');
+        filas.forEach((tr, i) => {
+            tr.style.animationDelay = `${i * 60}ms`;
+            tr.classList.add('row-fade-in');
+        });
+
+        // Quitar overlay
+        if (rankingContainer) {
+            const overlay = rankingContainer.querySelector('.search-overlay');
+            if (overlay) overlay.classList.remove('is-visible');
+            rankingContainer.classList.remove('searching');
+            setTimeout(() => { if (overlay) overlay.remove(); }, 400);
+        }
+        if (mapaWrapper) mapaWrapper.classList.remove('searching-pulse');
+
+        if (btn) {
+            btn.classList.remove('btn-loading');
+            btn.innerHTML = '🔄 Actualizar';
+            btn.style.background = '#10b981';
+        }
+
+        document.querySelector('.ranking-container')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        buscando = false;
+    }, 650);
 }
 
 function calcularRanking(ciudadesInput = ciudades) {
@@ -315,17 +444,15 @@ function calcularRanking(ciudadesInput = ciudades) {
     const maxCoste = costes.length ? Math.max(...costes) : 1;
     const rangoCoste = (maxCoste - minCoste) || 1;
 
+    // Umbrales de categoría dinámicos: dependen sólo de los pesos actuales,
+    // por lo que se calculan una sola vez por render (no por ciudad).
+    const cats = categoriasConUmbrales();
+
     const rankingData = ciudadesInput.map(c => {
         let scoreTotal = 0;
         let pesoTotal = 0;
 
         seleccionados.forEach(crit => {
-            const mapCrit = {
-                'ocioNocturno': 'ambienteNocturno',
-                'transporte': 'calidadTransporte',
-                'ocio': 'turismo',
-                'conectividad': 'conectividad'
-            };
             let metricValue;
             if (crit === 'asequibilidad') {
                 const coste = c.metricas?.costeAlquilerMedio;
@@ -333,12 +460,10 @@ function calcularRanking(ciudadesInput = ciudades) {
                     metricValue = 1 + 4 * (maxCoste - coste) / rangoCoste;
                 }
             } else {
-                const critKey = mapCrit[crit] || crit;
+                const critKey = CRIT_TO_METRIC[crit] || crit;
                 metricValue = c.metricas ? c.metricas[critKey] : null;
             }
 
-            // --- MANEJO DE DATOS FALTANTES ---
-            // Solo sumamos el peso si la ciudad tiene la métrica
             if (metricValue !== null && metricValue !== undefined) {
                 const peso = currentWeights[crit] || 1;
                 scoreTotal += metricValue * peso;
@@ -347,13 +472,31 @@ function calcularRanking(ciudadesInput = ciudades) {
         });
 
         const scoreFinal = scoreTotal / (pesoTotal || 1);
-        const categoria = AHPEngine.classify(scoreFinal, CATEGORIAS_AHP);
-        const catInfo = CATEGORIAS_AHP.find(cat => cat.name === categoria) || { color: '#64748b', min: 0 };
 
-        // --- SENSIBILIDAD DE UMBRALES ---
-        // Detectar si está cerca del borde superior de la siguiente categoría o del borde inferior de la actual
-        const proximaCat = CATEGORIAS_AHP[CATEGORIAS_AHP.indexOf(catInfo) - 1];
-        const estaCercaDeSubir = proximaCat && (proximaCat.min - scoreFinal < 0.15);
+        // Clasificación AHP-Sort II: primera categoría cuyo umbral cumple la ciudad
+        let catInfo = cats[cats.length - 1];
+        for (const cat of cats) {
+            if (scoreFinal >= cat.min) { catInfo = cat; break; }
+        }
+
+        // Veto: capa la categoría máxima si una métrica crítica está por debajo del umbral
+        let vetoMsg = null;
+        for (const veto of VETO_RULES) {
+            const valor = c.metricas?.[veto.criterio];
+            if (valor != null && valor < veto.umbral) {
+                const capIdx = cats.findIndex(x => x.name === veto.capCategoria);
+                const catIdx = cats.findIndex(x => x.name === catInfo.name);
+                if (capIdx !== -1 && catIdx !== -1 && catIdx < capIdx) {
+                    catInfo = cats[capIdx];
+                    vetoMsg = veto.mensaje;
+                }
+            }
+        }
+
+        // Sensibilidad: cerca del borde superior (próxima cat. mejor) o inferior (cat. actual)
+        const idxActual = cats.findIndex(x => x.name === catInfo.name);
+        const proximaCat = idxActual > 0 ? cats[idxActual - 1] : null;
+        const estaCercaDeSubir = !vetoMsg && proximaCat && (proximaCat.min - scoreFinal < 0.15);
         const estaCercaDeBajar = (scoreFinal - catInfo.min < 0.1) && catInfo.min > 0;
 
         const costeC = c.metricas?.costeAlquilerMedio;
@@ -362,8 +505,9 @@ function calcularRanking(ciudadesInput = ciudades) {
         return {
             ...c,
             globalScore: scoreFinal,
-            categoria,
+            categoria: catInfo.name,
             catColor: catInfo.color,
+            vetoMsg,
             alertaUmbral: estaCercaDeSubir ? 'Subir' : (estaCercaDeBajar ? 'Bajar' : null),
             _asequibilidad
         };
@@ -412,6 +556,7 @@ function calcularRanking(ciudadesInput = ciudades) {
                 <span class="pill" style="background: ${c.catColor}; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">
                     ${c.categoria}
                 </span>
+                ${c.vetoMsg ? `<span class="near-threshold" style="color:#b91c1c;">${c.vetoMsg}</span>` : ''}
                 ${c.alertaUmbral === 'Subir' ? '<span class="near-threshold">✨ Casi en cat. superior</span>' : ''}
                 ${c.alertaUmbral === 'Bajar' ? '<span class="near-threshold">⚠️ Al límite inferior</span>' : ''}
             </td>
@@ -449,11 +594,38 @@ function toggleSeleccionComparar(id) {
 function actualizarBotonComparar() {
     const btn = document.getElementById('btnComparar');
     const count = document.getElementById('compareCount');
-    if (btn && count) {
-        const n = seleccionParaComparar.length;
-        btn.style.display = n >= 2 ? 'block' : 'none';
-        count.innerText = n;
+    if (!btn || !count) return;
+
+    const n = seleccionParaComparar.length;
+    count.innerText = n;
+
+    if (n === 0) {
+        btn.style.display = 'none';
+        btn.classList.remove('compare-ready', 'compare-hint', 'compare-pulse');
+        return;
     }
+
+    // 1 ciudad seleccionada: pista de que necesita otra
+    if (n === 1) {
+        btn.style.display = 'inline-flex';
+        btn.classList.add('compare-hint');
+        btn.classList.remove('compare-ready', 'compare-pulse');
+        btn.innerHTML = `🔓 Selecciona 1 más para comparar (<span id="compareCount">${n}</span>/2)`;
+        return;
+    }
+
+    // 2-4 ciudades: botón listo y muy visible
+    btn.style.display = 'inline-flex';
+    btn.classList.remove('compare-hint');
+    btn.classList.add('compare-ready');
+
+    // Pulso una sola vez al cruzar el umbral mínimo
+    if (!btn.dataset.lastCount || parseInt(btn.dataset.lastCount) < 2) {
+        btn.classList.add('compare-pulse');
+        setTimeout(() => btn.classList.remove('compare-pulse'), 1800);
+    }
+    btn.dataset.lastCount = String(n);
+    btn.innerHTML = `⚖️ Comparar ahora (<span id="compareCount">${n}</span>)`;
 }
 
 function abrirComparador() {
@@ -862,16 +1034,19 @@ function recalcularPrioridadesAHP() {
             ` : ''}
         </div>
         <div style="margin-top:15px;">
-            <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px; font-weight:600;">UMBRALES AHP-SORT II:</p>
+            <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px; font-weight:600;">UMBRALES AHP-SORT II <span style="font-weight:400; color:var(--text-muted);">(según pesos actuales)</span>:</p>
             <div style="display:flex; flex-direction:column; gap:5px;">
-                ${CATEGORIAS_AHP.map(cat => `
+                ${categoriasConUmbrales().map(cat => `
                     <div style="display:flex; align-items:center; gap:8px;">
                         <div style="width:10px; height:10px; border-radius:2px; background:${cat.color};"></div>
                         <span style="font-size:0.7rem; flex:1;">${cat.name}</span>
-                        <span style="font-size:0.7rem; color:var(--text-muted);">> ${cat.min}</span>
+                        <span style="font-size:0.7rem; color:var(--text-muted); font-family:monospace;">≥ ${cat.min.toFixed(2)}</span>
                     </div>
                 `).join('')}
             </div>
+            <p style="font-size:0.7rem; color:var(--text-muted); margin-top:8px; font-style:italic;">
+                🚫 Veto: seguridad &lt; 2.0 ⇒ máximo "🆗 Aceptable".
+            </p>
         </div>
     `;
 

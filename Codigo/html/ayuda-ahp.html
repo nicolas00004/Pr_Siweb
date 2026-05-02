@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../css/style.css">
     <style>
         .help-container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 40px auto;
             padding: 40px;
             background: white;
@@ -19,8 +19,8 @@
             margin-bottom: 40px;
         }
         .help-section {
-            margin-bottom: 30px;
-            line-height: 1.6;
+            margin-bottom: 36px;
+            line-height: 1.7;
         }
         .help-section h2 {
             color: var(--primary-color);
@@ -28,14 +28,21 @@
             padding-left: 15px;
             margin-bottom: 15px;
         }
+        .help-section h3 {
+            color: var(--primary-color);
+            margin-top: 22px;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+        }
         .math-box {
             background: #f8fafc;
-            padding: 20px;
+            padding: 18px 20px;
             border-radius: 15px;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             border: 1px solid #e2e8f0;
             overflow-x: auto;
+            margin: 12px 0;
         }
         .badge-ahp {
             background: var(--accent-color);
@@ -46,6 +53,93 @@
             font-weight: bold;
             display: inline-block;
             margin-bottom: 10px;
+        }
+        .help-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+            font-size: 0.85rem;
+            background: #f8fafc;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .help-table thead {
+            background: var(--primary-color);
+            color: white;
+        }
+        .help-table th, .help-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .help-table td.center { text-align: center; }
+        .help-callout {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-size: 0.95rem;
+        }
+        .help-callout.warn {
+            background: #fef3c7;
+            border-color: #fde68a;
+        }
+        .help-callout.danger {
+            background: #fee2e2;
+            border-color: #fecaca;
+        }
+        .help-toc {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 18px 22px;
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+        }
+        .help-toc h4 { color: var(--primary-color); margin-bottom: 10px; }
+        .help-toc ol { padding-left: 20px; line-height: 1.9; }
+        .help-toc a { color: var(--accent-color); text-decoration: none; }
+        .help-toc a:hover { text-decoration: underline; }
+        .veto-box {
+            display: flex;
+            gap: 14px;
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin: 12px 0;
+            align-items: flex-start;
+        }
+        .veto-box .icon { font-size: 1.5rem; }
+        .flow-list {
+            counter-reset: flowstep;
+            padding: 0;
+            list-style: none;
+        }
+        .flow-list li {
+            counter-increment: flowstep;
+            position: relative;
+            padding: 10px 10px 10px 50px;
+            margin-bottom: 8px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+        .flow-list li::before {
+            content: counter(flowstep);
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 28px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
         }
     </style>
 </head>
@@ -95,64 +189,202 @@
                 <p>Cómo INFUNI calcula tu destino ideal con rigor matemático.</p>
             </div>
 
-            <div class="help-section">
-                <h2>1. ¿Qué es AHP?</h2>
-                <p>El Proceso Analítico Jerárquico (AHP) es una técnica estructurada para ayudar a tomar decisiones complejas. En lugar de elegir "al azar", AHP permite comparar criterios (como Seguridad vs Ocio) de forma relativa para entender qué es lo que realmente te importa.</p>
+            <div class="help-toc">
+                <h4>📚 Contenidos</h4>
+                <ol>
+                    <li><a href="#sec-que">¿Qué es AHP?</a></li>
+                    <li><a href="#sec-criterios">Los 7 criterios y cómo se mapean a la BD</a></li>
+                    <li><a href="#sec-saaty">La matriz de Saaty</a></li>
+                    <li><a href="#sec-pesos">Cálculo del vector de prioridades</a></li>
+                    <li><a href="#sec-cr">Razón de Consistencia (CR)</a></li>
+                    <li><a href="#sec-puntuacion">Fase de puntuación de alternativas</a></li>
+                    <li><a href="#sec-sortii">Fase Sort II: clasificación por perfiles límite</a></li>
+                    <li><a href="#sec-veto">Vetos: cuando una métrica es decisiva</a></li>
+                    <li><a href="#sec-alertas">Alertas de sensibilidad</a></li>
+                    <li><a href="#sec-flujo">Resumen del flujo de datos</a></li>
+                </ol>
             </div>
 
-            <div class="help-section">
-                <h2>2. La Matriz de Saaty</h2>
-                <p>En el panel de experto, verás una matriz donde comparas criterios. Si dices que la Seguridad es "Mucho más importante" que el Ocio, el sistema asigna un valor (ej: 7). La escala utilizada es la siguiente:</p>
-                <table style="width:100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85rem; background: #f8fafc; border-radius: 10px; overflow: hidden;">
-                    <thead style="background: var(--primary-color); color: white;">
-                        <tr>
-                            <th style="padding: 10px;">Valor</th>
-                            <th style="padding: 10px;">Definición</th>
-                        </tr>
+            <div class="help-section" id="sec-que">
+                <h2>1. ¿Qué es AHP?</h2>
+                <p>El <strong>Proceso Analítico Jerárquico</strong> (Analytic Hierarchy Process, AHP) es una técnica estructurada para tomar decisiones complejas con múltiples criterios. En lugar de elegir "al azar", AHP permite comparar criterios entre sí (por ejemplo, Seguridad frente a Ocio) de forma relativa para entender qué es lo que <em>realmente</em> te importa.</p>
+                <p><strong>AHP-Sort II</strong> es una variante que, además de ordenar alternativas, las <strong>clasifica en categorías ordinales</strong> (Élite, Muy Recomendado, Aceptable, etc.) comparándolas con perfiles de referencia. INFUNI implementa esta variante en <code>ahp-engine.js</code> y la integra en <code>script.js</code>.</p>
+            </div>
+
+            <div class="help-section" id="sec-criterios">
+                <h2>2. Los 7 criterios y cómo se mapean a la BD</h2>
+                <p>El sistema maneja <strong>7 criterios</strong>. Su nombre en la interfaz no siempre coincide con el campo real almacenado en MongoDB:</p>
+                <table class="help-table">
+                    <thead>
+                        <tr><th>Criterio (interfaz)</th><th>Campo en <code>metricas.*</code> (BD)</th><th>Notas</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: center;">1</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">Igual importancia</td></tr>
-                        <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: center;">3</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">Importancia moderada de uno sobre otro</td></tr>
-                        <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: center;">5</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">Importancia fuerte</td></tr>
-                        <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: center;">7</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">Importancia muy fuerte o demostrada</td></tr>
-                        <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: center;">9</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">Importancia extrema</td></tr>
+                        <tr><td><code>transporte</code></td><td><code>calidadTransporte</code></td><td>—</td></tr>
+                        <tr><td><code>ocio</code></td><td><code>turismo</code></td><td>—</td></tr>
+                        <tr><td><code>ocioNocturno</code></td><td><code>ambienteNocturno</code></td><td>—</td></tr>
+                        <tr><td><code>seguridad</code></td><td><code>seguridad</code></td><td>—</td></tr>
+                        <tr><td><code>calidadAcademica</code></td><td><code>calidadAcademica</code></td><td>—</td></tr>
+                        <tr><td><code>conectividad</code></td><td><code>conectividad</code></td><td>—</td></tr>
+                        <tr><td><code>asequibilidad</code></td><td><code>costeAlquilerMedio</code></td><td><strong>Invertida</strong>: a mayor coste, menor score.</td></tr>
                     </tbody>
                 </table>
-                <p>El motor calcula el <strong>Vector de Prioridades</strong> mediante la Media Geométrica Normalizada:</p>
+                <p>La <strong>asequibilidad</strong> se normaliza dinámicamente al rango 1–5 sobre el conjunto de ciudades cargadas:</p>
                 <div class="math-box">
-                    Peso_i = GM_i / Σ(GM) <br>
-                    Donde GM es la raíz n-ésima del producto de la fila.
+                    asequibilidad(c) = 1 + 4 · (maxCoste − coste(c)) / (maxCoste − minCoste)
+                </div>
+                <p>De este modo, la ciudad más barata obtiene un 5 y la más cara un 1, sin necesidad de fijar umbrales arbitrarios.</p>
+            </div>
+
+            <div class="help-section" id="sec-saaty">
+                <h2>3. La matriz de Saaty (modo experto)</h2>
+                <p>En el panel de experto, comparas cada criterio frente al resto. Si dices que la Seguridad es "Mucho más importante" que el Ocio, el sistema asigna un valor alto (p. ej. 7). La escala 1–9 de Saaty es la siguiente:</p>
+                <table class="help-table">
+                    <thead><tr><th>Valor</th><th>Definición</th></tr></thead>
+                    <tbody>
+                        <tr><td class="center">1</td><td>Igual importancia</td></tr>
+                        <tr><td class="center">3</td><td>Importancia moderada de uno sobre otro</td></tr>
+                        <tr><td class="center">5</td><td>Importancia fuerte</td></tr>
+                        <tr><td class="center">7</td><td>Importancia muy fuerte o demostrada</td></tr>
+                        <tr><td class="center">9</td><td>Importancia extrema</td></tr>
+                    </tbody>
+                </table>
+                <p>La matriz <em>A</em> es <strong>recíproca</strong>: si afirmas que <em>i</em> es 7 veces más importante que <em>j</em>, automáticamente se asume que <em>j</em> es 1/7 frente a <em>i</em>.</p>
+            </div>
+
+            <div class="help-section" id="sec-pesos">
+                <h2>4. Cálculo del vector de prioridades</h2>
+                <p>Para obtener los pesos (<em>w</em>) a partir de la matriz, el motor utiliza la <strong>Media Geométrica Normalizada</strong>, una aproximación del autovector principal que es estable y fácil de calcular:</p>
+                <div class="math-box">
+                    1) Para cada fila i: GM_i = (∏ a_ij)^(1/n)<br>
+                    2) Normalizar:        w_i  = GM_i / Σ GM_k<br>
+                    3) Reescalar 1–5:     w_i^slider = w_i / max_k(w_k) · 5
+                </div>
+                <p>El último paso reescala los pesos al rango 1–5 para que sean compatibles con los sliders de la interfaz, manteniendo las proporciones relativas entre criterios.</p>
+            </div>
+
+            <div class="help-section" id="sec-cr">
+                <h2>5. Razón de Consistencia (CR)</h2>
+                <p>AHP verifica que tus comparaciones <strong>no se contradigan</strong>. Si afirmas que A &gt; B y B &gt; C, entonces A debe ser &gt; C. El motor calcula:</p>
+                <div class="math-box">
+                    CI = (λ_max − n) / (n − 1)<br>
+                    CR = CI / RI
+                </div>
+                <p>donde <em>RI</em> es el Índice Aleatorio de Saaty para una matriz de tamaño <em>n</em>:</p>
+                <table class="help-table">
+                    <thead><tr><th>n</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th></tr></thead>
+                    <tbody><tr><td class="center">RI</td><td class="center">0.58</td><td class="center">0.90</td><td class="center">1.12</td><td class="center">1.24</td><td class="center">1.32</td><td class="center">1.41</td><td class="center">1.45</td></tr></tbody>
+                </table>
+                <div class="help-callout">
+                    <strong>Casos especiales:</strong>
+                    <ul style="margin-top:8px; padding-left:20px;">
+                        <li>Si <em>n ≤ 2</em>, la consistencia es perfecta por definición (CR = 0).</li>
+                        <li>Si <strong>CR &lt; 0.1</strong>, la matriz se considera consistente. ✅</li>
+                        <li>Si <strong>CR ≥ 0.1</strong>, el motor identifica el <strong>par de criterios más inconsistente</strong> (el que tiene mayor error logarítmico relativo |log(a_ij) − log(w_i / w_j)|) y resalta esa celda en rojo en la tabla para que la revises.</li>
+                    </ul>
                 </div>
             </div>
 
+            <div class="help-section" id="sec-puntuacion">
+                <h2>6. Fase de puntuación de alternativas</h2>
+                <p>Cada ciudad recibe una puntuación global a partir de sus métricas y los pesos calculados. <strong>Solo se suman los criterios para los que la ciudad tiene datos disponibles</strong> en la BD (los faltantes se omiten en numerador y denominador):</p>
+                <div class="math-box">
+                    PuntuaciónGlobal(c) = Σ_i (Métrica_i(c) · w_i) / Σ_i w_i
+                </div>
+                <p>Las métricas son los valores 1–5 almacenados en <code>metricas.*</code>. Los pesos son los <em>w_i^slider</em> calculados en la fase AHP (también en escala 1–5).</p>
+            </div>
+
+            <div class="help-section" id="sec-sortii">
+                <h2>7. Fase Sort II: clasificación por perfiles límite</h2>
+                <p>A diferencia del AHP tradicional que solo ordena, <strong>AHP-Sort II clasifica</strong> las ciudades en categorías comparándolas con <strong>perfiles límite</strong> (<em>b<sub>1</sub>, b<sub>2</sub>, …</em>): alternativas hipotéticas que marcan la frontera inferior de cada categoría.</p>
+                <h3>Perfil límite de "🌟 Destino de Élite"</h3>
+                <div class="math-box">
+{
+  calidadTransporte: 4.5, turismo: 4.5, ambienteNocturno: 4.0,
+  seguridad: 4.5, calidadAcademica: 4.5, conectividad: 4.5,
+  asequibilidad: 4.0
+}
+                </div>
+                <p>El umbral de cada categoría se calcula con la <strong>misma fórmula</strong> que para una ciudad real, usando los pesos del usuario:</p>
+                <div class="math-box">
+                    umbral_j = Σ_i (b_{j,i} · w_i) / Σ_i w_i
+                </div>
+                <div class="help-callout">
+                    🔑 <strong>Importante:</strong> los umbrales son <strong>dinámicos</strong>. Se mueven junto con tus prioridades, no son constantes arbitrarias. Si subes el peso de "seguridad", el umbral de Élite también incorpora esa subida.
+                </div>
+                <h3>Algoritmo de clasificación</h3>
+                <p>Las categorías se recorren <strong>de mejor a peor</strong>. La ciudad recibe la primera cuyo umbral cumple:</p>
+                <div class="math-box">
+let cat = "⚠️ No Recomendado"; // por defecto
+for (const c of categoriasConUmbrales()) {
+    if (S &gt;= c.min) { cat = c; break; }
+}
+                </div>
+            </div>
+
+            <div class="help-section" id="sec-veto">
+                <h2>8. Vetos: cuando una métrica es decisiva</h2>
+                <p>La suma ponderada del paso 6 es <strong>compensatoria</strong>: una métrica baja se puede compensar con otra alta. Eso a veces no es deseable. Por ejemplo, una ciudad con una seguridad mínima no debería poder ser clasificada como "Élite" por mucha vida nocturna que tenga.</p>
+                <p>Para esos casos, se aplica un <strong>veto</strong> que <strong>capa la categoría máxima alcanzable</strong>, independientemente del score:</p>
+                <table class="help-table">
+                    <thead><tr><th>Criterio</th><th>Umbral</th><th>Capa a</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>seguridad</code></td><td class="center">&lt; 2.0</td><td>🆗 Aceptable</td></tr>
+                    </tbody>
+                </table>
+                <div class="veto-box">
+                    <span class="icon">🚫</span>
+                    <div>
+                        <strong>Ejemplo:</strong> una ciudad con seguridad = 1 nunca podrá ser "Élite" o "Muy Recomendado", aunque su puntuación global supere el umbral. La interfaz mostrará la etiqueta <em>"🚫 Seguridad insuficiente"</em>. Esto introduce semántica de outranking dentro de un marco AHP esencialmente compensatorio.
+                    </div>
+                </div>
+            </div>
+
+            <div class="help-section" id="sec-alertas">
+                <h2>9. Alertas de sensibilidad</h2>
+                <p>Tras la clasificación, el sistema detecta situaciones límite frente a los <strong>umbrales dinámicos</strong>:</p>
+                <div class="help-callout">
+                    <strong>✨ Casi en categoría superior</strong> — la diferencia con el umbral de la categoría inmediatamente superior es <strong>&lt; 0.15</strong>. Un pequeño cambio en los pesos podría hacer subir esta ciudad de categoría.
+                </div>
+                <div class="help-callout warn">
+                    <strong>⚠️ Al límite inferior</strong> — la diferencia con el umbral de su propia categoría es <strong>&lt; 0.10</strong>. Está a punto de bajar.
+                </div>
+                <div class="help-callout danger">
+                    <strong>🚫 Veto activado</strong> — cuando hay veto, las dos alertas anteriores se suprimen, porque la categoría no la decide la puntuación global, sino el veto.
+                </div>
+            </div>
+
+            <div class="help-section" id="sec-flujo">
+                <h2>10. Resumen del flujo de datos</h2>
+                <ol class="flow-list">
+                    <li><strong>Entrada:</strong> matriz de Saaty (modo experto) o sliders con pesos directos.</li>
+                    <li><strong>Procesamiento AHP:</strong> Media Geométrica Normalizada → test de consistencia (CR) → reescalado a 1–5.</li>
+                    <li><strong>Agregación:</strong> suma ponderada sobre las métricas disponibles en BD, aplicando el mapeo interfaz → BD.</li>
+                    <li><strong>Cálculo de umbrales dinámicos:</strong> el score de cada perfil límite se recalcula con los pesos actuales.</li>
+                    <li><strong>Clasificación Sort II:</strong> comparación del score con los umbrales.</li>
+                    <li><strong>Veto:</strong> métricas críticas (seguridad) por debajo del umbral capan la categoría máxima.</li>
+                    <li><strong>Alertas de umbral:</strong> detección de ciudades cerca del borde (suprimidas si hay veto).</li>
+                    <li><strong>Salida:</strong> ranking visual con clasificación, alertas y vetos; mapa interactivo con marcadores de color por posición.</li>
+                </ol>
+            </div>
+
             <div class="help-section">
-                <h2>3. Ejemplo Visual de Decisión</h2>
-                <div style="display: flex; gap: 20px; align-items: center; background: #eff6ff; padding: 20px; border-radius: 20px; border: 1px solid #bfdbfe;">
-                    <div style="flex: 1; text-align: center;">
+                <h2>📖 Ejemplo visual rápido</h2>
+                <div style="display: flex; gap: 20px; align-items: center; background: #eff6ff; padding: 20px; border-radius: 20px; border: 1px solid #bfdbfe; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 180px; text-align: center;">
                         <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 10px;">🛡️ Seguridad</div>
                         <div style="font-size: 1.5rem;">← 7 →</div>
                         <p style="font-size: 0.7rem; color: var(--text-muted);">Seguridad es mucho más importante</p>
                     </div>
-                    <div style="flex: 1; text-align: center;">
+                    <div style="flex: 1; min-width: 180px; text-align: center;">
                         <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 10px;">🎉 Ocio</div>
-                        <div style="color: var(--accent-color); font-weight: bold;">Peso Resultante:</div>
+                        <div style="color: var(--accent-color); font-weight: bold;">Peso resultante:</div>
                         <p>Seguridad: 87% | Ocio: 13%</p>
                     </div>
                 </div>
             </div>
 
-            <div class="help-section">
-                <h2>4. ¿Qué es el Ratio de Consistencia (CR)?</h2>
-                <p>AHP verifica que no te contradigas. Si A > B y B > C, entonces A debe ser > C. Si el CR es mayor a 0.1, el sistema te avisará que tus preferencias son inconsistentes y resaltará la celda en rojo para que la revises.</p>
-            </div>
-
-            <div class="help-section">
-                <h2>5. Fase Sort II (Clasificación)</h2>
-                <p>A diferencia del AHP tradicional que solo ordena, AHP-Sort II clasifica las ciudades en categorías (Élite, Recomendado, etc.) comparando su puntuación final contra <strong>Perfiles Límite</strong>. Así, no solo sabes qué ciudad es la primera, sino si realmente es una opción excelente para ti.</p>
-            </div>
-
             <div style="text-align: center; margin-top: 40px;">
-                <a href="index.html" class="btn-ver" style="display: inline-block; padding: 12px 30px; background: var(--primary-color); color: white; text-decoration: none; border-radius: 15px;">¡Entendido, volver a buscar!</a>
+                <a href="busqueda.html" class="btn-ver" style="display: inline-block; padding: 12px 30px; background: var(--primary-color); color: white; text-decoration: none; border-radius: 15px;">¡Entendido, volver a buscar!</a>
             </div>
         </div>
     </main>
@@ -160,18 +392,17 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h4>Plataforma</h4>
+                <h4>Guías de Destino</h4>
                 <ul>
-                    <li><a href="busqueda.html">Buscar destino</a></li>
-                    <li><a href="destinos.html">Explorar ciudades</a></li>
-                    <li><a href="herramientas.html">Herramientas</a></li>
+                    <li><a href="ayuda-ahp.html">Primeros pasos</a></li>
+                    <li><a href="destinos.html">Explorar destinos</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>Comunidad</h4>
                 <ul>
                     <li><a href="comunidad.html#foro">Foro</a></li>
-                    <li><a href="comunidad.html#escribir">Escribir una reseña</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -180,7 +411,6 @@
                     <li><a href="privacidad.html">Política de Privacidad</a></li>
                     <li><a href="terminos.html">Términos y Condiciones</a></li>
                     <li><a href="cookies.html">Política de Cookies</a></li>
-                    <li><a href="contacto.html">Contacto</a></li>
                 </ul>
             </div>
         </div>

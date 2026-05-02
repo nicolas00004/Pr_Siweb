@@ -227,7 +227,9 @@
                             return dots;
                         };
 
-                        busContainer.innerHTML = arrayBusquedas.map(b => {
+                        // Hacemos accesibles las búsquedas para los handlers (Cargar/Eliminar)
+                        window._misBusquedas = arrayBusquedas;
+                        busContainer.innerHTML = arrayBusquedas.map((b, idx) => {
                             const isEst = b.rol === 'estudiante';
                             return `
                             <div class="search-card">
@@ -270,7 +272,7 @@
                                         <div class="dots">${getDots(b.pesos.turismo || 0)}</div>
                                     </div>
                                 </div>
-                                <button onclick="localStorage.setItem('tempBusqueda', '${JSON.stringify(b).replace(/'/g, "\\'")}'); window.location.href='index.html'" class="btn-load">🚀 Cargar Configuración</button>
+                                <button onclick="cargarConfigBusqueda(${idx})" class="btn-load">🚀 Cargar Configuración</button>
                             </div>
                         `}).join('');
                     }
@@ -279,6 +281,18 @@
                     console.error('Error cargando favoritos:', err);
                     document.getElementById('favoritosContainer').innerHTML = '<p>Error de conexión con el servidor.</p>';
                 });
+        }
+
+        // Cargar una búsqueda guardada → ir a busqueda.html con la configuración aplicada
+        function cargarConfigBusqueda(idx) {
+            const b = (window._misBusquedas || [])[idx];
+            if (!b) {
+                alert("No se ha podido recuperar la configuración.");
+                return;
+            }
+            // script.js de busqueda.html lee 'tempBusqueda' al iniciarse y aplica pesos + rol
+            localStorage.setItem('tempBusqueda', JSON.stringify(b));
+            window.location.href = 'busqueda.html';
         }
 
         // 2. Función para quitar favorito

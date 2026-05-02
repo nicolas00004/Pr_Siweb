@@ -357,7 +357,7 @@
             
             const nombre = document.getElementById('regNombre').value.trim();
             const apellidos = document.getElementById('regApellidos').value.trim();
-            const correo = document.getElementById('regCorreo').value.trim();
+            const email = document.getElementById('regCorreo').value.trim();
             const password = document.getElementById('regPass').value;
             const pass2 = document.getElementById('regPass2').value;
             
@@ -383,7 +383,7 @@
                 const response = await fetch(`${API}/api/registro`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nombre, apellidos, correo, password })
+                    body: JSON.stringify({ nombre, apellidos, email, password })
                 });
 
                 const data = await response.json();

@@ -62,6 +62,12 @@
             border-left: 3px solid #cbd5e1;
             font-size: 0.9rem;
         }
+        /* Sangría progresiva por nivel de anidación (cap visual a 5 niveles) */
+        .respuesta-card .respuesta-card { margin-left: 24px; border-left-color: #94a3b8; }
+        .respuesta-card .respuesta-card .respuesta-card { border-left-color: #64748b; }
+        .respuesta-card .respuesta-card .respuesta-card .respuesta-card { border-left-color: #475569; }
+        .respuesta-card .respuesta-card .respuesta-card .respuesta-card .respuesta-card { margin-left: 12px; }
+
         .respuesta-header {
             display: flex;
             justify-content: space-between;
@@ -83,11 +89,17 @@
             gap: 5px;
         }
         .btn-reply:hover { text-decoration: underline; }
-        
+        .btn-reply.btn-reply-nested {
+            font-size: 0.78rem;
+            margin-top: 6px;
+            opacity: 0.85;
+        }
+
         .reply-form {
             margin-top: 15px;
             display: none;
         }
+        .reply-form.is-open { display: block; }
         .reply-form textarea {
             width: 100%;
             padding: 10px;
@@ -96,7 +108,54 @@
             font-family: inherit;
             font-size: 0.9rem;
             margin-bottom: 5px;
+            box-sizing: border-box;
         }
+
+        /* === Voto estilo YouTube === */
+        .vote-bar {
+            display: inline-flex;
+            align-items: center;
+            gap: 0;
+            background: #f1f5f9;
+            border-radius: 50px;
+            padding: 2px;
+            margin-right: 10px;
+            border: 1px solid #e2e8f0;
+        }
+        .vote-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 6px 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 50px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: background 0.15s, color 0.15s, transform 0.12s;
+        }
+        .vote-btn:hover { background: #e2e8f0; color: var(--primary-color); }
+        .vote-btn:active { transform: scale(0.92); }
+        .vote-btn:disabled { cursor: not-allowed; opacity: 0.5; }
+        .vote-btn.is-active.like   { background: #dbeafe; color: #1d4ed8; }
+        .vote-btn.is-active.dislike{ background: #fee2e2; color: #b91c1c; }
+        .vote-divider {
+            width: 1px;
+            height: 18px;
+            background: #cbd5e1;
+            margin: 0 2px;
+            align-self: center;
+        }
+        .vote-count { min-width: 14px; text-align: left; font-variant-numeric: tabular-nums; }
+        @keyframes vote-bump {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.25); }
+            100% { transform: scale(1); }
+        }
+        .vote-btn.bump { animation: vote-bump 0.35s ease-out; }
     </style>
 </head>
 <body>
@@ -296,28 +355,79 @@
                     return;
                 }
 
+                const localUser = JSON.parse(localStorage.getItem('usuarioInfo') || '{}');
+                const userLoggedIn = !!localUser.id || !!localUser._id;
+                const currentUid = localUser.id || localUser._id || null;
+                const escapeHtml = (s) => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+                // Devuelve la barra de votos (👍 / 👎) para una opinión o respuesta.
+                // `target` debe traer arrays .likes y .dislikes (de usuarioIds).
+                function renderVoteBar(opinionId, target, respuestaId) {
+                    const likes    = (target.likes    || []).map(u => String(u._id || u));
+                    const dislikes = (target.dislikes || []).map(u => String(u._id || u));
+                    const miVoto = currentUid && likes.includes(String(currentUid))
+                        ? 'like'
+                        : (currentUid && dislikes.includes(String(currentUid)) ? 'dislike' : null);
+
+                    const dataAttrs = `data-opinion="${opinionId}"${respuestaId ? ` data-respuesta="${respuestaId}"` : ''}`;
+                    const disabled = userLoggedIn ? '' : 'disabled title="Inicia sesión para votar"';
+                    return `
+                        <div class="vote-bar" ${dataAttrs}>
+                            <button class="vote-btn like ${miVoto === 'like' ? 'is-active' : ''}" ${disabled} onclick="votarComentario(event, '${opinionId}', '${respuestaId || ''}', 'like')">
+                                👍 <span class="vote-count">${likes.length}</span>
+                            </button>
+                            <span class="vote-divider"></span>
+                            <button class="vote-btn dislike ${miVoto === 'dislike' ? 'is-active' : ''}" ${disabled} onclick="votarComentario(event, '${opinionId}', '${respuestaId || ''}', 'dislike')">
+                                👎 <span class="vote-count">${dislikes.length}</span>
+                            </button>
+                        </div>`;
+                }
+
+                // Construye el árbol de respuestas a partir de la lista plana usando parent_id
+                function renderRespuestas(respuestas, opinionId, parentId) {
+                    const hijos = (respuestas || []).filter(r => {
+                        const rp = r.parent_id ? String(r.parent_id) : null;
+                        return rp === (parentId ? String(parentId) : null);
+                    });
+                    if (!hijos.length) return '';
+                    return hijos.map(r => {
+                        const autor = r.id_usuario ? (r.id_usuario.nombre || 'Estudiante') : 'Anónimo';
+                        const fecha = new Date(r.fecha).toLocaleDateString('es-ES');
+                        const replyBtn = userLoggedIn ? `
+                            <button class="btn-reply btn-reply-nested" onclick="toggleReplyForm('${opinionId}','${r._id}')">↩️ Responder</button>
+                            <div class="reply-form" id="form-reply-${opinionId}-${r._id}">
+                                <textarea id="text-reply-${opinionId}-${r._id}" placeholder="Responder a ${escapeHtml(autor)}…"></textarea>
+                                <button class="btn-submit" style="width: auto; padding: 8px 15px; font-size: 0.85rem;" onclick="enviarRespuesta('${opinionId}','${r._id}')">Enviar</button>
+                            </div>` : '';
+                        return `
+                            <div class="respuesta-card">
+                                <div class="respuesta-header">
+                                    <span>💬 ${escapeHtml(autor)}</span>
+                                    <span style="font-size: 0.75rem;">${fecha}</span>
+                                </div>
+                                <div>${escapeHtml(r.texto_respuesta)}</div>
+                                <div style="margin-top: 8px; display: flex; align-items: center; flex-wrap: wrap;">
+                                    ${renderVoteBar(opinionId, r, r._id)}
+                                    ${replyBtn}
+                                </div>
+                                ${renderRespuestas(respuestas, opinionId, r._id)}
+                            </div>
+                        `;
+                    }).join('');
+                }
+
                 foroContainer.innerHTML = opiniones.map(op => {
                     const p = op.pesos || { transporte: 5, ocio: 5, ocioNocturno: 5, seguridad: 5, calidadAcademica: 5 };
-                    const respuestasHTML = (op.respuestas || []).map(r => `
-                        <div class="respuesta-card">
-                            <div class="respuesta-header">
-                                <span>💬 ${r.id_usuario ? (r.id_usuario.nombre || 'Estudiante') : 'Anónimo'}</span>
-                                <span style="font-size: 0.75rem;">${new Date(r.fecha).toLocaleDateString('es-ES')}</span>
-                            </div>
-                            <div>${r.texto_respuesta}</div>
-                        </div>
-                    `).join('');
-
-                    const userLoggedIn = localStorage.getItem('usuarioInfo');
+                    const respuestasHTML = renderRespuestas(op.respuestas || [], op._id, null);
 
                     return `
                     <div class="hilo-card">
                         <div class="hilo-header">
-                            <div class="hilo-autor">👤 ${op.id_usuario ? (op.id_usuario.nombre || 'Estudiante') : 'Anónimo'}</div>
-                            <div class="hilo-ciudad">📍 ${op.id_ciudad ? op.id_ciudad.nombre : 'General'}</div>
+                            <div class="hilo-autor">👤 ${escapeHtml(op.id_usuario ? (op.id_usuario.nombre || 'Estudiante') : 'Anónimo')}</div>
+                            <div class="hilo-ciudad">📍 ${escapeHtml(op.id_ciudad ? op.id_ciudad.nombre : 'General')}</div>
                         </div>
-                        <div class="hilo-texto">${op.texto_opinion}</div>
-                        
+                        <div class="hilo-texto">${escapeHtml(op.texto_opinion)}</div>
+
                         <div class="pesos-tag-container">
                             <span class="peso-tag">🚌 ${p.transporte}</span>
                             <span class="peso-tag">🎭 ${p.ocio}</span>
@@ -326,7 +436,8 @@
                             <span class="peso-tag">🎓 ${p.calidadAcademica}</span>
                         </div>
 
-                        <div class="hilo-footer">
+                        <div class="hilo-footer" style="align-items:center; flex-wrap:wrap;">
+                            ${renderVoteBar(op._id, op)}
                             <span>${'⭐'.repeat(op.puntuacion)} ${op.puntuacion}/5</span>
                             <span>🕒 ${new Date(op.fecha_publicacion).toLocaleDateString('es-ES')}</span>
                         </div>
@@ -349,13 +460,71 @@
             }
         }
 
-        function toggleReplyForm(id) {
-            const form = document.getElementById(`form-reply-${id}`);
-            form.style.display = form.style.display === 'block' ? 'none' : 'block';
+        function toggleReplyForm(opinionId, replyId) {
+            const suffix = replyId ? `${opinionId}-${replyId}` : opinionId;
+            const form = document.getElementById(`form-reply-${suffix}`);
+            if (!form) return;
+            form.classList.toggle('is-open');
+            if (form.classList.contains('is-open')) {
+                const ta = document.getElementById(`text-reply-${suffix}`);
+                if (ta) ta.focus();
+            }
         }
 
-        async function enviarRespuesta(opinionId) {
-            const textoInput = document.getElementById(`text-reply-${opinionId}`);
+        async function votarComentario(ev, opinionId, respuestaId, tipo) {
+            ev?.stopPropagation?.();
+            const localUser = JSON.parse(localStorage.getItem('usuarioInfo') || '{}');
+            const usuarioId = localUser.id || localUser._id;
+            if (!usuarioId) {
+                alert("Inicia sesión para votar.");
+                return;
+            }
+
+            // Encontrar la barra correspondiente para actualización in-situ
+            const selector = respuestaId
+                ? `.vote-bar[data-opinion="${opinionId}"][data-respuesta="${respuestaId}"]`
+                : `.vote-bar[data-opinion="${opinionId}"]:not([data-respuesta])`;
+            const bar = document.querySelector(selector);
+            if (!bar) return;
+
+            const btnLike    = bar.querySelector('.vote-btn.like');
+            const btnDislike = bar.querySelector('.vote-btn.dislike');
+
+            try {
+                const body = { tipo, usuarioId };
+                if (respuestaId) body.respuestaId = respuestaId;
+                const res = await fetch(`${API_BASE}/api/opiniones/${opinionId}/voto`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    alert(err.error || "No se pudo registrar el voto.");
+                    return;
+                }
+
+                const data = await res.json();
+                btnLike.querySelector('.vote-count').textContent    = data.likes;
+                btnDislike.querySelector('.vote-count').textContent = data.dislikes;
+
+                btnLike.classList.toggle('is-active',    data.miVoto === 'like');
+                btnDislike.classList.toggle('is-active', data.miVoto === 'dislike');
+
+                // Animación visual del botón pulsado
+                const pulsed = tipo === 'like' ? btnLike : btnDislike;
+                pulsed.classList.remove('bump');
+                void pulsed.offsetWidth;
+                pulsed.classList.add('bump');
+            } catch (err) {
+                alert("Error de conexión.");
+            }
+        }
+
+        async function enviarRespuesta(opinionId, replyId) {
+            const suffix = replyId ? `${opinionId}-${replyId}` : opinionId;
+            const textoInput = document.getElementById(`text-reply-${suffix}`);
             const texto = textoInput.value.trim();
             const localUser = JSON.parse(localStorage.getItem('usuarioInfo') || '{}');
             const usuarioId = localUser.id || localUser._id;
@@ -363,10 +532,12 @@
             if (!texto) return alert("Escribe algo para responder.");
 
             try {
+                const body = { texto, usuarioId };
+                if (replyId) body.parentId = replyId;
                 const res = await fetch(`${API_BASE}/api/opiniones/${opinionId}/respuestas`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ texto, usuarioId })
+                    body: JSON.stringify(body)
                 });
 
                 if (res.ok) {
@@ -440,6 +611,34 @@
         cargarCiudadesSelector();
         cargarOpiniones();
     </script>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Guías de Destino</h4>
+                <ul>
+                    <li><a href="ayuda-ahp.html">Primeros pasos</a></li>
+                    <li><a href="destinos.html">Explorar destinos</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Comunidad</h4>
+                <ul>
+                    <li><a href="comunidad.html#foro">Foro</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacidad.html">Política de Privacidad</a></li>
+                    <li><a href="terminos.html">Términos y Condiciones</a></li>
+                    <li><a href="cookies.html">Política de Cookies</a></li>
+                </ul>
+            </div>
+        </div>
+        <p>&copy; 2026 INFUNI S.L. - Jóvenes por el mundo</p>
+    </footer>
 <script src="../js/auth.js"></script>
 <script src="../js/responsive.js"></script>
 </body>
