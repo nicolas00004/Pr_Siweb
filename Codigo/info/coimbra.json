@@ -1,0 +1,39 @@
+{
+    "id": "coimbra",
+    "nombre": "Coímbra",
+    "etiquetas": {
+        "historia": "🏛️ Tradición de Capa y Capucha",
+        "transporte": "🚌 Movilidad en Colinas",
+        "alojamiento": "🏠 Muy Asequible para Estudiantes"
+    },
+    "historia": "Antigua capital de Portugal, Coímbra respira universidad. Es conocida por sus tradiciones académicas únicas, sus fados nostálgicos y su imponente biblioteca barroca.",
+    "alojamiento": "De los más económicos de Europa (250€-450€). La zona de la 'Alta' es el corazón estudiantil, mientras que la 'Baixa' es la zona comercial.",
+    "barrios": "La Almedina conserva el trazado árabe medieval. Santa Clara, al otro lado del río, ofrece las mejores vistas del skyline universitario.",
+    "universidades": [
+        {
+            "nombre": "Universidade de Coimbra",
+            "descripcion": "Patrimonio de la Humanidad por la UNESCO y núcleo de la vida de la ciudad."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Biblioteca Joanina",
+            "categoria": "cultura",
+            "descripcion": "Obra maestra del barroco portugués que alberga miles de libros antiguos."
+        },
+        {
+            "nombre": "Quinta das Lágrimas",
+            "categoria": "ocio",
+            "descripcion": "Jardines históricos escenario de la leyenda de Inés de Castro y el Rey Pedro."
+        },
+        {
+            "nombre": "Praça da República",
+            "categoria": "ocioNocturno",
+            "descripcion": "Punto de encuentro de todas las facultades para las cenas y noches de fiesta."
+        }
+    ],
+    "imagenes": [
+        "../img/coimbra_1.jpg",
+        "../img/coimbra_2.jpg"
+    ]
+}

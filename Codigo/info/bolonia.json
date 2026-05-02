@@ -1,0 +1,39 @@
+{
+    "id": "bolonia",
+    "nombre": "Bolonia",
+    "etiquetas": {
+        "historia": "🏛️ La Ciudad Roja y Sabia",
+        "transporte": "🚶 Pórticos Infinitos",
+        "alojamiento": "🏠 Tradición en el Centro"
+    },
+    "historia": "Conocida como 'La Dotta' por su universidad (la más antigua de occidente) y 'La Grassa' por su gastronomía. Bolonia es el destino Erasmus por excelencia en Italia gracias a su vida cultural y social.",
+    "alojamiento": "Mercado competitivo. La zona universitaria (Via Zamboni) es ruidosa pero auténtica. Se encuentran habitaciones entre 400€ y 650€.",
+    "barrios": "El centro histórico destaca por sus 40km de pórticos. Bolognina es el barrio multicultural emergente con alquileres algo más económicos.",
+    "universidades": [
+        {
+            "nombre": "Università di Bologna (UNIBO)",
+            "descripcion": "Fundada en 1088, ofrece una oferta académica inmensa y un prestigio internacional único."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Piazza Maggiore",
+            "categoria": "cultura",
+            "descripcion": "Centro político y religioso rodeado de palacios medievales."
+        },
+        {
+            "nombre": "Le Due Torri",
+            "categoria": "cultura",
+            "descripcion": "Torres inclinadas a las que puedes subir para ver toda Emilia-Romaña."
+        },
+        {
+            "nombre": "Via del Pratello",
+            "categoria": "ocioNocturno",
+            "descripcion": "Calle famosa por sus tabernas, ambiente social y vida nocturna universitaria."
+        }
+    ],
+    "imagenes": [
+        "../img/bolonia_1.jpg",
+        "../img/bolonia_2.jpg"
+    ]
+}

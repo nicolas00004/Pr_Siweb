@@ -1,0 +1,21 @@
+{
+    "id": "malaga",
+    "nombre": "Málaga",
+    "etiquetas": {
+        "historia": "🏛️ Ciudad de Picasso",
+        "transporte": "🚲 Carril Bici y Metro",
+        "alojamiento": "🏠 Crecimiento Tecnológico"
+    },
+    "historia": "Fundada por los fenicios, Málaga se ha transformado en el 'Sillicon Valley' del sur de Europa. Combina un clima inmejorable con una oferta de museos y tecnología de primer nivel.",
+    "alojamiento": "Debido al auge tecnológico, los precios han subido. Teatinos es el barrio universitario por excelencia (350€-450€), mientras que El Palo es más bohemio y cerca del mar.",
+    "barrios": "Teatinos (estudiantes), Soho (artes y cultura), Calle Larios (centro comercial) y Pedregalejo (playa y ocio).",
+    "universidades": [
+        { "nombre": "Universidad de Málaga (UMA)", "descripcion": "Destaca en Ingenierías y Turismo, con un campus de Teatinos en constante expansión." }
+    ],
+    "sitios": [
+        { "nombre": "Alcazaba de Málaga", "categoria": "cultura", "descripcion": "Palacio fortaleza de la época musulmana." },
+        { "nombre": "Museo Picasso", "categoria": "cultura", "descripcion": "Situado en el Palacio de Buenavista, rinde homenaje al artista malagueño." },
+        { "nombre": "Muelle Uno", "categoria": "ocio", "descripcion": "Centro comercial y de restauración al aire libre en el puerto." }
+    ],
+    "imagenes": ["https://images.unsplash.com/photo-1595111304192-359f42964e5c?auto=format&fit=crop&w=800&q=80"]
+}
