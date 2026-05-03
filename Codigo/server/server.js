@@ -503,13 +503,17 @@ app.post('/api/opiniones/:id/voto', async (req, res) => {
             if (!target) return res.status(404).json({ error: 'Respuesta no encontrada' });
         }
 
+        // Garantizar que existen los arrays incluso en datos legacy
+        if (!Array.isArray(target.likes))    target.likes    = [];
+        if (!Array.isArray(target.dislikes)) target.dislikes = [];
+
         const uid = String(usuarioId);
         const yaLike    = target.likes.some(u => String(u) === uid);
         const yaDislike = target.dislikes.some(u => String(u) === uid);
 
-        // Limpiar voto previo del usuario
-        target.likes    = target.likes.filter(u => String(u) !== uid);
-        target.dislikes = target.dislikes.filter(u => String(u) !== uid);
+        // pull() mantiene el tracking de Mongoose para subdocumentos
+        target.likes.pull(usuarioId);
+        target.dislikes.pull(usuarioId);
 
         // Aplicar nuevo voto solo si no era el mismo (toggle)
         let miVoto = null;
@@ -520,6 +524,9 @@ app.post('/api/opiniones/:id/voto', async (req, res) => {
             target.dislikes.push(usuarioId);
             miVoto = 'dislike';
         }
+
+        // Asegurar que el cambio en el subdocumento se persista
+        if (respuestaId) opinion.markModified('respuestas');
 
         await opinion.save();
 

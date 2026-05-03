@@ -187,7 +187,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="ayuda-ahp.html" title="Ayuda sobre el método AHP">Ayuda ❓</a>
+                    <a href="ayuda-ahp.html" title="Ayuda sobre el método AHP">Ayuda </a>
                 </li>
                 <li>
                     <a href="login.html" class="btn-login" id="btnSesion">Inicia Sesión 👤</a>
@@ -500,8 +500,18 @@
                 });
 
                 if (!res.ok) {
-                    const err = await res.json().catch(() => ({}));
-                    alert(err.error || "No se pudo registrar el voto.");
+                    let detalle = '';
+                    try {
+                        const err = await res.json();
+                        detalle = err.error || JSON.stringify(err);
+                    } catch (_) {
+                        detalle = await res.text().catch(() => '');
+                    }
+                    if (res.status === 404) {
+                        alert("Endpoint /voto no encontrado. Reinicia el servidor (node server.js) para cargar el nuevo código.");
+                    } else {
+                        alert(`No se pudo registrar el voto (HTTP ${res.status}). ${detalle}`);
+                    }
                     return;
                 }
 
