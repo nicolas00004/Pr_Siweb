@@ -142,7 +142,8 @@ const ciudadGranada = db.ciudades.insertOne({
     calidadTransporte: 6.5,
     calidadAcademica: 8.2,
     conectividad: 7.0,
-    turismo: 9.0
+    turismo: 9.0,
+    gastronomia: 9.0
   },
   etiquetas: ["Erasmus", "Económica", "Fiesta", "Cultural", "Universitaria"],
   tipoAmbiente: "fiestera",
@@ -164,7 +165,8 @@ const ciudadSevilla = db.ciudades.insertOne({
     calidadTransporte: 7.2,
     calidadAcademica: 7.8,
     conectividad: 7.5,
-    turismo: 9.3
+    turismo: 9.3,
+    gastronomia: 9.2
   },
   etiquetas: ["Erasmus", "Cultural", "Turística", "Universitaria"],
   tipoAmbiente: "cultural",
@@ -186,7 +188,8 @@ const ciudadValencia = db.ciudades.insertOne({
     calidadTransporte: 7.8,
     calidadAcademica: 7.5,
     conectividad: 8.0,
-    turismo: 8.8
+    turismo: 8.8,
+    gastronomia: 9.5
   },
   etiquetas: ["Erasmus", "Playa", "Cultural", "Económica", "Universitaria"],
   tipoAmbiente: "mixta",
@@ -208,7 +211,8 @@ const ciudadBarcelona = db.ciudades.insertOne({
     calidadTransporte: 8.8,
     calidadAcademica: 8.5,
     conectividad: 9.0,
-    turismo: 9.5
+    turismo: 9.5,
+    gastronomia: 9.0
   },
   etiquetas: ["Erasmus", "Premium", "Cosmopolita", "Playa", "Universitaria"],
   tipoAmbiente: "cosmopolita",
@@ -231,7 +235,8 @@ const ciudadParis = db.ciudades.insertOne({
     calidadTransporte: 9.2,
     calidadAcademica: 9.5,
     conectividad: 9.4,
-    turismo: 9.8
+    turismo: 9.8,
+    gastronomia: 9.6
   },
   etiquetas: ["Erasmus", "Postgrado", "Cultural", "Premium"],
   tipoAmbiente: "cultural",
@@ -253,7 +258,8 @@ const ciudadLyon = db.ciudades.insertOne({
     calidadTransporte: 8.5,
     calidadAcademica: 8.8,
     conectividad: 8.2,
-    turismo: 7.8
+    turismo: 7.8,
+    gastronomia: 9.8
   },
   etiquetas: ["Erasmus", "Gastronomía", "Universitaria", "Económica"],
   tipoAmbiente: "cultural",
@@ -276,7 +282,8 @@ const ciudadBerlin = db.ciudades.insertOne({
     calidadTransporte: 9.0,
     calidadAcademica: 8.9,
     conectividad: 9.2,
-    turismo: 9.0
+    turismo: 9.0,
+    gastronomia: 7.0
   },
   etiquetas: ["Erasmus", "Postgrado", "Fiesta", "Cultural", "Cosmopolita"],
   tipoAmbiente: "fiestera",
@@ -298,7 +305,8 @@ const ciudadMunich = db.ciudades.insertOne({
     calidadTransporte: 9.2,
     calidadAcademica: 9.0,
     conectividad: 9.0,
-    turismo: 8.5
+    turismo: 8.5,
+    gastronomia: 7.5
   },
   etiquetas: ["Postgrado", "Premium", "Segura", "Universitaria"],
   tipoAmbiente: "académica",
@@ -321,7 +329,8 @@ const ciudadRoma = db.ciudades.insertOne({
     calidadTransporte: 7.0,
     calidadAcademica: 8.5,
     conectividad: 8.5,
-    turismo: 9.9
+    turismo: 9.9,
+    gastronomia: 9.5
   },
   etiquetas: ["Erasmus", "Cultural", "Histórica", "Turística"],
   tipoAmbiente: "cultural",
@@ -343,7 +352,8 @@ const ciudadBolonia = db.ciudades.insertOne({
     calidadTransporte: 7.5,
     calidadAcademica: 9.0,
     conectividad: 7.8,
-    turismo: 8.0
+    turismo: 8.0,
+    gastronomia: 9.7
   },
   etiquetas: ["Erasmus", "Universitaria", "Gastronomía", "Cultural"],
   tipoAmbiente: "académica",
@@ -366,7 +376,8 @@ const ciudadLisboa = db.ciudades.insertOne({
     calidadTransporte: 7.5,
     calidadAcademica: 7.8,
     conectividad: 8.0,
-    turismo: 9.2
+    turismo: 9.2,
+    gastronomia: 8.8
   },
   etiquetas: ["Erasmus", "Económica", "Cultural", "Universitaria", "Segura"],
   tipoAmbiente: "cultural",
@@ -389,7 +400,8 @@ const ciudadAmsterdam = db.ciudades.insertOne({
     calidadTransporte: 9.5,
     calidadAcademica: 8.8,
     conectividad: 9.5,
-    turismo: 9.3
+    turismo: 9.3,
+    gastronomia: 7.0
   },
   etiquetas: ["Postgrado", "Cosmopolita", "Cultural", "Premium"],
   tipoAmbiente: "cosmopolita",
@@ -412,7 +424,8 @@ const ciudadPraga = db.ciudades.insertOne({
     calidadTransporte: 8.5,
     calidadAcademica: 8.0,
     conectividad: 8.0,
-    turismo: 9.2
+    turismo: 9.2,
+    gastronomia: 7.5
   },
   etiquetas: ["Erasmus", "Económica", "Fiesta", "Cultural", "Segura"],
   tipoAmbiente: "fiestera",
@@ -435,7 +448,8 @@ const ciudadDublin = db.ciudades.insertOne({
     calidadTransporte: 7.0,
     calidadAcademica: 8.5,
     conectividad: 8.5,
-    turismo: 8.5
+    turismo: 8.5,
+    gastronomia: 6.5
   },
   etiquetas: ["Erasmus", "Inglés", "Cultural", "Premium"],
   tipoAmbiente: "mixta",

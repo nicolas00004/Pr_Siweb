@@ -12,6 +12,7 @@ const selectRol = document.getElementById('selectRol');
 const savedSearchesContainer = document.getElementById('savedSearchesContainer');
 const inputBusquedaTexto = document.getElementById('inputBusquedaTexto');
 const selectOrden = document.getElementById('selectOrden');
+const selectTopN = document.getElementById('selectTopN');
 const resultadosCount = document.getElementById('resultadosCount');
 let minSeguridad = 0;
 
@@ -30,7 +31,8 @@ let currentWeights = {
     seguridad: 1,
     calidadAcademica: 1,
     conectividad: 1,
-    asequibilidad: 1
+    asequibilidad: 1,
+    gastronomia: 1
 };
 let seleccionParaComparar = [];
 let rankingDataGlobal = [];
@@ -93,7 +95,7 @@ async function cargarDatos() {
         let lanzarBusquedaAuto = false;
         if (temp) {
             const b = JSON.parse(temp);
-            currentWeights = { ...b.pesos };
+            currentWeights = { ...currentWeights, ...b.pesos };
             if (selectRol) selectRol.value = b.rol;
             localStorage.removeItem('tempBusqueda');
             renderizarSliders();
@@ -229,15 +231,21 @@ function aplicarFiltros() {
         return true;
     });
 
-    // Actualizar contador
+    // Actualizar contador (respetando el límite Top N si está activo)
     if (resultadosCount) {
-        resultadosCount.textContent = `${filtradas.length} ciudad${filtradas.length !== 1 ? 'es' : ''}`;
+        const topN = selectTopN ? parseInt(selectTopN.value) : 0;
+        const mostradas = (topN > 0 && topN < filtradas.length) ? topN : filtradas.length;
+        if (topN > 0 && topN < filtradas.length) {
+            resultadosCount.textContent = `Top ${mostradas} de ${filtradas.length} ciudades`;
+        } else {
+            resultadosCount.textContent = `${filtradas.length} ciudad${filtradas.length !== 1 ? 'es' : ''}`;
+        }
     }
 
     renderizarCiudades(filtradas);
     const ranking = calcularRanking(filtradas);
-    // Los marcadores solo se muestran tras pulsar "Buscar Destinos"
-    renderizarMapa(rankingVisible ? filtradas : [], rankingVisible ? ranking : []);
+    // Los marcadores solo se muestran tras pulsar "Buscar Destinos", y solo las del Top N (ranking)
+    renderizarMapa(rankingVisible ? ranking : [], rankingVisible ? ranking : []);
 }
 
 function renderizarMapa(datos, rankingData = []) {
@@ -290,6 +298,32 @@ function renderizarMapa(datos, rankingData = []) {
             markers.push(marker);
         }
     });
+    // Añadir marcador de Origen (desde donde se busca)
+    if (ORIGIN && ORIGIN.length === 2 && datos.length > 0) {
+        const originMarker = L.marker([ORIGIN[0], ORIGIN[1]], {
+            icon: L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div style='background-color:#ef4444; width:24px; height:24px; border-radius:50%; border:3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; font-size:12px;'>📍</div>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            }),
+            zIndexOffset: 1000 // Para que se vea por encima de otras flechas si se solapan
+        }).addTo(map);
+
+        originMarker.bindPopup(`
+            <div style="font-family: inherit; text-align:center;">
+                <strong style="color:#ef4444;">📍 Tu Ubicación</strong><br>
+                <span style="font-size:0.75rem; color:var(--text-muted);">Punto de origen de la búsqueda</span>
+            </div>
+        `);
+        markers.push(originMarker);
+        
+        // Ajustar la vista del mapa para que incluya el origen y los destinos
+        const bounds = L.featureGroup(markers).getBounds();
+        if (bounds.isValid()) {
+            map.fitBounds(bounds, { padding: [50, 50] });
+        }
+    }
 }
 
 // AHP-Sort II canónico: cada perfil define el LÍMITE INFERIOR de su categoría
@@ -301,7 +335,7 @@ const LIMITING_PROFILES = [
         metricasPerfil: {
             calidadTransporte: 4.5, turismo: 4.5, ambienteNocturno: 4.0,
             seguridad: 4.5, calidadAcademica: 4.5, conectividad: 4.5,
-            asequibilidad: 4.0
+            asequibilidad: 4.0, gastronomia: 4.5
         }
     },
     {
@@ -309,7 +343,7 @@ const LIMITING_PROFILES = [
         metricasPerfil: {
             calidadTransporte: 3.8, turismo: 3.8, ambienteNocturno: 3.5,
             seguridad: 4.0, calidadAcademica: 4.0, conectividad: 3.8,
-            asequibilidad: 3.5
+            asequibilidad: 3.5, gastronomia: 3.8
         }
     },
     {
@@ -317,7 +351,7 @@ const LIMITING_PROFILES = [
         metricasPerfil: {
             calidadTransporte: 2.5, turismo: 2.5, ambienteNocturno: 2.0,
             seguridad: 3.0, calidadAcademica: 3.0, conectividad: 2.5,
-            asequibilidad: 2.5
+            asequibilidad: 2.5, gastronomia: 2.5
         }
     }
 ];
@@ -333,7 +367,8 @@ const VETO_RULES = [
 const CRIT_TO_METRIC = {
     ocioNocturno: 'ambienteNocturno',
     transporte:   'calidadTransporte',
-    ocio:         'turismo'
+    ocio:         'turismo',
+    gastronomia:  'gastronomia'
 };
 
 // Score que obtiene un perfil límite con los pesos actuales del usuario.
@@ -405,6 +440,7 @@ function mostrarRanking() {
     // Pequeño retardo para que la animación sea perceptible aunque el cálculo sea instantáneo
     setTimeout(() => {
         rankingVisible = true;
+        activarPaso(3);
         aplicarFiltros();
 
         // Animar entrada de las filas del ranking
@@ -462,6 +498,13 @@ function calcularRanking(ciudadesInput = ciudades) {
             } else {
                 const critKey = CRIT_TO_METRIC[crit] || crit;
                 metricValue = c.metricas ? c.metricas[critKey] : null;
+                // Fallback para gastronomía: si la ciudad no tiene métrica explícita,
+                // usamos turismo como proxy y sumamos un bonus si está etiquetada "Gastronomía"
+                if (crit === 'gastronomia' && (metricValue == null)) {
+                    const proxy = c.metricas?.turismo;
+                    const bonus = Array.isArray(c.etiquetas) && c.etiquetas.some(t => /gastronom/i.test(t)) ? 0.5 : 0;
+                    if (proxy != null) metricValue = Math.min(5, proxy + bonus);
+                }
             }
 
             if (metricValue !== null && metricValue !== undefined) {
@@ -522,6 +565,10 @@ function calcularRanking(ciudadesInput = ciudades) {
     });
     rankingDataGlobal = rankingData; // Guardar para el comparador
 
+    // Aplicar límite Top N
+    const topN = selectTopN ? parseInt(selectTopN.value) : 0;
+    const rankingMostrado = (topN > 0) ? rankingData.slice(0, topN) : rankingData;
+
     // Si el usuario aún no ha pulsado Buscar, mostrar placeholder y devolver datos para el mapa
     if (!rankingVisible) {
         rankingBody.innerHTML = `
@@ -534,26 +581,31 @@ function calcularRanking(ciudadesInput = ciudades) {
                     </div>
                 </td>
             </tr>`;
-        return rankingData;
+        return rankingMostrado;
     }
 
-    rankingBody.innerHTML = rankingData.map((c, i) => `
+    const isLogged = !!userFull;
+    rankingBody.innerHTML = rankingMostrado.map((c, i) => {
+        const isFav = userFavoritasIds.includes(c._id);
+        const favBtn = isLogged
+            ? `<button class="rank-fav-btn ${isFav ? 'is-fav' : ''}"
+                       onclick="event.stopPropagation(); toggleFavoritoRapido('${c._id}')"
+                       title="${isFav ? 'Quitar de favoritos' : 'Añadir a favoritos'}">${isFav ? '❤️' : '🤍'}</button>`
+            : `<button class="rank-fav-btn"
+                       onclick="event.stopPropagation(); window.location.href='login.html'"
+                       title="Inicia sesión para guardar favoritos">🤍</button>`;
+        return `
         <tr class="ranking-row" onclick="window.location.href='detalle.html?id=${c._id}'">
-            <td onclick="event.stopPropagation()" style="width:30px; text-align:center;">
-                <input type="checkbox" class="compare-checkbox" value="${c._id}" 
-                       ${seleccionParaComparar.includes(c._id) ? 'checked' : ''}
-                       onchange="toggleSeleccionComparar('${c._id}')" 
-                       style="width:18px; height:18px; cursor:pointer;">
-            </td>
             <td data-label="POS"><span class="rank-number">${i + 1}º</span></td>
             <td data-label="CIUDAD">
                 <div class="rank-city">
-                    <img src="${obtenerImagenCiudad(c)}" alt="${c.nombre}">
+                    <img src="${obtenerImagenCiudad(c)}" alt="${c.nombre}" onerror="this.style.display='none'">
                     <span>${c.nombre} ${c.rol === 'trabajador' ? '💼' : ''}</span>
+                    ${favBtn}
                 </div>
             </td>
             <td data-label="CLASIFICACIÓN">
-                <span class="pill" style="background: ${c.catColor}; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">
+                <span class="pill" style="display: inline-block; white-space: nowrap; background: ${c.catColor}; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">
                     ${c.categoria}
                 </span>
                 ${c.vetoMsg ? `<span class="near-threshold" style="color:#b91c1c;">${c.vetoMsg}</span>` : ''}
@@ -570,10 +622,11 @@ function calcularRanking(ciudadesInput = ciudades) {
                 </div>
             </td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
 
     actualizarBotonComparar();
-    return rankingData;
+    return rankingMostrado;
 }
 
 function toggleSeleccionComparar(id) {
@@ -592,40 +645,8 @@ function toggleSeleccionComparar(id) {
 }
 
 function actualizarBotonComparar() {
-    const btn = document.getElementById('btnComparar');
-    const count = document.getElementById('compareCount');
-    if (!btn || !count) return;
-
-    const n = seleccionParaComparar.length;
-    count.innerText = n;
-
-    if (n === 0) {
-        btn.style.display = 'none';
-        btn.classList.remove('compare-ready', 'compare-hint', 'compare-pulse');
-        return;
-    }
-
-    // 1 ciudad seleccionada: pista de que necesita otra
-    if (n === 1) {
-        btn.style.display = 'inline-flex';
-        btn.classList.add('compare-hint');
-        btn.classList.remove('compare-ready', 'compare-pulse');
-        btn.innerHTML = `🔓 Selecciona 1 más para comparar (<span id="compareCount">${n}</span>/2)`;
-        return;
-    }
-
-    // 2-4 ciudades: botón listo y muy visible
-    btn.style.display = 'inline-flex';
-    btn.classList.remove('compare-hint');
-    btn.classList.add('compare-ready');
-
-    // Pulso una sola vez al cruzar el umbral mínimo
-    if (!btn.dataset.lastCount || parseInt(btn.dataset.lastCount) < 2) {
-        btn.classList.add('compare-pulse');
-        setTimeout(() => btn.classList.remove('compare-pulse'), 1800);
-    }
-    btn.dataset.lastCount = String(n);
-    btn.innerHTML = `⚖️ Comparar ahora (<span id="compareCount">${n}</span>)`;
+    // Función deshabilitada: la comparación ahora se hace en herramientas.html
+    return;
 }
 
 function abrirComparador() {
@@ -754,7 +775,55 @@ const CRIT_LABELS = {
     seguridad:        '🛡️ Seguridad',
     calidadAcademica: '🎓 Calidad Académica',
     conectividad:     '📶 Conectividad',
-    asequibilidad:    '💰 Asequibilidad'
+    asequibilidad:    '💰 Asequibilidad',
+    gastronomia:      '🍽️ Gastronomía'
+};
+
+// --- PERFILES RÁPIDOS ---
+const PERFILES = {
+    economico:   { asequibilidad: 5, conectividad: 3, transporte: 3, ocio: 2, ocioNocturno: 2, seguridad: 3, calidadAcademica: 2, gastronomia: 1 },
+    academico:   { calidadAcademica: 5, conectividad: 4, seguridad: 4, transporte: 3, asequibilidad: 3, ocio: 2, ocioNocturno: 1, gastronomia: 2 },
+    social:      { ocioNocturno: 5, ocio: 5, turismo: 4, gastronomia: 3, conectividad: 3, transporte: 3, seguridad: 2, calidadAcademica: 2, asequibilidad: 2 },
+    seguro:      { seguridad: 5, calidadAcademica: 4, conectividad: 3, transporte: 3, asequibilidad: 3, ocio: 2, ocioNocturno: 1, gastronomia: 2 },
+    equilibrado: { transporte: 3, ocio: 3, ocioNocturno: 3, seguridad: 3, calidadAcademica: 3, conectividad: 3, asequibilidad: 3, gastronomia: 3 }
+};
+
+function aplicarPerfil(nombre) {
+    const perfil = PERFILES[nombre];
+    if (!perfil) return;
+    currentWeights = { ...currentWeights, ...perfil };
+    renderizarSliders();
+    aplicarFiltros();
+    // Marcar botón activo
+    document.querySelectorAll('.qp-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.querySelector(`.qp-btn[onclick*="${nombre}"]`);
+    if (btn) btn.classList.add('active');
+    showToast(`✅ Perfil "${btn?.textContent?.trim()}" aplicado`, 'success');
+    activarPaso(2);
+}
+
+// Actualiza visualmente los pasos de la guía
+function activarPaso(paso) {
+    document.querySelectorAll('.step-item').forEach((el, i) => {
+        el.classList.toggle('step-active', i < paso);
+    });
+}
+
+// Toggle Filtros Básicos
+window.toggleFiltrosBasicos = function() {
+    const btn = document.getElementById('btnToggleFiltros');
+    const panel = document.getElementById('filtrosContenido');
+    if (!btn || !panel) return;
+    
+    const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !isExpanded);
+    panel.style.display = isExpanded ? 'none' : 'block';
+    
+    if (isExpanded) {
+        btn.innerHTML = '⚙️ Ajustar más filtros <span id="filtrosArrow">▼</span>';
+    } else {
+        btn.innerHTML = '⚙️ Ocultar filtros extra <span id="filtrosArrow">▲</span>';
+    }
 };
 
 function renderizarSliders() {
@@ -793,6 +862,8 @@ function renderizarSliders() {
             }
 
             aplicarFiltros();
+            // Avanzar al paso 2 al tocar prioridades
+            activarPaso(2);
         };
     });
 }
@@ -830,7 +901,7 @@ function renderizarSelectBusquedas() {
 function cargarBusqueda(idx) {
     const b = userFull.busquedas[idx];
     if (!b) return;
-    currentWeights = { ...b.pesos };
+    currentWeights = { ...currentWeights, ...b.pesos };
     if (selectRol) selectRol.value = b.rol;
     renderizarSliders();
     aplicarFiltros();
@@ -1087,11 +1158,12 @@ if (slider) {
     slider.addEventListener('input', () => {
         if (etiquetaPrecio) etiquetaPrecio.textContent = `${slider.value}€`;
         aplicarFiltros();
+        activarPaso(1);
     });
 }
 
 if (selectorAmbiente) {
-    selectorAmbiente.addEventListener('change', aplicarFiltros);
+    selectorAmbiente.addEventListener('change', () => { aplicarFiltros(); activarPaso(1); });
 }
 
 if (sliderDistancia) {
@@ -1101,6 +1173,7 @@ if (sliderDistancia) {
             etiquetaDistancia.textContent = val >= 2000 ? "Cualquiera" : `${val}km`;
         }
         aplicarFiltros();
+        activarPaso(1);
     });
 }
 
@@ -1125,12 +1198,14 @@ if (btnGeo) {
             }
         );
     };
+    // Obtener ubicación automáticamente al cargar la página
+    setTimeout(() => { btnGeo.click(); }, 500);
 }
 
 // --- NUEVOS FILTROS ---
 // Búsqueda por texto
 if (inputBusquedaTexto) {
-    inputBusquedaTexto.addEventListener('input', aplicarFiltros);
+    inputBusquedaTexto.addEventListener('input', () => { aplicarFiltros(); activarPaso(1); });
 }
 
 // Filtro seguridad mínima (pills)
@@ -1153,6 +1228,13 @@ if (selectOrden) {
     selectOrden.addEventListener('change', aplicarFiltros);
 }
 
+// Número de ciudades en el ranking
+if (selectTopN) {
+    selectTopN.addEventListener('change', () => {
+        if (rankingVisible) aplicarFiltros();
+    });
+}
+
 // Reset filtros
 const btnResetFiltros = document.getElementById('btnResetFiltros');
 if (btnResetFiltros) {
@@ -1162,6 +1244,7 @@ if (btnResetFiltros) {
         if (selectorAmbiente) selectorAmbiente.value = 'todos';
         if (inputBusquedaTexto) inputBusquedaTexto.value = '';
         if (selectOrden) selectOrden.value = 'ahp';
+        if (selectTopN) selectTopN.value = '10';
         minSeguridad = 0;
         if (filtroSeguridadEl) {
             filtroSeguridadEl.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
@@ -1205,7 +1288,8 @@ if (formNuevaCiudad) {
                 calidadTransporte:  3,
                 calidadAcademica:   3,
                 conectividad:       3,
-                turismo:            3
+                turismo:            3,
+                gastronomia:        Number(document.getElementById('f_gastronomia').value) || 3
             },
             coordenadas: {
                 type: 'Point',

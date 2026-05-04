@@ -10,6 +10,80 @@
         @media (max-width: 900px) { .comunidad-grid { grid-template-columns: 1fr; } }
         
         .foro-contenedor { display: flex; flex-direction: column; gap: 20px; }
+
+        .foro-tabs {
+            background: var(--white);
+            padding: 16px 20px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .foro-tabs-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .foro-filtros-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr) auto;
+            gap: 12px;
+            align-items: end;
+        }
+        @media (max-width: 900px) { .foro-filtros-row { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 500px) { .foro-filtros-row { grid-template-columns: 1fr; } }
+        .foro-filtro { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .foro-filtro label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .foro-filtro select {
+            width: 100%;
+            padding: 9px 12px;
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            background: #f8fafc;
+            font-size: 0.88rem;
+            font-family: inherit;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .foro-filtro select:hover { background: #fff; border-color: #cbd5e1; }
+        .foro-filtro select:focus { outline: none; border-color: var(--accent-color); background: #fff; }
+        .foro-filtro select:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
+        .btn-reset-foro {
+            background: #f1f5f9;
+            border: 1.5px solid #e2e8f0;
+            padding: 9px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            color: var(--text-dark);
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-reset-foro:hover { background: #e2e8f0; }
+        .foro-filtros-status {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            background: #f8fafc;
+            padding: 6px 12px;
+            border-radius: 10px;
+            display: inline-block;
+            align-self: flex-start;
+        }
+        .foro-filtros-status.is-active { background: #eff6ff; color: var(--accent-color); }
         
         .hilo-card {
             background: var(--white);
@@ -201,54 +275,52 @@
         <p class="texto-largo">Lee las experiencias de estudiantes reales o aporta tu granito de arena.</p>
 
         <div class="comunidad-grid">
-            
-            <!-- FORO / HILOS -->
-            <div class="foro-contenedor" id="foro">
-                
-                <div class="hilo-card">
-                    <div class="hilo-header">
-                        <div class="hilo-autor">👨‍🎓 Carlos M.</div>
-                        <div class="hilo-ciudad">📍 Salamanca</div>
+
+            <div>
+                <!-- SELECTOR DE FORO: REGIÓN / PAÍS / CIUDAD -->
+                <div class="foro-tabs" id="foroTabs">
+                    <div class="foro-tabs-label">📍 Filtrar foro por:</div>
+                    <div class="foro-filtros-row">
+                        <div class="foro-filtro">
+                            <label for="filtroRegion">🌍 Región</label>
+                            <select id="filtroRegion">
+                                <option value="">Todas las regiones</option>
+                            </select>
+                        </div>
+                        <div class="foro-filtro">
+                            <label for="filtroPais">🏳️ País</label>
+                            <select id="filtroPais">
+                                <option value="">Todos los países</option>
+                            </select>
+                        </div>
+                        <div class="foro-filtro">
+                            <label for="filtroCiudad">📍 Ciudad</label>
+                            <select id="filtroCiudad">
+                                <option value="">Todas las ciudades</option>
+                            </select>
+                        </div>
+                        <div class="foro-filtro">
+                            <label for="filtroCategoria">🏷️ Tema</label>
+                            <select id="filtroCategoria">
+                                <option value="">Todos los temas</option>
+                                <option value="General">🗣️ General</option>
+                                <option value="Transporte">🚌 Transporte</option>
+                                <option value="Ocio y Turismo">🎭 Ocio y Turismo</option>
+                                <option value="Vida Nocturna">🌃 Vida Nocturna</option>
+                                <option value="Seguridad">🛡️ Seguridad</option>
+                                <option value="Calidad Académica">🎓 Calidad Académica</option>
+                                <option value="Asequibilidad">💰 Asequibilidad (Coste)</option>
+                                <option value="Gastronomía">🍴 Gastronomía</option>
+                                <option value="Conectividad">📶 Conectividad</option>
+                            </select>
+                        </div>
+                        <button type="button" id="btnResetFiltrosForo" class="btn-reset-foro" title="Restablecer filtros">↩ Reset</button>
                     </div>
-                    <div class="hilo-texto">
-                        ¿Alguien sabe si el barrio del Oeste es seguro para volver por la noche andando desde la biblioteca? Estaba pensando en alquilar allí.
-                    </div>
-                    <div class="hilo-footer">
-                        <span>💬 4 Respuestas</span>
-                        <span>❤️ 12 Me gustas</span>
-                        <span>🕒 Hace 2 horas</span>
-                    </div>
+                    <div class="foro-filtros-status" id="foroFiltrosStatus">Mostrando todos los hilos.</div>
                 </div>
 
-                <div class="hilo-card">
-                    <div class="hilo-header">
-                        <div class="hilo-autor">👩‍🔬 Laura P.</div>
-                        <div class="hilo-ciudad">📍 Milán</div>
-                    </div>
-                    <div class="hilo-texto">
-                        No cometaís el mismo error que yo: las residencias gestionadas por la PoliMi se llenan en junio. Si aplicáis en agosto como hice yo, os toca buscar piso compartido carísimo en Lambrate.
-                    </div>
-                    <div class="hilo-footer">
-                        <span>💬 1 Respuesta</span>
-                        <span>❤️ 35 Me gustas</span>
-                        <span>🕒 Hace 1 día</span>
-                    </div>
-                </div>
-
-                <div class="hilo-card">
-                    <div class="hilo-header">
-                        <div class="hilo-autor">🧑‍🎨 David G.</div>
-                        <div class="hilo-ciudad">📍 Granada</div>
-                    </div>
-                    <div class="hilo-texto">
-                        Dejo por aquí que el abono joven universitario de transporte en Granada se saca en Severo Ochoa, tardan 1 día y cuesta poquísimo. Esencial.
-                    </div>
-                    <div class="hilo-footer">
-                        <span>💬 0 Respuestas</span>
-                        <span>❤️ 89 Me gustas</span>
-                        <span>🕒 Hace 3 días</span>
-                    </div>
-                </div>
+                <!-- FORO / HILOS -->
+                <div class="foro-contenedor" id="foro"></div>
             </div>
 
             <!-- MENSAJE LOGIN REQUERIDO -->
@@ -287,39 +359,18 @@
                     <label>Tu experiencia / Duda</label>
                     <textarea placeholder="Cuéntale al resto de futuros estudiantes..." required id="textoForo"></textarea>
 
-                    <label>Tus Criterios de Búsqueda (Pesos)</label>
-                    <div style="background: var(--bg-light); padding: 15px; border-radius: 15px; margin-bottom: 10px;">
-                        <div class="slider-item">
-                            <label style="font-size: 0.75rem; margin-top: 0; display: flex; justify-content: space-between;">
-                                <span>🚌 Transporte</span> <span id="val_transporte" style="color:var(--accent-color); font-weight:bold;">5</span>
-                            </label>
-                            <input type="range" id="peso_transporte" min="1" max="10" value="5" oninput="document.getElementById('val_transporte').innerText=this.value">
-                        </div>
-                        <div class="slider-item">
-                            <label style="font-size: 0.75rem; margin-top: 0; display: flex; justify-content: space-between;">
-                                <span>🎭 Ocio</span> <span id="val_ocio" style="color:var(--accent-color); font-weight:bold;">5</span>
-                            </label>
-                            <input type="range" id="peso_ocio" min="1" max="10" value="5" oninput="document.getElementById('val_ocio').innerText=this.value">
-                        </div>
-                        <div class="slider-item">
-                            <label style="font-size: 0.75rem; margin-top: 0; display: flex; justify-content: space-between;">
-                                <span>🌃 Ocio Nocturno</span> <span id="val_ocioNocturno" style="color:var(--accent-color); font-weight:bold;">5</span>
-                            </label>
-                            <input type="range" id="peso_ocioNocturno" min="1" max="10" value="5" oninput="document.getElementById('val_ocioNocturno').innerText=this.value">
-                        </div>
-                        <div class="slider-item">
-                            <label style="font-size: 0.75rem; margin-top: 0; display: flex; justify-content: space-between;">
-                                <span>🛡️ Seguridad</span> <span id="val_seguridad" style="color:var(--accent-color); font-weight:bold;">5</span>
-                            </label>
-                            <input type="range" id="peso_seguridad" min="1" max="10" value="5" oninput="document.getElementById('val_seguridad').innerText=this.value">
-                        </div>
-                        <div class="slider-item">
-                            <label style="font-size: 0.75rem; margin-top: 0; display: flex; justify-content: space-between;">
-                                <span>🎓 Académica</span> <span id="val_academica" style="color:var(--accent-color); font-weight:bold;">5</span>
-                            </label>
-                            <input type="range" id="peso_academica" min="1" max="10" value="5" oninput="document.getElementById('val_academica').innerText=this.value">
-                        </div>
-                    </div>
+                    <label>Tema principal</label>
+                    <select id="categoriaForo" required>
+                        <option value="General">🗣️ General</option>
+                        <option value="Transporte">🚌 Transporte</option>
+                        <option value="Ocio y Turismo">🎭 Ocio y Turismo</option>
+                        <option value="Vida Nocturna">🌃 Vida Nocturna</option>
+                        <option value="Seguridad">🛡️ Seguridad</option>
+                        <option value="Calidad Académica">🎓 Calidad Académica</option>
+                        <option value="Asequibilidad">💰 Asequibilidad (Coste)</option>
+                        <option value="Gastronomía">🍴 Gastronomía</option>
+                        <option value="Conectividad">📶 Conectividad</option>
+                    </select>
 
                     <button type="submit" class="btn-submit" style="margin-top: 15px; width: 100%;">Publicar Hilo</button>
                     <p id="foroFeedback" style="margin-top: 10px; font-weight: bold; text-align: center;"></p>
@@ -333,25 +384,189 @@
         const API_BASE = 'http://localhost:3000';
         const foroContainer = document.getElementById('foro');
         const selectCiudades = document.getElementById('ciudadForo');
+        const filtroRegion = document.getElementById('filtroRegion');
+        const filtroPais = document.getElementById('filtroPais');
+        const filtroCiudad = document.getElementById('filtroCiudad');
+        const filtroCategoria = document.getElementById('filtroCategoria');
+        const btnResetFiltrosForo = document.getElementById('btnResetFiltrosForo');
+        const foroFiltrosStatus = document.getElementById('foroFiltrosStatus');
 
-        // 1. Cargar Ciudades para el Selector
+        // Estado del foro: filtros activos y cachés
+        let foroOpinionesCache = [];
+        let foroCiudadesCache = [];
+
+        // Mapa País → Región (continente / sub-región europea). Las ciudades cuyo
+        // país no aparezca en el mapa caen en "Otros".
+        const PAIS_A_REGION = {
+            'España': 'Europa del Sur',
+            'Italia': 'Europa del Sur',
+            'Portugal': 'Europa del Sur',
+            'Grecia': 'Europa del Sur',
+            'Malta': 'Europa del Sur',
+            'Francia': 'Europa Occidental',
+            'Alemania': 'Europa Occidental',
+            'Países Bajos': 'Europa Occidental',
+            'Holanda': 'Europa Occidental',
+            'Bélgica': 'Europa Occidental',
+            'Luxemburgo': 'Europa Occidental',
+            'Suiza': 'Europa Occidental',
+            'Austria': 'Europa Occidental',
+            'Reino Unido': 'Islas Británicas',
+            'Irlanda': 'Islas Británicas',
+            'Suecia': 'Europa del Norte',
+            'Noruega': 'Europa del Norte',
+            'Dinamarca': 'Europa del Norte',
+            'Finlandia': 'Europa del Norte',
+            'Islandia': 'Europa del Norte',
+            'Polonia': 'Europa del Este',
+            'República Checa': 'Europa del Este',
+            'Chequia': 'Europa del Este',
+            'Hungría': 'Europa del Este',
+            'Rumanía': 'Europa del Este',
+            'Eslovaquia': 'Europa del Este',
+            'Croacia': 'Europa del Este'
+        };
+        const regionDePais = (pais) => PAIS_A_REGION[pais] || 'Otros';
+
+        // 1. Cargar Ciudades para los selectores (formulario, filtros)
         async function cargarCiudadesSelector() {
             try {
                 const res = await fetch(`${API_BASE}/api/ciudades`);
-                const ciudades = await res.json();
-                selectCiudades.innerHTML = '<option value="">Selecciona...</option>' + 
-                    ciudades.map(c => `<option value="${c._id}">${c.nombre}</option>`).join('');
+                foroCiudadesCache = await res.json();
+
+                selectCiudades.innerHTML = '<option value="">Selecciona...</option>' +
+                    foroCiudadesCache.map(c => `<option value="${c._id}">${c.nombre}</option>`).join('');
+
+                poblarFiltroRegion();
+                poblarFiltroPais();
+                poblarFiltroCiudad();
+
+                filtroRegion.addEventListener('change', () => {
+                    filtroPais.value = '';
+                    filtroCiudad.value = '';
+                    poblarFiltroPais();
+                    poblarFiltroCiudad();
+                    renderOpiniones();
+                });
+                filtroPais.addEventListener('change', () => {
+                    filtroCiudad.value = '';
+                    poblarFiltroCiudad();
+                    renderOpiniones();
+                });
+                filtroCiudad.addEventListener('change', () => {
+                    renderOpiniones();
+                    if (filtroCiudad.value) {
+                        selectCiudades.value = filtroCiudad.value;
+                    }
+                });
+                filtroCategoria.addEventListener('change', renderOpiniones);
+                btnResetFiltrosForo.addEventListener('click', () => {
+                    filtroRegion.value = '';
+                    filtroPais.value = '';
+                    filtroCiudad.value = '';
+                    filtroCategoria.value = '';
+                    poblarFiltroPais();
+                    poblarFiltroCiudad();
+                    renderOpiniones();
+                    selectCiudades.value = ''; // Sincronizar reseteo con el formulario
+                });
             } catch (err) { console.error("Error ciudades:", err); }
+        }
+
+        function poblarFiltroRegion() {
+            const regiones = [...new Set(foroCiudadesCache.map(c => regionDePais(c.pais)))].sort();
+            filtroRegion.innerHTML = '<option value="">Todas las regiones</option>' +
+                regiones.map(r => `<option value="${r}">${r}</option>`).join('');
+        }
+
+        function poblarFiltroPais() {
+            const region = filtroRegion.value;
+            const fuente = region
+                ? foroCiudadesCache.filter(c => regionDePais(c.pais) === region)
+                : foroCiudadesCache;
+            const paises = [...new Set(fuente.map(c => c.pais).filter(Boolean))].sort();
+            filtroPais.innerHTML = '<option value="">Todos los países</option>' +
+                paises.map(p => `<option value="${p}">${p}</option>`).join('');
+            filtroPais.disabled = paises.length === 0;
+        }
+
+        function poblarFiltroCiudad() {
+            const region = filtroRegion.value;
+            const pais = filtroPais.value;
+            const fuente = foroCiudadesCache.filter(c =>
+                (!region || regionDePais(c.pais) === region) &&
+                (!pais || c.pais === pais)
+            );
+            filtroCiudad.innerHTML = '<option value="">Todas las ciudades</option>' +
+                fuente.map(c => `<option value="${c._id}">${c.nombre}</option>`).join('');
+            filtroCiudad.disabled = fuente.length === 0;
+        }
+
+        function actualizarStatusFiltros() {
+            const region = filtroRegion.value;
+            const pais = filtroPais.value;
+            const ciudadId = filtroCiudad.value;
+            const categoria = filtroCategoria.value;
+            const partes = [];
+            if (region) partes.push(region);
+            if (pais) partes.push(pais);
+            if (ciudadId) {
+                const c = foroCiudadesCache.find(x => String(x._id) === String(ciudadId));
+                if (c) partes.push(c.nombre);
+            }
+            if (categoria) partes.push(`Tema: ${categoria}`);
+            if (partes.length) {
+                foroFiltrosStatus.textContent = `Foro filtrado: ${partes.join(' › ')}`;
+                foroFiltrosStatus.classList.add('is-active');
+            } else {
+                foroFiltrosStatus.textContent = 'Mostrando todos los hilos.';
+                foroFiltrosStatus.classList.remove('is-active');
+            }
         }
 
         // 2. Cargar Opiniones Recientes
         async function cargarOpiniones() {
             try {
                 const res = await fetch(`${API_BASE}/api/opiniones`);
-                const opiniones = await res.json();
-                
+                foroOpinionesCache = await res.json();
+                renderOpiniones();
+            } catch (err) {
+                foroContainer.innerHTML = '<p>Error cargando la comunidad.</p>';
+            }
+        }
+
+        function renderOpiniones() {
+            try {
+                actualizarStatusFiltros();
+                const region = filtroRegion.value;
+                const pais = filtroPais.value;
+                const ciudadId = filtroCiudad.value;
+                const categoria = filtroCategoria.value;
+
+                // Mapa rápido id ciudad → datos para resolver país/región de cada opinión
+                const ciudadById = new Map(foroCiudadesCache.map(c => [String(c._id), c]));
+
+                const opiniones = foroOpinionesCache.filter(op => {
+                    const cid = op.id_ciudad?._id || op.id_ciudad;
+                    if (ciudadId && String(cid) !== String(ciudadId)) return false;
+                    
+                    if (categoria && op.categoria !== categoria) return false;
+
+                    if (pais || region) {
+                        const ciudadFull = ciudadById.get(String(cid));
+                        const paisOp = ciudadFull?.pais || op.id_ciudad?.pais;
+                        if (pais && paisOp !== pais) return false;
+                        if (region && regionDePais(paisOp) !== region) return false;
+                    }
+                    return true;
+                });
+
                 if (opiniones.length === 0) {
-                    foroContainer.innerHTML = '<p style="text-align:center; padding:40px;">No hay hilos todavía. ¡Sé el primero en preguntar!</p>';
+                    const filtrando = !!(region || pais || ciudadId || categoria);
+                    const msg = filtrando
+                        ? 'Aún no hay hilos en este foro. ¡Inaugúralo tú!'
+                        : 'No hay hilos todavía. ¡Sé el primero en preguntar!';
+                    foroContainer.innerHTML = `<p style="text-align:center; padding:40px;">${msg}</p>`;
                     return;
                 }
 
@@ -429,11 +644,7 @@
                         <div class="hilo-texto">${escapeHtml(op.texto_opinion)}</div>
 
                         <div class="pesos-tag-container">
-                            <span class="peso-tag">🚌 ${p.transporte}</span>
-                            <span class="peso-tag">🎭 ${p.ocio}</span>
-                            <span class="peso-tag">🌃 ${p.ocioNocturno}</span>
-                            <span class="peso-tag">🛡️ ${p.seguridad}</span>
-                            <span class="peso-tag">🎓 ${p.calidadAcademica}</span>
+                            ${op.categoria ? `<span class="peso-tag" style="background:#fef08a; color:#854d0e; font-size:0.8rem; padding: 4px 10px;">🏷️ ${escapeHtml(op.categoria)}</span>` : ''}
                         </div>
 
                         <div class="hilo-footer" style="align-items:center; flex-wrap:wrap;">
@@ -574,13 +785,7 @@
                 valoracion: document.getElementById('valForo').value,
                 texto: document.getElementById('textoForo').value,
                 usuarioId: localUser.id || localUser._id || null,
-                pesos: {
-                    transporte: parseInt(document.getElementById('peso_transporte').value),
-                    ocio: parseInt(document.getElementById('peso_ocio').value),
-                    ocioNocturno: parseInt(document.getElementById('peso_ocioNocturno').value),
-                    seguridad: parseInt(document.getElementById('peso_seguridad').value),
-                    calidadAcademica: parseInt(document.getElementById('peso_academica').value)
-                }
+                categoria: document.getElementById('categoriaForo').value
             };
 
             try {
