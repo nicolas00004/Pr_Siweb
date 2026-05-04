@@ -25,7 +25,7 @@ const CiudadSchema = new mongoose.Schema({
     c_postal: String,
     metricas: {
         seguridad: Number, costeAlquilerMedio: Number, costeOcioMedio: Number, ambienteNocturno: Number,
-        calidadTransporte: Number, calidadAcademica: Number, conectividad: Number, turismo: Number
+        calidadTransporte: Number, calidadAcademica: Number, conectividad: Number, turismo: Number, gastronomia: Number
     },
     etiquetas: [String],
     tipoAmbiente: String,
@@ -99,48 +99,48 @@ const ciudadesData = [
     // --- España ---
     {
         nombre: 'Granada', pais: 'España', c_postal: '18001', tipoAmbiente: 'fiesta', jsonRef: 'granada',
-        metricas: { seguridad: 5, costeAlquilerMedio: 250, costeOcioMedio: 150, ambienteNocturno: 5, calidadTransporte: 3, calidadAcademica: 5, conectividad: 4, turismo: 5 },
+        metricas: { seguridad: 5, costeAlquilerMedio: 250, costeOcioMedio: 150, ambienteNocturno: 5, calidadTransporte: 3, calidadAcademica: 5, conectividad: 4, turismo: 5, gastronomia: 5 },
         coordenadas: { type: 'Point', coordinates: [-3.7003, 37.1773] }
     },
     {
         nombre: 'Sevilla', pais: 'España', c_postal: '41001', tipoAmbiente: 'fiesta', jsonRef: 'sevilla',
-        metricas: { seguridad: 4, costeAlquilerMedio: 350, costeOcioMedio: 200, ambienteNocturno: 5, calidadTransporte: 4, calidadAcademica: 4, conectividad: 4, turismo: 5 },
+        metricas: { seguridad: 4, costeAlquilerMedio: 350, costeOcioMedio: 200, ambienteNocturno: 5, calidadTransporte: 4, calidadAcademica: 4, conectividad: 4, turismo: 5, gastronomia: 5 },
         coordenadas: { type: 'Point', coordinates: [-5.9845, 37.3891] }
     },
     {
         nombre: 'Madrid', pais: 'España', c_postal: '28001', tipoAmbiente: 'fiesta', jsonRef: 'madrid',
-        metricas: { seguridad: 4, costeAlquilerMedio: 700, costeOcioMedio: 250, ambienteNocturno: 5, calidadTransporte: 5, calidadAcademica: 5, conectividad: 5, turismo: 5 },
+        metricas: { seguridad: 4, costeAlquilerMedio: 700, costeOcioMedio: 250, ambienteNocturno: 5, calidadTransporte: 5, calidadAcademica: 5, conectividad: 5, turismo: 5, gastronomia: 5 },
         coordenadas: { type: 'Point', coordinates: [-3.7038, 40.4168] }
     },
     {
         nombre: 'Salamanca', pais: 'España', c_postal: '37001', tipoAmbiente: 'tranquilo', jsonRef: 'salamanca',
-        metricas: { seguridad: 5, costeAlquilerMedio: 280, costeOcioMedio: 150, ambienteNocturno: 4, calidadTransporte: 2, calidadAcademica: 5, conectividad: 3, turismo: 4 },
+        metricas: { seguridad: 5, costeAlquilerMedio: 280, costeOcioMedio: 150, ambienteNocturno: 4, calidadTransporte: 2, calidadAcademica: 5, conectividad: 3, turismo: 4, gastronomia: 4 },
         coordenadas: { type: 'Point', coordinates: [-5.6700, 40.9701] }
     },
     {
         nombre: 'Valencia', pais: 'España', c_postal: '46001', tipoAmbiente: 'fiesta', jsonRef: 'valencia',
-        metricas: { seguridad: 4, costeAlquilerMedio: 380, costeOcioMedio: 200, ambienteNocturno: 4, calidadTransporte: 4, calidadAcademica: 4, conectividad: 4, turismo: 4 },
+        metricas: { seguridad: 4, costeAlquilerMedio: 380, costeOcioMedio: 200, ambienteNocturno: 4, calidadTransporte: 4, calidadAcademica: 4, conectividad: 4, turismo: 4, gastronomia: 5 },
         coordenadas: { type: 'Point', coordinates: [-0.3763, 39.4699] }
     },
     {
         nombre: 'Barcelona', pais: 'España', c_postal: '08001', tipoAmbiente: 'fiesta', jsonRef: 'barcelona',
-        metricas: { seguridad: 3, costeAlquilerMedio: 800, costeOcioMedio: 300, ambienteNocturno: 5, calidadTransporte: 5, calidadAcademica: 5, conectividad: 5, turismo: 5 },
+        metricas: { seguridad: 3, costeAlquilerMedio: 800, costeOcioMedio: 300, ambienteNocturno: 5, calidadTransporte: 5, calidadAcademica: 5, conectividad: 5, turismo: 5, gastronomia: 5 },
         coordenadas: { type: 'Point', coordinates: [2.1734, 41.3851] }
     },
     {
         nombre: 'Santiago de Compostela', pais: 'España', c_postal: '15701', tipoAmbiente: 'montaña', jsonRef: 'santiago',
-        metricas: { seguridad: 5, costeAlquilerMedio: 220, costeOcioMedio: 150, ambienteNocturno: 5, calidadTransporte: 3, calidadAcademica: 5, conectividad: 3, turismo: 5 },
+        metricas: { seguridad: 5, costeAlquilerMedio: 220, costeOcioMedio: 150, ambienteNocturno: 5, calidadTransporte: 3, calidadAcademica: 5, conectividad: 3, turismo: 5, gastronomia: 5 },
         coordenadas: { type: 'Point', coordinates: [-8.5448, 42.8782] }
     },
     {
         nombre: 'Málaga', pais: 'España', c_postal: '29001', tipoAmbiente: 'playa', jsonRef: 'malaga',
-        metricas: { seguridad: 4, costeAlquilerMedio: 400, costeOcioMedio: 250, ambienteNocturno: 5, calidadTransporte: 4, calidadAcademica: 4, conectividad: 5, turismo: 5 },
+        metricas: { seguridad: 4, costeAlquilerMedio: 400, costeOcioMedio: 250, ambienteNocturno: 5, calidadTransporte: 4, calidadAcademica: 4, conectividad: 5, turismo: 5, gastronomia: 5 },
         coordenadas: { type: 'Point', coordinates: [-4.4214, 36.7213] }
     },
     // --- FRANCIA ---
     {
         nombre: 'Montpellier', pais: 'Francia', c_postal: '34000', tipoAmbiente: 'fiesta', jsonRef: 'montpellier',
-        metricas: { seguridad: 3, costeAlquilerMedio: 600, costeOcioMedio: 350, ambienteNocturno: 5, calidadTransporte: 5, calidadAcademica: 4, conectividad: 4, turismo: 4 },
+        metricas: { seguridad: 3, costeAlquilerMedio: 600, costeOcioMedio: 350, ambienteNocturno: 5, calidadTransporte: 5, calidadAcademica: 4, conectividad: 4, turismo: 4, gastronomia: 5 },
         coordenadas: { type: 'Point', coordinates: [3.8767, 43.6108] }
     },
     //{
@@ -152,7 +152,7 @@ const ciudadesData = [
     // --- ITALIA ---
     {
         nombre: 'Bolonia', pais: 'Italia', c_postal: '40121', tipoAmbiente: 'fiesta', jsonRef: 'bolonia',
-        metricas: { seguridad: 4, costeAlquilerMedio: 550, costeOcioMedio: 300, ambienteNocturno: 5, calidadTransporte: 4, calidadAcademica: 5, conectividad: 4, turismo: 4 },
+        metricas: { seguridad: 4, costeAlquilerMedio: 550, costeOcioMedio: 300, ambienteNocturno: 5, calidadTransporte: 4, calidadAcademica: 5, conectividad: 4, turismo: 4, gastronomia: 5 },
         coordenadas: { type: 'Point', coordinates: [11.3426, 44.4949] }
     },
    // {
@@ -164,7 +164,7 @@ const ciudadesData = [
     // --- ALEMANIA ---
     {
         nombre: 'Munich', pais: 'Alemania', c_postal: '80331', tipoAmbiente: 'ciudad', jsonRef: 'munich',
-        metricas: { seguridad: 5, costeAlquilerMedio: 950, costeOcioMedio: 450, ambienteNocturno: 4, calidadTransporte: 5, calidadAcademica: 5, conectividad: 5, turismo: 5 },
+        metricas: { seguridad: 5, costeAlquilerMedio: 950, costeOcioMedio: 450, ambienteNocturno: 4, calidadTransporte: 5, calidadAcademica: 5, conectividad: 5, turismo: 5, gastronomia: 4 },
         coordenadas: { type: 'Point', coordinates: [11.5820, 48.1351] }
     },
    // {
@@ -176,7 +176,7 @@ const ciudadesData = [
     // --- PORTUGAL ---
     {
         nombre: 'Coímbra', pais: 'Portugal', c_postal: '3000', tipoAmbiente: 'tranquilo', jsonRef: 'coimbra',
-       metricas: { seguridad: 5, costeAlquilerMedio: 350, costeOcioMedio: 200, ambienteNocturno: 4, calidadTransporte: 3, calidadAcademica: 4, conectividad: 3, turismo: 4 },
+       metricas: { seguridad: 5, costeAlquilerMedio: 350, costeOcioMedio: 200, ambienteNocturno: 4, calidadTransporte: 3, calidadAcademica: 4, conectividad: 3, turismo: 4, gastronomia: 4 },
         coordenadas: { type: 'Point', coordinates: [-8.4115, 40.2033] }
     }
    // {

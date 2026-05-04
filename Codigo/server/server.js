@@ -52,7 +52,8 @@ const CiudadSchema = new mongoose.Schema({
         calidadTransporte: Number,
         calidadAcademica: Number,
         conectividad: Number,
-        turismo: Number
+        turismo: Number,
+        gastronomia: Number
     },
     etiquetas: [String],
     tipoAmbiente: String,
@@ -376,7 +377,7 @@ app.get('/api/opiniones', async (req, res) => {
     try {
         const ops = await Opinion.find()
             .populate('id_usuario', 'nombre apellidos')
-            .populate('id_ciudad', 'nombre')
+            .populate('id_ciudad', 'nombre pais')
             .populate('respuestas.id_usuario', 'nombre apellidos')
             .sort({ fecha_publicacion: -1 })
             .limit(20);

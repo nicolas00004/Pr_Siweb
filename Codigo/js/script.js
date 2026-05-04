@@ -30,7 +30,8 @@ let currentWeights = {
     seguridad: 1,
     calidadAcademica: 1,
     conectividad: 1,
-    asequibilidad: 1
+    asequibilidad: 1,
+    gastronomia: 1
 };
 let seleccionParaComparar = [];
 let rankingDataGlobal = [];
@@ -93,7 +94,7 @@ async function cargarDatos() {
         let lanzarBusquedaAuto = false;
         if (temp) {
             const b = JSON.parse(temp);
-            currentWeights = { ...b.pesos };
+            currentWeights = { ...currentWeights, ...b.pesos };
             if (selectRol) selectRol.value = b.rol;
             localStorage.removeItem('tempBusqueda');
             renderizarSliders();
@@ -301,7 +302,7 @@ const LIMITING_PROFILES = [
         metricasPerfil: {
             calidadTransporte: 4.5, turismo: 4.5, ambienteNocturno: 4.0,
             seguridad: 4.5, calidadAcademica: 4.5, conectividad: 4.5,
-            asequibilidad: 4.0
+            asequibilidad: 4.0, gastronomia: 4.5
         }
     },
     {
@@ -309,7 +310,7 @@ const LIMITING_PROFILES = [
         metricasPerfil: {
             calidadTransporte: 3.8, turismo: 3.8, ambienteNocturno: 3.5,
             seguridad: 4.0, calidadAcademica: 4.0, conectividad: 3.8,
-            asequibilidad: 3.5
+            asequibilidad: 3.5, gastronomia: 3.8
         }
     },
     {
@@ -317,7 +318,7 @@ const LIMITING_PROFILES = [
         metricasPerfil: {
             calidadTransporte: 2.5, turismo: 2.5, ambienteNocturno: 2.0,
             seguridad: 3.0, calidadAcademica: 3.0, conectividad: 2.5,
-            asequibilidad: 2.5
+            asequibilidad: 2.5, gastronomia: 2.5
         }
     }
 ];
@@ -333,7 +334,8 @@ const VETO_RULES = [
 const CRIT_TO_METRIC = {
     ocioNocturno: 'ambienteNocturno',
     transporte:   'calidadTransporte',
-    ocio:         'turismo'
+    ocio:         'turismo',
+    gastronomia:  'gastronomia'
 };
 
 // Score que obtiene un perfil límite con los pesos actuales del usuario.
@@ -462,6 +464,13 @@ function calcularRanking(ciudadesInput = ciudades) {
             } else {
                 const critKey = CRIT_TO_METRIC[crit] || crit;
                 metricValue = c.metricas ? c.metricas[critKey] : null;
+                // Fallback para gastronomía: si la ciudad no tiene métrica explícita,
+                // usamos turismo como proxy y sumamos un bonus si está etiquetada "Gastronomía"
+                if (crit === 'gastronomia' && (metricValue == null)) {
+                    const proxy = c.metricas?.turismo;
+                    const bonus = Array.isArray(c.etiquetas) && c.etiquetas.some(t => /gastronom/i.test(t)) ? 0.5 : 0;
+                    if (proxy != null) metricValue = Math.min(5, proxy + bonus);
+                }
             }
 
             if (metricValue !== null && metricValue !== undefined) {
@@ -537,12 +546,22 @@ function calcularRanking(ciudadesInput = ciudades) {
         return rankingData;
     }
 
-    rankingBody.innerHTML = rankingData.map((c, i) => `
+    const isLogged = !!userFull;
+    rankingBody.innerHTML = rankingData.map((c, i) => {
+        const isFav = userFavoritasIds.includes(c._id);
+        const favBtn = isLogged
+            ? `<button class="rank-fav-btn ${isFav ? 'is-fav' : ''}"
+                       onclick="event.stopPropagation(); toggleFavoritoRapido('${c._id}')"
+                       title="${isFav ? 'Quitar de favoritos' : 'Añadir a favoritos'}">${isFav ? '❤️' : '🤍'}</button>`
+            : `<button class="rank-fav-btn"
+                       onclick="event.stopPropagation(); window.location.href='login.html'"
+                       title="Inicia sesión para guardar favoritos">🤍</button>`;
+        return `
         <tr class="ranking-row" onclick="window.location.href='detalle.html?id=${c._id}'">
             <td onclick="event.stopPropagation()" style="width:30px; text-align:center;">
-                <input type="checkbox" class="compare-checkbox" value="${c._id}" 
+                <input type="checkbox" class="compare-checkbox" value="${c._id}"
                        ${seleccionParaComparar.includes(c._id) ? 'checked' : ''}
-                       onchange="toggleSeleccionComparar('${c._id}')" 
+                       onchange="toggleSeleccionComparar('${c._id}')"
                        style="width:18px; height:18px; cursor:pointer;">
             </td>
             <td data-label="POS"><span class="rank-number">${i + 1}º</span></td>
@@ -550,6 +569,7 @@ function calcularRanking(ciudadesInput = ciudades) {
                 <div class="rank-city">
                     <img src="${obtenerImagenCiudad(c)}" alt="${c.nombre}">
                     <span>${c.nombre} ${c.rol === 'trabajador' ? '💼' : ''}</span>
+                    ${favBtn}
                 </div>
             </td>
             <td data-label="CLASIFICACIÓN">
@@ -570,7 +590,8 @@ function calcularRanking(ciudadesInput = ciudades) {
                 </div>
             </td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
 
     actualizarBotonComparar();
     return rankingData;
@@ -754,7 +775,8 @@ const CRIT_LABELS = {
     seguridad:        '🛡️ Seguridad',
     calidadAcademica: '🎓 Calidad Académica',
     conectividad:     '📶 Conectividad',
-    asequibilidad:    '💰 Asequibilidad'
+    asequibilidad:    '💰 Asequibilidad',
+    gastronomia:      '🍽️ Gastronomía'
 };
 
 function renderizarSliders() {
@@ -830,7 +852,7 @@ function renderizarSelectBusquedas() {
 function cargarBusqueda(idx) {
     const b = userFull.busquedas[idx];
     if (!b) return;
-    currentWeights = { ...b.pesos };
+    currentWeights = { ...currentWeights, ...b.pesos };
     if (selectRol) selectRol.value = b.rol;
     renderizarSliders();
     aplicarFiltros();
@@ -1205,7 +1227,8 @@ if (formNuevaCiudad) {
                 calidadTransporte:  3,
                 calidadAcademica:   3,
                 conectividad:       3,
-                turismo:            3
+                turismo:            3,
+                gastronomia:        Number(document.getElementById('f_gastronomia').value) || 3
             },
             coordenadas: {
                 type: 'Point',
