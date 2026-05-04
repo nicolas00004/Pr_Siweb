@@ -12,6 +12,7 @@ const selectRol = document.getElementById('selectRol');
 const savedSearchesContainer = document.getElementById('savedSearchesContainer');
 const inputBusquedaTexto = document.getElementById('inputBusquedaTexto');
 const selectOrden = document.getElementById('selectOrden');
+const selectTopN = document.getElementById('selectTopN');
 const resultadosCount = document.getElementById('resultadosCount');
 let minSeguridad = 0;
 
@@ -230,15 +231,21 @@ function aplicarFiltros() {
         return true;
     });
 
-    // Actualizar contador
+    // Actualizar contador (respetando el límite Top N si está activo)
     if (resultadosCount) {
-        resultadosCount.textContent = `${filtradas.length} ciudad${filtradas.length !== 1 ? 'es' : ''}`;
+        const topN = selectTopN ? parseInt(selectTopN.value) : 0;
+        const mostradas = (topN > 0 && topN < filtradas.length) ? topN : filtradas.length;
+        if (topN > 0 && topN < filtradas.length) {
+            resultadosCount.textContent = `Top ${mostradas} de ${filtradas.length} ciudades`;
+        } else {
+            resultadosCount.textContent = `${filtradas.length} ciudad${filtradas.length !== 1 ? 'es' : ''}`;
+        }
     }
 
     renderizarCiudades(filtradas);
     const ranking = calcularRanking(filtradas);
-    // Los marcadores solo se muestran tras pulsar "Buscar Destinos"
-    renderizarMapa(rankingVisible ? filtradas : [], rankingVisible ? ranking : []);
+    // Los marcadores solo se muestran tras pulsar "Buscar Destinos", y solo las del Top N (ranking)
+    renderizarMapa(rankingVisible ? ranking : [], rankingVisible ? ranking : []);
 }
 
 function renderizarMapa(datos, rankingData = []) {
@@ -291,6 +298,32 @@ function renderizarMapa(datos, rankingData = []) {
             markers.push(marker);
         }
     });
+    // Añadir marcador de Origen (desde donde se busca)
+    if (ORIGIN && ORIGIN.length === 2 && datos.length > 0) {
+        const originMarker = L.marker([ORIGIN[0], ORIGIN[1]], {
+            icon: L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div style='background-color:#ef4444; width:24px; height:24px; border-radius:50%; border:3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; font-size:12px;'>📍</div>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            }),
+            zIndexOffset: 1000 // Para que se vea por encima de otras flechas si se solapan
+        }).addTo(map);
+
+        originMarker.bindPopup(`
+            <div style="font-family: inherit; text-align:center;">
+                <strong style="color:#ef4444;">📍 Tu Ubicación</strong><br>
+                <span style="font-size:0.75rem; color:var(--text-muted);">Punto de origen de la búsqueda</span>
+            </div>
+        `);
+        markers.push(originMarker);
+        
+        // Ajustar la vista del mapa para que incluya el origen y los destinos
+        const bounds = L.featureGroup(markers).getBounds();
+        if (bounds.isValid()) {
+            map.fitBounds(bounds, { padding: [50, 50] });
+        }
+    }
 }
 
 // AHP-Sort II canónico: cada perfil define el LÍMITE INFERIOR de su categoría
@@ -407,6 +440,7 @@ function mostrarRanking() {
     // Pequeño retardo para que la animación sea perceptible aunque el cálculo sea instantáneo
     setTimeout(() => {
         rankingVisible = true;
+        activarPaso(3);
         aplicarFiltros();
 
         // Animar entrada de las filas del ranking
@@ -531,6 +565,10 @@ function calcularRanking(ciudadesInput = ciudades) {
     });
     rankingDataGlobal = rankingData; // Guardar para el comparador
 
+    // Aplicar límite Top N
+    const topN = selectTopN ? parseInt(selectTopN.value) : 0;
+    const rankingMostrado = (topN > 0) ? rankingData.slice(0, topN) : rankingData;
+
     // Si el usuario aún no ha pulsado Buscar, mostrar placeholder y devolver datos para el mapa
     if (!rankingVisible) {
         rankingBody.innerHTML = `
@@ -543,11 +581,11 @@ function calcularRanking(ciudadesInput = ciudades) {
                     </div>
                 </td>
             </tr>`;
-        return rankingData;
+        return rankingMostrado;
     }
 
     const isLogged = !!userFull;
-    rankingBody.innerHTML = rankingData.map((c, i) => {
+    rankingBody.innerHTML = rankingMostrado.map((c, i) => {
         const isFav = userFavoritasIds.includes(c._id);
         const favBtn = isLogged
             ? `<button class="rank-fav-btn ${isFav ? 'is-fav' : ''}"
@@ -567,13 +605,13 @@ function calcularRanking(ciudadesInput = ciudades) {
             <td data-label="POS"><span class="rank-number">${i + 1}º</span></td>
             <td data-label="CIUDAD">
                 <div class="rank-city">
-                    <img src="${obtenerImagenCiudad(c)}" alt="${c.nombre}">
+                    <img src="${obtenerImagenCiudad(c)}" alt="${c.nombre}" onerror="this.style.display='none'">
                     <span>${c.nombre} ${c.rol === 'trabajador' ? '💼' : ''}</span>
                     ${favBtn}
                 </div>
             </td>
             <td data-label="CLASIFICACIÓN">
-                <span class="pill" style="background: ${c.catColor}; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">
+                <span class="pill" style="display: inline-block; white-space: nowrap; background: ${c.catColor}; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">
                     ${c.categoria}
                 </span>
                 ${c.vetoMsg ? `<span class="near-threshold" style="color:#b91c1c;">${c.vetoMsg}</span>` : ''}
@@ -594,7 +632,7 @@ function calcularRanking(ciudadesInput = ciudades) {
     }).join('');
 
     actualizarBotonComparar();
-    return rankingData;
+    return rankingMostrado;
 }
 
 function toggleSeleccionComparar(id) {
@@ -779,6 +817,47 @@ const CRIT_LABELS = {
     gastronomia:      '🍽️ Gastronomía'
 };
 
+// --- PERFILES RÁPIDOS ---
+const PERFILES = {
+    economico:   { asequibilidad: 5, conectividad: 3, transporte: 3, ocio: 2, ocioNocturno: 2, seguridad: 3, calidadAcademica: 2, gastronomia: 1 },
+    academico:   { calidadAcademica: 5, conectividad: 4, seguridad: 4, transporte: 3, asequibilidad: 3, ocio: 2, ocioNocturno: 1, gastronomia: 2 },
+    social:      { ocioNocturno: 5, ocio: 5, turismo: 4, gastronomia: 3, conectividad: 3, transporte: 3, seguridad: 2, calidadAcademica: 2, asequibilidad: 2 },
+    seguro:      { seguridad: 5, calidadAcademica: 4, conectividad: 3, transporte: 3, asequibilidad: 3, ocio: 2, ocioNocturno: 1, gastronomia: 2 },
+    equilibrado: { transporte: 3, ocio: 3, ocioNocturno: 3, seguridad: 3, calidadAcademica: 3, conectividad: 3, asequibilidad: 3, gastronomia: 3 }
+};
+
+function aplicarPerfil(nombre) {
+    const perfil = PERFILES[nombre];
+    if (!perfil) return;
+    currentWeights = { ...currentWeights, ...perfil };
+    renderizarSliders();
+    aplicarFiltros();
+    // Marcar botón activo
+    document.querySelectorAll('.qp-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.querySelector(`.qp-btn[onclick*="${nombre}"]`);
+    if (btn) btn.classList.add('active');
+    showToast(`✅ Perfil "${btn?.textContent?.trim()}" aplicado`, 'success');
+    activarPaso(2);
+}
+
+// Actualiza visualmente los pasos de la guía
+function activarPaso(paso) {
+    document.querySelectorAll('.step-item').forEach((el, i) => {
+        el.classList.toggle('step-active', i < paso);
+    });
+}
+
+// Toggle Filtros Básicos
+window.toggleFiltrosBasicos = function() {
+    const btn = document.getElementById('btnToggleFiltros');
+    const panel = document.getElementById('filtrosContenido');
+    if (!btn || !panel) return;
+    
+    const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !isExpanded);
+    panel.style.display = isExpanded ? 'none' : 'block';
+};
+
 function renderizarSliders() {
     if (!weightsGrid) return;
     weightsGrid.innerHTML = Object.keys(currentWeights).map(key => {
@@ -815,6 +894,8 @@ function renderizarSliders() {
             }
 
             aplicarFiltros();
+            // Avanzar al paso 2 al tocar prioridades
+            activarPaso(2);
         };
     });
 }
@@ -1109,11 +1190,12 @@ if (slider) {
     slider.addEventListener('input', () => {
         if (etiquetaPrecio) etiquetaPrecio.textContent = `${slider.value}€`;
         aplicarFiltros();
+        activarPaso(1);
     });
 }
 
 if (selectorAmbiente) {
-    selectorAmbiente.addEventListener('change', aplicarFiltros);
+    selectorAmbiente.addEventListener('change', () => { aplicarFiltros(); activarPaso(1); });
 }
 
 if (sliderDistancia) {
@@ -1123,6 +1205,7 @@ if (sliderDistancia) {
             etiquetaDistancia.textContent = val >= 2000 ? "Cualquiera" : `${val}km`;
         }
         aplicarFiltros();
+        activarPaso(1);
     });
 }
 
@@ -1152,7 +1235,7 @@ if (btnGeo) {
 // --- NUEVOS FILTROS ---
 // Búsqueda por texto
 if (inputBusquedaTexto) {
-    inputBusquedaTexto.addEventListener('input', aplicarFiltros);
+    inputBusquedaTexto.addEventListener('input', () => { aplicarFiltros(); activarPaso(1); });
 }
 
 // Filtro seguridad mínima (pills)
@@ -1175,6 +1258,13 @@ if (selectOrden) {
     selectOrden.addEventListener('change', aplicarFiltros);
 }
 
+// Número de ciudades en el ranking
+if (selectTopN) {
+    selectTopN.addEventListener('change', () => {
+        if (rankingVisible) aplicarFiltros();
+    });
+}
+
 // Reset filtros
 const btnResetFiltros = document.getElementById('btnResetFiltros');
 if (btnResetFiltros) {
@@ -1184,6 +1274,7 @@ if (btnResetFiltros) {
         if (selectorAmbiente) selectorAmbiente.value = 'todos';
         if (inputBusquedaTexto) inputBusquedaTexto.value = '';
         if (selectOrden) selectOrden.value = 'ahp';
+        if (selectTopN) selectTopN.value = '10';
         minSeguridad = 0;
         if (filtroSeguridadEl) {
             filtroSeguridadEl.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
