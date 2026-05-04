@@ -1,0 +1,31 @@
+{
+    "id": "burgos",
+    "nombre": "Burgos",
+    "etiquetas": {
+      "historia": "⚔️ Tierra del Cid",
+      "transporte": "🚲 Bicibur",
+      "alojamiento": "🏠 Ciudad acogedora"
+    },
+    "historia": "Ciudad gótica por excelencia y paso obligado del Camino de Santiago. Conocida por su catedral y su gastronomía.",
+    "alojamiento": "Zona de San Amaro (cerca del campus) y Gamonal son las más comunes. Precios: 200€-350€.",
+    "barrios": "El Casco Viejo bajo el Castillo es el punto de encuentro social. Gamonal es el barrio con más vida y comercio.",
+    "universidades": [
+      {
+        "nombre": "Universidad de Burgos (UBU)",
+        "descripcion": "Destaca por sus programas de investigación en evolución humana y tecnologías."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Catedral de Burgos",
+        "categoria": "cultura",
+        "descripcion": "Patrimonio de la Humanidad, una de las cumbres del gótico mundial."
+      },
+      {
+        "nombre": "Museo de la Evolución Humana (MEH)",
+        "categoria": "cultura",
+        "descripcion": "Moderno museo que explica los hallazgos de la Sierra de Atapuerca."
+      }
+    ],
+    "imagenes": ["../img/burgos_1.jpg", "../img/burgos_2.jpg"]
+  }

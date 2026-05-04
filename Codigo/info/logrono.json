@@ -1,0 +1,31 @@
+{
+    "id": "logrono",
+    "nombre": "Logroño",
+    "etiquetas": {
+      "historia": "🍷 Capital del Rioja",
+      "transporte": "🚶 Distancias cortas",
+      "alojamiento": "🏠 Muy económico"
+    },
+    "historia": "Cruce de caminos en la ruta jacobea, Logroño es sinónimo de vino, buena mesa y hospitalidad riojana.",
+    "alojamiento": "Zona universitaria cerca del Ayuntamiento y el campus. Alquileres muy competitivos: 200€-300€.",
+    "barrios": "La zona de la Calle Laurel es el epicentro del tapeo mundial. El Casco Antiguo conserva la esencia medieval.",
+    "universidades": [
+      {
+        "nombre": "Universidad de La Rioja (UR)",
+        "descripcion": "Campus integrado en la ciudad, muy enfocado en la vitivinicultura y humanidades."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Concatedral de Santa María de la Redonda",
+        "categoria": "cultura",
+        "descripcion": "Destaca por sus torres gemelas y su ubicación en el mercado."
+      },
+      {
+        "nombre": "Paseo del Espolón",
+        "categoria": "ocio",
+        "descripcion": "El parque más emblemático del centro de la ciudad."
+      }
+    ],
+    "imagenes": ["../img/logrono_1.jpg", "../img/logrono_2.jpg"]
+  }

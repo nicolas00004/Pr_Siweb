@@ -1,0 +1,31 @@
+{
+    "id": "cadiz",
+    "nombre": "Cádiz",
+    "etiquetas": {
+      "historia": "🌊 La Ciudad Antigua",
+      "transporte": "🚶 Todo a pie",
+      "alojamiento": "🏖️ Brisa marina"
+    },
+    "historia": "Considerada la ciudad viva más antigua de Occidente (Gadir). Famosa por su luz, sus carnavales y su espíritu liberal gaditano.",
+    "alojamiento": "El centro histórico es donde está la vida universitaria. Habitaciones entre 250€-400€. La zona de la Avenida es mejor para estancias largas.",
+    "barrios": "La Viña es el barrio más castizo y carnavalero. El Pópulo es el barrio medieval con calles estrechas.",
+    "universidades": [
+      {
+        "nombre": "Universidad de Cádiz (UCA)",
+        "descripcion": "Referente en estudios marinos y navales con facultades integradas en la ciudad."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Playa de la Caleta",
+        "categoria": "ocio",
+        "descripcion": "Playa urbana flanqueada por castillos, famosa por sus puestas de sol."
+      },
+      {
+        "nombre": "Torre Tavira",
+        "categoria": "cultura",
+        "descripcion": "El punto más alto de la ciudad con su famosa cámara oscura."
+      }
+    ],
+    "imagenes": ["../img/cadiz_1.jpg", "../img/cadiz_2.jpg"]
+  }

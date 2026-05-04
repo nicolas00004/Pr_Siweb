@@ -1,0 +1,31 @@
+{
+    "id": "toledo",
+    "nombre": "Toledo",
+    "etiquetas": {
+      "historia": "⚔️ Ciudad de las 3 Culturas",
+      "transporte": "🚶 Cuestas y escaleras",
+      "alojamiento": "🏠 Ciudad Museo"
+    },
+    "historia": "Antigua capital de España. Un laberinto medieval donde convivieron cristianos, judíos y musulmanes.",
+    "alojamiento": "El Casco Histórico es espectacular pero difícil para vivir. Santa María de Benquerencia (El Polígono) es más barato. Precios: 250€-400€.",
+    "barrios": "La judería es la zona más tranquila y mágica. El barrio de Santa Teresa es la zona más joven.",
+    "universidades": [
+      {
+        "nombre": "UCLM - Campus Toledo",
+        "descripcion": "Ubicado parcialmente en la antigua Fábrica de Armas, un campus único en España."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Alcázar de Toledo",
+        "categoria": "cultura",
+        "descripcion": "Fortificación que domina la ciudad, sede actual de una gran biblioteca y museo."
+      },
+      {
+        "nombre": "Mirador del Valle",
+        "categoria": "ocio",
+        "descripcion": "El mejor sitio para ver la puesta de sol con la panorámica completa de Toledo."
+      }
+    ],
+    "imagenes": ["../img/toledo_1.jpg", "../img/toledo_2.jpg"]
+  }

@@ -1,0 +1,31 @@
+{
+    "id": "almeria",
+    "nombre": "Almería",
+    "etiquetas": {
+      "historia": "🏰 La Alcazaba",
+      "transporte": "🚲 Carriles junto al mar",
+      "alojamiento": "🌅 Sol todo el año"
+    },
+    "historia": "Ciudad costera de herencia musulmana, puerta de entrada al Parque Natural de Cabo de Gata y famoso escenario de cine western.",
+    "alojamiento": "El Zapillo es el barrio preferido por estudiantes por estar junto a la playa. Habitaciones 200€-300€.",
+    "barrios": "El Casco Histórico bajo la Alcazaba tiene mucho encanto. Ciudad Jardín es una zona residencial tranquila.",
+    "universidades": [
+      {
+        "nombre": "Universidad de Almería (UAL)",
+        "descripcion": "Un campus único situado justo frente al mar Mediterráneo."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Alcazaba de Almería",
+        "categoria": "cultura",
+        "descripcion": "La mayor de las ciudadelas construidas por los árabes en España."
+      },
+      {
+        "nombre": "Paseo Marítimo",
+        "categoria": "ocio",
+        "descripcion": "Varios kilómetros de costa ideales para el deporte y las terrazas."
+      }
+    ],
+    "imagenes": ["../img/almeria_1.jpg", "../img/almeria_2.jpg"]
+  }

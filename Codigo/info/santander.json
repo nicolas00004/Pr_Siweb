@@ -1,0 +1,31 @@
+ {
+    "id": "santander",
+    "nombre": "Santander",
+    "etiquetas": {
+      "historia": "⚓ Elegancia del Cantábrico",
+      "transporte": "🚌 TUS y Carril Bici",
+      "alojamiento": "🏠 Vistas a la Bahía"
+    },
+    "historia": "Antiguo puerto comercial y residencia de verano de la monarquía española. Combina una arquitectura señorial con playas espectaculares integradas en la ciudad.",
+    "alojamiento": "Zona de El Sardinero es costosa pero privilegiada. Los Castros es la zona ideal para universitarios por su cercanía al campus. Habitaciones: 300€-450€.",
+    "barrios": "Puertochico es el antiguo barrio pesquero, hoy lleno de vida social. El centro es ideal para compras y cultura.",
+    "universidades": [
+      {
+        "nombre": "Universidad de Cantabria (UC)",
+        "descripcion": "Reconocida internacionalmente por su labor investigadora en física y oceanografía."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Palacio de la Magdalena",
+        "categoria": "cultura",
+        "descripcion": "Antigua residencia real situada en una península con vistas increíbles."
+      },
+      {
+        "nombre": "Centro Botín",
+        "categoria": "cultura",
+        "descripcion": "Espacio artístico de vanguardia diseñado por Renzo Piano que parece flotar sobre el agua."
+      }
+    ],
+    "imagenes": ["../img/santander_1.jpg", "../img/santander_2.jpg"]
+  }

@@ -1,0 +1,31 @@
+{
+    "id": "oviedo",
+    "nombre": "Oviedo",
+    "etiquetas": {
+      "historia": "⛪ Prerrománico Astur",
+      "transporte": "🚶 Ciudad peatonal",
+      "alojamiento": "🏠 Calidad de vida"
+    },
+    "historia": "Capital del Principado de Asturias. Una ciudad limpia, señorial y famosa por ser el origen del Camino de Santiago (Camino Primitivo).",
+    "alojamiento": "Barrio de El Cristo o Llamaquique son los más demandados por su cercanía a las facultades. Precios muy asequibles: 200€-350€.",
+    "barrios": "El Fontán es el mercado histórico con mucho encanto. La calle Gascona es famosa por sus sidrerías.",
+    "universidades": [
+      {
+        "nombre": "Universidad de Oviedo",
+        "descripcion": "Institución con más de 400 años de historia y campus repartidos por toda la ciudad."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Santa María del Naranco",
+        "categoria": "cultura",
+        "descripcion": "Joyas del prerrománico asturiano situadas en la falda del monte."
+      },
+      {
+        "nombre": "Catedral de San Salvador",
+        "categoria": "cultura",
+        "descripcion": "Principal templo gótico de la ciudad con su Cámara Santa."
+      }
+    ],
+    "imagenes": ["../img/oviedo_1.jpg", "../img/oviedo_2.jpg"]
+  }

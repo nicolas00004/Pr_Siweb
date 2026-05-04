@@ -1,0 +1,31 @@
+{
+    "id": "huelva",
+    "nombre": "Huelva",
+    "etiquetas": {
+      "historia": "⚓ Cuna del Descubrimiento",
+      "transporte": "🚌 Red urbana de buses",
+      "alojamiento": "🏠 Muy asequible"
+    },
+    "historia": "Ciudad vinculada históricamente a la gesta colombina y a la explotación minera de Riotinto por los ingleses en el siglo XIX.",
+    "alojamiento": "La zona de La Merced es el corazón universitario. Precios muy bajos, entre 180€-280€ por habitación.",
+    "barrios": "El centro es peatonal y acogedor. El barrio de Reina Victoria destaca por su arquitectura de estilo inglés.",
+    "universidades": [
+      {
+        "nombre": "Universidad de Huelva (UHU)",
+        "descripcion": "Especializada en ingeniería química y ciencias del mar."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Muelle de las Carabelas",
+        "categoria": "cultura",
+        "descripcion": "Réplicas a tamaño real de las naves de Colón en un entorno histórico."
+      },
+      {
+        "nombre": "Parque de las Palomas",
+        "categoria": "ocio",
+        "descripcion": "Espacio verde ideal para el descanso estudiantil junto al puerto."
+      }
+    ],
+    "imagenes": ["../img/huelva_1.jpg", "../img/huelva_2.jpg"]
+  }

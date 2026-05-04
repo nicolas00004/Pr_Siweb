@@ -1,0 +1,31 @@
+{
+    "id": "tarragona",
+    "nombre": "Tarragona",
+    "etiquetas": {
+      "historia": "🏛️ Tárraco Romana",
+      "transporte": "🚌 Red urbana",
+      "alojamiento": "🌊 Balcón al Mediterráneo"
+    },
+    "historia": "La antigua capital romana de la Hispania Citerior. Es un museo al aire libre junto al mar Mediterráneo.",
+    "alojamiento": "Part Alta (Centro Histórico) tiene mucha magia. La zona de Sescelades es donde está el campus. Precios: 300€-450€.",
+    "barrios": "El Serrallo es el barrio típico de pescadores. La Rambla Nova es el eje comercial.",
+    "universidades": [
+      {
+        "nombre": "Universitat Rovira i Virgili (URV)",
+        "descripcion": "Referente en arqueología, química y enología."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Anfiteatro Romano",
+        "categoria": "cultura",
+        "descripcion": "Construcción romana frente al mar donde se realizaban luchas de gladiadores."
+      },
+      {
+        "nombre": "Pont del Diable",
+        "categoria": "cultura",
+        "descripcion": "Impresionante acueducto romano a las afueras de la ciudad."
+      }
+    ],
+    "imagenes": ["../img/tarragona_1.jpg", "../img/tarragona_2.jpg"]
+  }

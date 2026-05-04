@@ -1,0 +1,31 @@
+{
+    "id": "gran-canaria",
+    "nombre": "Las Palmas de Gran Canaria",
+    "etiquetas": {
+      "historia": "🏝️ Puerto y Colonización",
+      "transporte": "🚌 Guaguas",
+      "alojamiento": "🏖️ Vida playera"
+    },
+    "historia": "Puente entre tres continentes, una ciudad cosmopolita con el mejor clima del mundo según varios estudios.",
+    "alojamiento": "Zona de Las Canteras para vivir cerca del mar. Tafira para estar pegado a la universidad. Precios 350€-500€.",
+    "barrios": "Vegueta es el barrio histórico colonial. Triana es la zona comercial y modernista.",
+    "universidades": [
+      {
+        "nombre": "ULPGC",
+        "descripcion": "Líder en investigación marina y tecnológica en el entorno atlántico."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Playa de Las Canteras",
+        "categoria": "ocio",
+        "descripcion": "Una de las mejores playas urbanas del mundo con arrecife natural."
+      },
+      {
+        "nombre": "Casa de Colón",
+        "categoria": "cultura",
+        "descripcion": "Museo en el barrio de Vegueta que narra el paso de Colón por las islas."
+      }
+    ],
+    "imagenes": ["../img/laspalmas_1.jpg", "../img/laspalmas_2.jpg"]
+  }

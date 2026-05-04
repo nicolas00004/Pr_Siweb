@@ -17,5 +17,7 @@
         { "nombre": "Museo Picasso", "categoria": "cultura", "descripcion": "Situado en el Palacio de Buenavista, rinde homenaje al artista malagueño." },
         { "nombre": "Muelle Uno", "categoria": "ocio", "descripcion": "Centro comercial y de restauración al aire libre en el puerto." }
     ],
-    "imagenes": ["https://images.unsplash.com/photo-1595111304192-359f42964e5c?auto=format&fit=crop&w=800&q=80"]
+    "imagenes": [
+        "../img/malaga_1.jpg",
+        "../img/malaga_2.jpg"]
 }

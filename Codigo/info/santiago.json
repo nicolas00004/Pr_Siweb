@@ -17,5 +17,8 @@
         { "nombre": "Parque de la Alameda", "categoria": "ocio", "descripcion": "El mejor mirador urbano de la ciudad." },
         { "nombre": "Rúa do Franco", "categoria": "ocioNocturno", "descripcion": "Calle mítica de tapas y vinos universitarios." }
     ],
-    "imagenes": ["https://images.unsplash.com/photo-1571406240285-802521c7c98f?auto=format&fit=crop&w=800&q=80"]
+    "imagenes": [
+        "../img/santiago_1.jpg",
+        "../img/santiago_2.jpg"
+    ]
 }

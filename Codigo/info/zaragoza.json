@@ -1,0 +1,31 @@
+{
+    "id": "zaragoza",
+    "nombre": "Zaragoza",
+    "etiquetas": {
+      "historia": "⛪ Basílica del Pilar",
+      "transporte": "🚋 Tranvía eficiente",
+      "alojamiento": "🏠 Céntrico y accesible"
+    },
+    "historia": "La ciudad de las cuatro culturas (romana, musulmana, judía y cristiana). Es un centro logístico clave en España a orillas del Ebro.",
+    "alojamiento": "Zona de San Francisco es el núcleo universitario principal. Precios medios de 250€-400€.",
+    "barrios": "El Tubo es la zona famosa de tapeo. El Gancho es un barrio multicultural con mucha vida alternativa.",
+    "universidades": [
+      {
+        "nombre": "Universidad de Zaragoza (UniZar)",
+        "descripcion": "Institución histórica con gran prestigio en ingeniería y ciencias de la salud."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Palacio de la Aljafería",
+        "categoria": "cultura",
+        "descripcion": "Palacio islámico del siglo XI, sede actual de las Cortes de Aragón."
+      },
+      {
+        "nombre": "Parque Grande José Antonio Labordeta",
+        "categoria": "ocio",
+        "descripcion": "El pulmón verde de la ciudad, ideal para el deporte y el relax."
+      }
+    ],
+    "imagenes": ["../img/zaragoza_1.jpg", "../img/zaragoza_2.jpg"]
+  }
