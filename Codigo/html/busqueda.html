@@ -56,38 +56,9 @@
     <main class="home-main">
         <!-- NUEVA CABECERA DE CONTROLES (REEMPLAZA AL HERO Y AL SIDEBAR) -->
         <section class="dashboard-header-controls">
-            <!-- GUÍA DE PASOS -->
-            <div class="steps-guide">
-                <div class="step-item step-active">
-                    <div class="step-num">1</div>
-                    <div class="step-text">
-                        <strong>Filtra</strong>
-                        <span>Presupuesto, distancia y ambiente</span>
-                    </div>
-                </div>
-                <div class="step-arrow">→</div>
-                <div class="step-item">
-                    <div class="step-num">2</div>
-                    <div class="step-text">
-                        <strong>Prioriza</strong>
-                        <span>¿Qué valoras más?</span>
-                    </div>
-                </div>
-                <div class="step-arrow">→</div>
-                <div class="step-item">
-                    <div class="step-num">3</div>
-                    <div class="step-text">
-                        <strong>Busca</strong>
-                        <span>Obtén tu ranking personalizado</span>
-                    </div>
-                </div>
-            </div>
 
             <!-- Barra de acciones secundarias (compacta) -->
-            <div class="controls-top-bar">
-                <p id="welcomeUser" style="font-size:0.88rem; color:var(--text-muted); margin:0;">
-                    Configura tus preferencias y encuentra tu destino ideal.
-                </p>
+            <div class="controls-top-bar" style="justify-content: center;">
                 <div class="controls-actions">
                     <button id="btnBuscarDestinos" onclick="mostrarRanking()"
                             class="btn-buscar-main"
@@ -96,14 +67,13 @@
                             onmouseout="if(!this.dataset.active) { this.style.background='var(--accent-color)'; this.style.transform='translateY(0)'; }">
                         🔍 Ejecutar Búsqueda
                     </button>
-                    <div id="savedSearchesContainer" style="display: none; align-items: center; gap: 8px; background: #f1f5f9; padding: 4px 12px; border-radius: 50px;">
-                        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">📁 MIS BÚSQUEDAS:</span>
-                        <select id="selectBusqueda" style="padding: 3px 8px; border-radius: 8px; font-size: 0.78rem; border: none; background: transparent;"></select>
-                    </div>
                     <button id="btnGuardarBusquedaTop" style="display:none; background:#10b981; color:white; border:none; border-radius:50px; padding:8px 18px; font-weight:700; font-size:0.82rem; cursor:pointer; box-shadow:0 3px 10px rgba(16,185,129,0.3); transition:all 0.2s;"
                             onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
                         💾 Guardar
                     </button>
+                    <a href="herramientas.html#comparador" class="btn-buscar-main" style="text-decoration:none; background: #f1f5f9; color: var(--primary-color); border: 1.5px solid #e2e8f0; font-size: 0.82rem; font-weight: 700; padding: 8px 18px; border-radius: 50px; display: flex; align-items: center; gap: 6px; transition: all 0.2s;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
+                        📊 Comparar Destinos
+                    </a>
                     <a href="ayuda-ahp.html" class="help-badge-link" title="¿Cómo funciona el buscador?" style="text-decoration: none; background: #eff6ff; color: var(--accent-color); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; border: 1px solid #dbeafe; transition: all 0.3s;">❓</a>
                 </div>
             </div>
@@ -130,12 +100,13 @@
                     </div>
 
                     <!-- Botón para mostrar más filtros -->
-                    <button class="btn-tiny" id="btnToggleFiltros" onclick="toggleFiltrosBasicos()" style="width:100%; margin-top:5px; border-style:dashed; color:var(--accent-color);">
-                        ⚙️ Ajustar más filtros <span id="filtrosArrow">▼</span>
+                    <!-- Botón para mostrar más filtros -->
+                    <button class="btn-tiny" id="btnToggleFiltros" onclick="toggleFiltrosBasicos()" aria-expanded="true" style="width:100%; margin-top:5px; border-style:dashed; color:var(--accent-color);">
+                        ⚙️ Ocultar filtros extra <span id="filtrosArrow">▲</span>
                     </button>
 
                     <!-- Filtros ocultos por defecto -->
-                    <div id="filtrosContenido" style="display:none; margin-top:15px; padding-top:15px; border-top:1px dashed #e2e8f0;">
+                    <div id="filtrosContenido" style="display:block; margin-top:15px; padding-top:15px; border-top:1px dashed #e2e8f0;">
                         <div class="control-item">
                             <div class="control-label">
                                 <label>📍 Distancia Máx.</label>
@@ -265,15 +236,12 @@
                                 <h2 style="font-size: 1.1rem; margin: 0;">🏆 Ranking Sugerido</h2>
                                 <p style="font-size: 0.75rem; color: var(--text-muted);">AHP-Sort II · <span id="resultadosCount" style="font-weight:700; color:var(--accent-color);">0 ciudades</span></p>
                             </div>
-                            <button id="btnComparar" class="btn-ver" style="display:none; margin:0; padding: 5px 12px; font-size: 0.8rem; background: var(--accent-color); color:white; border:none;">
-                                ⚖️ Comparar (<span id="compareCount">0</span>)
-                            </button>
                         </div>
                         <div style="overflow-x: auto; width: 100%;">
                             <table class="ranking-table" style="table-layout: auto;">
                                 <thead>
                                     <tr>
-                                        <th style="width: 40px; padding: 15px 5px; text-align: center;"></th>
+
                                         <th style="width: 60px; padding: 15px 5px;">Pos</th>
                                         <th style="min-width: 150px;">Ciudad</th>
                                         <th style="width: 180px;">Clasificación</th>

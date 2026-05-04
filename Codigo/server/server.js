@@ -140,13 +140,7 @@ const OpinionSchema = new mongoose.Schema({
     id_usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true },
     id_ciudad: { type: mongoose.Schema.Types.ObjectId, ref: 'Ciudad', required: true },
     fecha_publicacion: { type: Date, default: Date.now },
-    pesos: {
-        transporte: { type: Number, default: 5 },
-        ocio: { type: Number, default: 5 },
-        ocioNocturno: { type: Number, default: 5 },
-        seguridad: { type: Number, default: 5 },
-        calidadAcademica: { type: Number, default: 5 }
-    },
+
     likes:    [{ type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' }],
     dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' }],
     respuestas: [{
@@ -399,7 +393,7 @@ app.get('/api/opiniones/:ciudadId', async (req, res) => {
 // Crear nueva opinión
 app.post('/api/opiniones', async (req, res) => {
     try {
-        const { texto, valoracion, ciudadId, usuarioId, pesos } = req.body;
+        const { texto, valoracion, ciudadId, usuarioId, categoria } = req.body;
         
         if (!texto || !valoracion || !ciudadId) {
             return res.status(400).json({ error: 'Faltan campos obligatorios' });
@@ -424,7 +418,7 @@ app.post('/api/opiniones', async (req, res) => {
             puntuacion: Number(valoracion), 
             id_ciudad: ciudadId, 
             id_usuario: usuarioId,
-            pesos: pesos || { transporte: 5, ocio: 5, ocioNocturno: 5, seguridad: 5, calidadAcademica: 5 }
+            categoria: categoria || 'General'
         });
         await nuevaOpinion.save();
 

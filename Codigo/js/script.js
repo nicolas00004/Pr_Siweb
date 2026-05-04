@@ -596,12 +596,6 @@ function calcularRanking(ciudadesInput = ciudades) {
                        title="Inicia sesión para guardar favoritos">🤍</button>`;
         return `
         <tr class="ranking-row" onclick="window.location.href='detalle.html?id=${c._id}'">
-            <td onclick="event.stopPropagation()" style="width:30px; text-align:center;">
-                <input type="checkbox" class="compare-checkbox" value="${c._id}"
-                       ${seleccionParaComparar.includes(c._id) ? 'checked' : ''}
-                       onchange="toggleSeleccionComparar('${c._id}')"
-                       style="width:18px; height:18px; cursor:pointer;">
-            </td>
             <td data-label="POS"><span class="rank-number">${i + 1}º</span></td>
             <td data-label="CIUDAD">
                 <div class="rank-city">
@@ -651,40 +645,8 @@ function toggleSeleccionComparar(id) {
 }
 
 function actualizarBotonComparar() {
-    const btn = document.getElementById('btnComparar');
-    const count = document.getElementById('compareCount');
-    if (!btn || !count) return;
-
-    const n = seleccionParaComparar.length;
-    count.innerText = n;
-
-    if (n === 0) {
-        btn.style.display = 'none';
-        btn.classList.remove('compare-ready', 'compare-hint', 'compare-pulse');
-        return;
-    }
-
-    // 1 ciudad seleccionada: pista de que necesita otra
-    if (n === 1) {
-        btn.style.display = 'inline-flex';
-        btn.classList.add('compare-hint');
-        btn.classList.remove('compare-ready', 'compare-pulse');
-        btn.innerHTML = `🔓 Selecciona 1 más para comparar (<span id="compareCount">${n}</span>/2)`;
-        return;
-    }
-
-    // 2-4 ciudades: botón listo y muy visible
-    btn.style.display = 'inline-flex';
-    btn.classList.remove('compare-hint');
-    btn.classList.add('compare-ready');
-
-    // Pulso una sola vez al cruzar el umbral mínimo
-    if (!btn.dataset.lastCount || parseInt(btn.dataset.lastCount) < 2) {
-        btn.classList.add('compare-pulse');
-        setTimeout(() => btn.classList.remove('compare-pulse'), 1800);
-    }
-    btn.dataset.lastCount = String(n);
-    btn.innerHTML = `⚖️ Comparar ahora (<span id="compareCount">${n}</span>)`;
+    // Función deshabilitada: la comparación ahora se hace en herramientas.html
+    return;
 }
 
 function abrirComparador() {
@@ -856,6 +818,12 @@ window.toggleFiltrosBasicos = function() {
     const isExpanded = btn.getAttribute('aria-expanded') === 'true';
     btn.setAttribute('aria-expanded', !isExpanded);
     panel.style.display = isExpanded ? 'none' : 'block';
+    
+    if (isExpanded) {
+        btn.innerHTML = '⚙️ Ajustar más filtros <span id="filtrosArrow">▼</span>';
+    } else {
+        btn.innerHTML = '⚙️ Ocultar filtros extra <span id="filtrosArrow">▲</span>';
+    }
 };
 
 function renderizarSliders() {
@@ -1230,6 +1198,8 @@ if (btnGeo) {
             }
         );
     };
+    // Obtener ubicación automáticamente al cargar la página
+    setTimeout(() => { btnGeo.click(); }, 500);
 }
 
 // --- NUEVOS FILTROS ---

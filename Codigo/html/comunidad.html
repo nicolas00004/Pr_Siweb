@@ -30,11 +30,12 @@
         }
         .foro-filtros-row {
             display: grid;
-            grid-template-columns: repeat(3, 1fr) auto;
+            grid-template-columns: repeat(4, 1fr) auto;
             gap: 12px;
             align-items: end;
         }
-        @media (max-width: 700px) { .foro-filtros-row { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) { .foro-filtros-row { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 500px) { .foro-filtros-row { grid-template-columns: 1fr; } }
         .foro-filtro { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
         .foro-filtro label {
             font-size: 0.72rem;
@@ -298,6 +299,21 @@
                                 <option value="">Todas las ciudades</option>
                             </select>
                         </div>
+                        <div class="foro-filtro">
+                            <label for="filtroCategoria">🏷️ Tema</label>
+                            <select id="filtroCategoria">
+                                <option value="">Todos los temas</option>
+                                <option value="General">🗣️ General</option>
+                                <option value="Transporte">🚌 Transporte</option>
+                                <option value="Ocio y Turismo">🎭 Ocio y Turismo</option>
+                                <option value="Vida Nocturna">🌃 Vida Nocturna</option>
+                                <option value="Seguridad">🛡️ Seguridad</option>
+                                <option value="Calidad Académica">🎓 Calidad Académica</option>
+                                <option value="Asequibilidad">💰 Asequibilidad (Coste)</option>
+                                <option value="Gastronomía">🍴 Gastronomía</option>
+                                <option value="Conectividad">📶 Conectividad</option>
+                            </select>
+                        </div>
                         <button type="button" id="btnResetFiltrosForo" class="btn-reset-foro" title="Restablecer filtros">↩ Reset</button>
                     </div>
                     <div class="foro-filtros-status" id="foroFiltrosStatus">Mostrando todos los hilos.</div>
@@ -343,39 +359,18 @@
                     <label>Tu experiencia / Duda</label>
                     <textarea placeholder="Cuéntale al resto de futuros estudiantes..." required id="textoForo"></textarea>
 
-                    <label>Tus Criterios de Búsqueda (Pesos)</label>
-                    <div style="background: var(--bg-light); padding: 15px; border-radius: 15px; margin-bottom: 10px;">
-                        <div class="slider-item">
-                            <label style="font-size: 0.75rem; margin-top: 0; display: flex; justify-content: space-between;">
-                                <span>🚌 Transporte</span> <span id="val_transporte" style="color:var(--accent-color); font-weight:bold;">5</span>
-                            </label>
-                            <input type="range" id="peso_transporte" min="1" max="10" value="5" oninput="document.getElementById('val_transporte').innerText=this.value">
-                        </div>
-                        <div class="slider-item">
-                            <label style="font-size: 0.75rem; margin-top: 0; display: flex; justify-content: space-between;">
-                                <span>🎭 Ocio</span> <span id="val_ocio" style="color:var(--accent-color); font-weight:bold;">5</span>
-                            </label>
-                            <input type="range" id="peso_ocio" min="1" max="10" value="5" oninput="document.getElementById('val_ocio').innerText=this.value">
-                        </div>
-                        <div class="slider-item">
-                            <label style="font-size: 0.75rem; margin-top: 0; display: flex; justify-content: space-between;">
-                                <span>🌃 Ocio Nocturno</span> <span id="val_ocioNocturno" style="color:var(--accent-color); font-weight:bold;">5</span>
-                            </label>
-                            <input type="range" id="peso_ocioNocturno" min="1" max="10" value="5" oninput="document.getElementById('val_ocioNocturno').innerText=this.value">
-                        </div>
-                        <div class="slider-item">
-                            <label style="font-size: 0.75rem; margin-top: 0; display: flex; justify-content: space-between;">
-                                <span>🛡️ Seguridad</span> <span id="val_seguridad" style="color:var(--accent-color); font-weight:bold;">5</span>
-                            </label>
-                            <input type="range" id="peso_seguridad" min="1" max="10" value="5" oninput="document.getElementById('val_seguridad').innerText=this.value">
-                        </div>
-                        <div class="slider-item">
-                            <label style="font-size: 0.75rem; margin-top: 0; display: flex; justify-content: space-between;">
-                                <span>🎓 Académica</span> <span id="val_academica" style="color:var(--accent-color); font-weight:bold;">5</span>
-                            </label>
-                            <input type="range" id="peso_academica" min="1" max="10" value="5" oninput="document.getElementById('val_academica').innerText=this.value">
-                        </div>
-                    </div>
+                    <label>Tema principal</label>
+                    <select id="categoriaForo" required>
+                        <option value="General">🗣️ General</option>
+                        <option value="Transporte">🚌 Transporte</option>
+                        <option value="Ocio y Turismo">🎭 Ocio y Turismo</option>
+                        <option value="Vida Nocturna">🌃 Vida Nocturna</option>
+                        <option value="Seguridad">🛡️ Seguridad</option>
+                        <option value="Calidad Académica">🎓 Calidad Académica</option>
+                        <option value="Asequibilidad">💰 Asequibilidad (Coste)</option>
+                        <option value="Gastronomía">🍴 Gastronomía</option>
+                        <option value="Conectividad">📶 Conectividad</option>
+                    </select>
 
                     <button type="submit" class="btn-submit" style="margin-top: 15px; width: 100%;">Publicar Hilo</button>
                     <p id="foroFeedback" style="margin-top: 10px; font-weight: bold; text-align: center;"></p>
@@ -392,6 +387,7 @@
         const filtroRegion = document.getElementById('filtroRegion');
         const filtroPais = document.getElementById('filtroPais');
         const filtroCiudad = document.getElementById('filtroCiudad');
+        const filtroCategoria = document.getElementById('filtroCategoria');
         const btnResetFiltrosForo = document.getElementById('btnResetFiltrosForo');
         const foroFiltrosStatus = document.getElementById('foroFiltrosStatus');
 
@@ -457,14 +453,22 @@
                     poblarFiltroCiudad();
                     renderOpiniones();
                 });
-                filtroCiudad.addEventListener('change', renderOpiniones);
+                filtroCiudad.addEventListener('change', () => {
+                    renderOpiniones();
+                    if (filtroCiudad.value) {
+                        selectCiudades.value = filtroCiudad.value;
+                    }
+                });
+                filtroCategoria.addEventListener('change', renderOpiniones);
                 btnResetFiltrosForo.addEventListener('click', () => {
                     filtroRegion.value = '';
                     filtroPais.value = '';
                     filtroCiudad.value = '';
+                    filtroCategoria.value = '';
                     poblarFiltroPais();
                     poblarFiltroCiudad();
                     renderOpiniones();
+                    selectCiudades.value = ''; // Sincronizar reseteo con el formulario
                 });
             } catch (err) { console.error("Error ciudades:", err); }
         }
@@ -502,6 +506,7 @@
             const region = filtroRegion.value;
             const pais = filtroPais.value;
             const ciudadId = filtroCiudad.value;
+            const categoria = filtroCategoria.value;
             const partes = [];
             if (region) partes.push(region);
             if (pais) partes.push(pais);
@@ -509,6 +514,7 @@
                 const c = foroCiudadesCache.find(x => String(x._id) === String(ciudadId));
                 if (c) partes.push(c.nombre);
             }
+            if (categoria) partes.push(`Tema: ${categoria}`);
             if (partes.length) {
                 foroFiltrosStatus.textContent = `Foro filtrado: ${partes.join(' › ')}`;
                 foroFiltrosStatus.classList.add('is-active');
@@ -535,6 +541,7 @@
                 const region = filtroRegion.value;
                 const pais = filtroPais.value;
                 const ciudadId = filtroCiudad.value;
+                const categoria = filtroCategoria.value;
 
                 // Mapa rápido id ciudad → datos para resolver país/región de cada opinión
                 const ciudadById = new Map(foroCiudadesCache.map(c => [String(c._id), c]));
@@ -542,6 +549,8 @@
                 const opiniones = foroOpinionesCache.filter(op => {
                     const cid = op.id_ciudad?._id || op.id_ciudad;
                     if (ciudadId && String(cid) !== String(ciudadId)) return false;
+                    
+                    if (categoria && op.categoria !== categoria) return false;
 
                     if (pais || region) {
                         const ciudadFull = ciudadById.get(String(cid));
@@ -553,7 +562,7 @@
                 });
 
                 if (opiniones.length === 0) {
-                    const filtrando = !!(region || pais || ciudadId);
+                    const filtrando = !!(region || pais || ciudadId || categoria);
                     const msg = filtrando
                         ? 'Aún no hay hilos en este foro. ¡Inaugúralo tú!'
                         : 'No hay hilos todavía. ¡Sé el primero en preguntar!';
@@ -635,11 +644,7 @@
                         <div class="hilo-texto">${escapeHtml(op.texto_opinion)}</div>
 
                         <div class="pesos-tag-container">
-                            <span class="peso-tag">🚌 ${p.transporte}</span>
-                            <span class="peso-tag">🎭 ${p.ocio}</span>
-                            <span class="peso-tag">🌃 ${p.ocioNocturno}</span>
-                            <span class="peso-tag">🛡️ ${p.seguridad}</span>
-                            <span class="peso-tag">🎓 ${p.calidadAcademica}</span>
+                            ${op.categoria ? `<span class="peso-tag" style="background:#fef08a; color:#854d0e; font-size:0.8rem; padding: 4px 10px;">🏷️ ${escapeHtml(op.categoria)}</span>` : ''}
                         </div>
 
                         <div class="hilo-footer" style="align-items:center; flex-wrap:wrap;">
@@ -780,13 +785,7 @@
                 valoracion: document.getElementById('valForo').value,
                 texto: document.getElementById('textoForo').value,
                 usuarioId: localUser.id || localUser._id || null,
-                pesos: {
-                    transporte: parseInt(document.getElementById('peso_transporte').value),
-                    ocio: parseInt(document.getElementById('peso_ocio').value),
-                    ocioNocturno: parseInt(document.getElementById('peso_ocioNocturno').value),
-                    seguridad: parseInt(document.getElementById('peso_seguridad').value),
-                    calidadAcademica: parseInt(document.getElementById('peso_academica').value)
-                }
+                categoria: document.getElementById('categoriaForo').value
             };
 
             try {
