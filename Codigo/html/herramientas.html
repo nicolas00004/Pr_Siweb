@@ -134,6 +134,167 @@
             align-self: flex-start;
         }
         .foro-filtros-status.is-active { background: #eff6ff; color: var(--accent-color); }
+
+        /* Pesos por criterio */
+        .pesos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px 18px;
+            margin-top: 6px;
+        }
+        .peso-control { display: flex; flex-direction: column; gap: 4px; }
+        .peso-control-head { display: flex; justify-content: space-between; align-items: center; }
+        .peso-control-label { font-size: 0.82rem; font-weight: 600; color: var(--text-dark); }
+        .peso-control-value {
+            font-size: 0.78rem; font-weight: 700;
+            color: var(--accent-color); background: #eff6ff;
+            padding: 2px 9px; border-radius: 10px; min-width: 32px; text-align: center;
+        }
+        .peso-control input[type=range] {
+            width: 100%; accent-color: var(--accent-color);
+            height: 6px;
+        }
+
+        /* Resultado del comparador — vencedor */
+        .winner-hero {
+            position: relative;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #ea580c 100%);
+            color: white;
+            padding: 40px 24px 34px;
+            border-radius: 20px;
+            text-align: center;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(245, 158, 11, 0.35);
+            animation: winner-in 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        .winner-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% -10%, rgba(255,255,255,0.4) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .winner-hero::after {
+            content: '✦';
+            position: absolute;
+            color: rgba(255,255,255,0.45);
+            font-size: 1.4rem;
+            top: 22px;
+            right: 32px;
+            animation: sparkle 2.6s ease-in-out infinite;
+        }
+        .winner-trophy-big {
+            font-size: 4rem;
+            line-height: 1;
+            display: inline-block;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));
+            animation: trophy-float 2.4s ease-in-out infinite;
+        }
+        .winner-label {
+            margin-top: 6px;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 700;
+            opacity: 0.92;
+        }
+        .winner-city {
+            font-size: clamp(2.4rem, 5vw, 3.6rem);
+            font-weight: 900;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            margin: 6px 0 20px;
+            text-shadow: 0 4px 14px rgba(0,0,0,0.2);
+        }
+        .winner-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .winner-score {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            background: rgba(255,255,255,0.22);
+            padding: 8px 18px;
+            border-radius: 50px;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .winner-score-num { font-size: 2rem; font-weight: 900; line-height: 1; }
+        .winner-score-suffix { font-size: 0.85rem; opacity: 0.85; font-weight: 600; }
+        .winner-pill {
+            background: rgba(255,255,255,0.95);
+            color: #b45309;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .winner-reasons {
+            display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+            margin-top: 16px;
+        }
+        .winner-chip {
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.35);
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        @keyframes winner-in {
+            from { opacity: 0; transform: translateY(18px) scale(0.96); }
+            to   { opacity: 1; transform: translateY(0)    scale(1); }
+        }
+        @keyframes trophy-float {
+            0%, 100% { transform: translateY(0)    rotate(-4deg); }
+            50%      { transform: translateY(-8px) rotate(4deg); }
+        }
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; transform: scale(1)   rotate(0deg); }
+            50%      { opacity: 1;   transform: scale(1.3) rotate(180deg); }
+        }
+
+        /* Podio top-3 */
+        .podium {
+            display: grid;
+            gap: 12px;
+            margin-top: 28px;
+            align-items: end;
+        }
+        .podium-step {
+            text-align: center;
+            padding: 16px 10px 14px;
+            border-radius: 12px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s;
+        }
+        .podium-step:hover { transform: translateY(-3px); }
+        .podium-1 {
+            transform: translateY(-14px);
+            border: 2px solid #fbbf24;
+            background: linear-gradient(180deg, #fffbeb 0%, white 100%);
+            box-shadow: 0 12px 30px rgba(251, 191, 36, 0.25);
+        }
+        .podium-1:hover { transform: translateY(-17px); }
+        .podium-2 { border-color: #cbd5e1; }
+        .podium-3 { border-color: #d97706; }
+        .podium-medal { font-size: 1.9rem; line-height: 1; }
+        .podium-name { font-weight: 700; color: var(--primary-color); margin: 6px 0 2px; font-size: 0.98rem; }
+        .podium-score { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+        @media (max-width: 500px) {
+            .podium { grid-template-columns: 1fr !important; }
+            .podium-1 { transform: none; }
+            .podium-1:hover { transform: translateY(-3px); }
+        }
     </style>
 </head>
 <body>
@@ -210,6 +371,27 @@
                     <div class="foro-filtros-status" id="filtrosCiudadesStatus">Mostrando todas las ciudades.</div>
                 </div>
 
+                <!-- PANEL DE PESOS (importancia por criterio) -->
+                <div class="foro-tabs" id="pesosPanel">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                        <div>
+                            <div class="foro-tabs-label">⚖️ Ajustar pesos por criterio</div>
+                            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">Desliza a la derecha lo que más te importe (1 = poco · 5 = imprescindible).</div>
+                        </div>
+                        <button type="button" id="btnResetPesos" class="btn-reset-foro" title="Restablecer pesos">↩ Reset</button>
+                    </div>
+                    <div class="quick-profiles" id="quickProfilesPesos" style="display:flex; gap:6px; flex-wrap:wrap; padding:8px 10px; background:#f8fafc; border-radius:12px; border:1px dashed #e2e8f0; margin-top:4px;">
+                        <button type="button" class="qp-btn" data-perfil="economico">💸 Económico</button>
+                        <button type="button" class="qp-btn" data-perfil="academico">🎓 Académico</button>
+                        <button type="button" class="qp-btn" data-perfil="social">🎉 Social</button>
+                        <button type="button" class="qp-btn" data-perfil="seguro">🛡️ Seguro</button>
+                        <button type="button" class="qp-btn" data-perfil="equilibrado">⚖️ Equilibrado</button>
+                    </div>
+                    <div class="pesos-grid" id="pesosGrid">
+                        <!-- Sliders generados por JS -->
+                    </div>
+                </div>
+
                 <div style="overflow-x: auto;">
                     <table class="compare-table" id="tablaCompare">
                         <thead>
@@ -260,11 +442,8 @@
                 </div>
 
                 <!-- RESULTADO: MEJOR OPCIÓN GLOBAL -->
-                <div id="resultadoBox" style="margin-top: 30px; padding: 25px; border-radius: 16px; background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border: 1px solid #e2e8f0;">
-                    <div style="font-size:0.78rem; color: var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; font-weight:700; text-align:center; margin-bottom: 8px;">🏆 Mejor opción global</div>
-                    <div id="resultadoComparador">
-                        <p style="color: var(--text-muted); text-align:center; margin: 0;">Selecciona al menos 2 ciudades para ver el resultado.</p>
-                    </div>
+                <div id="resultadoComparador" style="margin-top: 30px;">
+                    <p style="color: var(--text-muted); text-align:center; padding: 25px; background: #f8fafc; border-radius: 16px; margin: 0;">Selecciona al menos 2 ciudades para ver el resultado.</p>
                 </div>
             </div>
 
@@ -438,6 +617,13 @@
 
                 inputNumCiudades.addEventListener('change', e => ajustarNumCiudades(e.target.value));
 
+                // Panel de pesos
+                renderPesos();
+                document.querySelectorAll('#quickProfilesPesos .qp-btn').forEach(b => {
+                    b.addEventListener('click', () => aplicarPerfilPesos(b.dataset.perfil));
+                });
+                document.getElementById('btnResetPesos').addEventListener('click', resetPesos);
+
                 renderRankings();
             } catch (e) { console.error("Error cargando ciudades", e); }
         }
@@ -453,21 +639,84 @@
         // Contador siempre creciente para garantizar IDs únicos aunque se borren columnas intermedias
         let nextColId = 0;
 
-        // Configuración de criterios: clave, tipo de render y obtención del valor.
+        // Configuración de criterios: clave, tipo de render, etiqueta y obtención del valor.
         // tipo='euros' → menor es mejor; tipo='estrellas' → mayor es mejor; tipo='ambiente' sin ganador.
         const CRITERIOS = [
-            { key: 'presupuesto', tipo: 'euros',     escala: 1500, get: c => c.presupuesto },
-            { key: 'alquiler',    tipo: 'euros',     escala: 1200, get: c => c.metricas?.costeAlquilerMedio },
-            { key: 'costeOcio',   tipo: 'euros',     escala: 400,  get: c => c.metricas?.costeOcioMedio },
-            { key: 'ambiente',    tipo: 'ambiente',                get: c => c.tipoAmbiente },
-            { key: 'seguridad',   tipo: 'estrellas',               get: c => c.metricas?.seguridad },
-            { key: 'transporte',  tipo: 'estrellas',               get: c => c.metricas?.calidadTransporte },
-            { key: 'ocio',        tipo: 'estrellas',               get: c => c.metricas?.ambienteNocturno },
-            { key: 'turismo',     tipo: 'estrellas',               get: c => c.metricas?.turismo },
-            { key: 'gastronomia', tipo: 'estrellas',               get: c => c.metricas?.gastronomia },
-            { key: 'academica',   tipo: 'estrellas',               get: c => c.metricas?.calidadAcademica },
-            { key: 'conectividad',tipo: 'estrellas',               get: c => c.metricas?.conectividad }
+            { key: 'presupuesto', label: '💶 Presupuesto',  tipo: 'euros',     escala: 1500, get: c => c.presupuesto },
+            { key: 'alquiler',    label: '🏠 Alquiler',     tipo: 'euros',     escala: 1200, get: c => c.metricas?.costeAlquilerMedio },
+            { key: 'costeOcio',   label: '🍻 Coste Ocio',   tipo: 'euros',     escala: 400,  get: c => c.metricas?.costeOcioMedio },
+            { key: 'ambiente',    label: '🎭 Ambiente',     tipo: 'ambiente',                get: c => c.tipoAmbiente },
+            { key: 'seguridad',   label: '🛡️ Seguridad',    tipo: 'estrellas',               get: c => c.metricas?.seguridad },
+            { key: 'transporte',  label: '🚌 Transporte',   tipo: 'estrellas',               get: c => c.metricas?.calidadTransporte },
+            { key: 'ocio',        label: '🌃 Vida Nocturna',tipo: 'estrellas',               get: c => c.metricas?.ambienteNocturno },
+            { key: 'turismo',     label: '🏛️ Turismo',      tipo: 'estrellas',               get: c => c.metricas?.turismo },
+            { key: 'gastronomia', label: '🍴 Gastronomía',  tipo: 'estrellas',               get: c => c.metricas?.gastronomia },
+            { key: 'academica',   label: '🎓 Académica',    tipo: 'estrellas',               get: c => c.metricas?.calidadAcademica },
+            { key: 'conectividad',label: '📶 Conectividad', tipo: 'estrellas',               get: c => c.metricas?.conectividad }
         ];
+
+        // Pesos por criterio (1-5). Solo los criterios con dirección "mejor" entran al cálculo.
+        const PESO_DEFECTO = 3;
+        const pesos = {};
+        CRITERIOS.forEach(c => { if (c.tipo !== 'ambiente') pesos[c.key] = PESO_DEFECTO; });
+
+        // Perfiles rápidos — adaptados a las claves de criterios del comparador.
+        const PERFILES_PESOS = {
+            economico:   { presupuesto: 5, alquiler: 5, costeOcio: 4, conectividad: 3, transporte: 3, seguridad: 3, ocio: 2, turismo: 2, gastronomia: 2, academica: 2 },
+            academico:   { academica: 5, conectividad: 4, seguridad: 4, transporte: 3, presupuesto: 3, alquiler: 3, costeOcio: 2, ocio: 2, turismo: 2, gastronomia: 2 },
+            social:      { ocio: 5, turismo: 5, gastronomia: 4, transporte: 3, conectividad: 3, seguridad: 2, academica: 2, presupuesto: 2, alquiler: 2, costeOcio: 3 },
+            seguro:      { seguridad: 5, academica: 4, conectividad: 3, transporte: 3, presupuesto: 3, alquiler: 3, costeOcio: 2, ocio: 2, turismo: 2, gastronomia: 2 },
+            equilibrado: { presupuesto: 3, alquiler: 3, costeOcio: 3, seguridad: 3, transporte: 3, ocio: 3, turismo: 3, gastronomia: 3, academica: 3, conectividad: 3 }
+        };
+
+        function renderPesos() {
+            const grid = document.getElementById('pesosGrid');
+            if (!grid) return;
+            grid.innerHTML = CRITERIOS
+                .filter(c => c.tipo !== 'ambiente')
+                .map(c => {
+                    const v = pesos[c.key];
+                    return `
+                        <div class="peso-control" data-key="${c.key}">
+                            <div class="peso-control-head">
+                                <span class="peso-control-label">${c.label}</span>
+                                <span class="peso-control-value">${v.toFixed(1)}</span>
+                            </div>
+                            <input type="range" min="1" max="5" step="0.1" value="${v}" data-key="${c.key}">
+                        </div>`;
+                }).join('');
+
+            grid.querySelectorAll('input[type=range]').forEach(input => {
+                input.addEventListener('input', e => {
+                    const key = e.target.dataset.key;
+                    const val = parseFloat(e.target.value);
+                    pesos[key] = val;
+                    const wrap = e.target.closest('.peso-control');
+                    if (wrap) wrap.querySelector('.peso-control-value').textContent = val.toFixed(1);
+                    // Limpiar perfil activo (el usuario está personalizando)
+                    document.querySelectorAll('#quickProfilesPesos .qp-btn.active').forEach(b => b.classList.remove('active'));
+                    calcularMejorOpcion();
+                });
+            });
+        }
+
+        function aplicarPerfilPesos(nombre) {
+            const perfil = PERFILES_PESOS[nombre];
+            if (!perfil) return;
+            Object.keys(perfil).forEach(k => { if (k in pesos) pesos[k] = perfil[k]; });
+            renderPesos();
+            document.querySelectorAll('#quickProfilesPesos .qp-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.perfil === nombre);
+            });
+            calcularMejorOpcion();
+        }
+
+        function resetPesos() {
+            Object.keys(pesos).forEach(k => pesos[k] = PESO_DEFECTO);
+            renderPesos();
+            document.querySelectorAll('#quickProfilesPesos .qp-btn.active').forEach(b => b.classList.remove('active'));
+            calcularMejorOpcion();
+        }
 
         function addCompareColumn() {
             if (colCount >= MAX_CIUDADES) return;
@@ -579,14 +828,16 @@
                 .filter(Boolean);
 
             if (seleccionadas.length < 2) {
-                resultadoEl.innerHTML = '<p style="color: var(--text-muted); text-align:center; margin: 0;">Selecciona al menos 2 ciudades para ver el resultado.</p>';
+                resultadoEl.innerHTML = '<p style="color: var(--text-muted); text-align:center; padding: 25px; background: #f8fafc; border-radius: 16px; margin: 0;">Selecciona al menos 2 ciudades para ver el resultado.</p>';
                 return;
             }
 
-            const scores = new Map(seleccionadas.map(c => [String(c._id), { ciudad: c, total: 0, count: 0, ganados: 0 }]));
+            const scores = new Map(seleccionadas.map(c => [String(c._id), { ciudad: c, total: 0, totalPeso: 0, count: 0, ganados: 0, aportes: [] }]));
 
-            CRITERIOS.forEach(({ key, tipo, get }) => {
+            CRITERIOS.forEach(({ key, label, tipo, get }) => {
                 if (tipo === 'ambiente') return; // sin dirección de "mejor"
+                const peso = pesos[key] ?? PESO_DEFECTO;
+                if (peso <= 0) return;
                 const menorMejor = (tipo === 'euros');
                 const valores = seleccionadas
                     .map(c => ({ id: String(c._id), val: get(c) }))
@@ -602,45 +853,70 @@
                         ? 1
                         : (menorMejor ? (max - v.val) / (max - min) : (v.val - min) / (max - min));
                     const s = scores.get(v.id);
-                    s.total += norm;
+                    s.total += norm * peso;
+                    s.totalPeso += peso;
                     s.count++;
                     if (v.val === mejor) s.ganados++;
+                    s.aportes.push({ key, label, aporte: norm * peso, peso, esGanador: v.val === mejor });
                 });
             });
 
             const ranking = Array.from(scores.values())
-                .filter(s => s.count > 0)
-                .map(s => ({ ...s, avg: s.total / s.count }))
+                .filter(s => s.totalPeso > 0)
+                .map(s => ({ ...s, avg: s.total / s.totalPeso }))
                 .sort((a, b) => b.avg - a.avg);
 
             if (!ranking.length) {
-                resultadoEl.innerHTML = '<p style="color: var(--text-muted); text-align:center; margin: 0;">Sin datos suficientes para comparar.</p>';
+                resultadoEl.innerHTML = '<p style="color: var(--text-muted); text-align:center; padding: 25px; background: #f8fafc; border-radius: 16px; margin: 0;">Sin datos suficientes para comparar.</p>';
                 return;
             }
 
             const ganador = ranking[0];
             const top = ranking.slice(0, Math.min(3, ranking.length));
+            const medals = ['🥇', '🥈', '🥉'];
+            const podiumClass = ['podium-1', 'podium-2', 'podium-3'];
+            // Orden visual del podio: 2º a la izquierda, 1º al centro elevado, 3º a la derecha
+            const visualOrder = top.length === 3 ? [1, 0, 2] : [0, 1].slice(0, top.length);
+            const podioHTML = top.length >= 2 ? `
+                <div class="podium" style="grid-template-columns: repeat(${top.length}, 1fr);">
+                    ${visualOrder.map(idx => {
+                        const s = top[idx];
+                        return `
+                            <div class="podium-step ${podiumClass[idx]}">
+                                <div class="podium-medal">${medals[idx]}</div>
+                                <div class="podium-name">${s.ciudad.nombre}</div>
+                                <div class="podium-score">${(s.avg * 100).toFixed(0)} pts</div>
+                            </div>`;
+                    }).join('')}
+                </div>` : '';
+
+            // Top razones: criterios donde el ganador puntúa mejor (mayor aporte ponderado)
+            const razones = (ganador.aportes || [])
+                .slice()
+                .sort((a, b) => b.aporte - a.aporte)
+                .slice(0, 3)
+                .filter(r => r.aporte > 0);
+
+            const razonesHTML = razones.length ? `
+                <div class="winner-reasons">
+                    ${razones.map(r => `<span class="winner-chip">${r.label} · peso ${r.peso.toFixed(1)}</span>`).join('')}
+                </div>` : '';
 
             resultadoEl.innerHTML = `
-                <div style="text-align:center;">
-                    <div style="font-size:2.2rem; font-weight:900; color: var(--accent-color); margin-bottom: 4px;">${ganador.ciudad.nombre}</div>
-                    <div style="font-size:0.95rem; color: var(--text-dark);">
-                        Puntuación global: <strong>${(ganador.avg * 100).toFixed(0)} / 100</strong>
-                        · Gana en <strong>${ganador.ganados}</strong> de ${ganador.count} criterios
+                <div class="winner-hero">
+                    <div class="winner-trophy-big">🏆</div>
+                    <div class="winner-label">Ganador del comparador</div>
+                    <div class="winner-city">${ganador.ciudad.nombre}</div>
+                    <div class="winner-meta">
+                        <div class="winner-score">
+                            <span class="winner-score-num">${(ganador.avg * 100).toFixed(0)}</span>
+                            <span class="winner-score-suffix">/ 100</span>
+                        </div>
+                        <div class="winner-pill">✓ Gana en ${ganador.ganados} de ${ganador.count} criterios</div>
                     </div>
+                    ${razonesHTML}
                 </div>
-                ${top.length > 1 ? `
-                    <div style="margin-top: 22px; display: grid; grid-template-columns: repeat(${top.length}, 1fr); gap: 12px;">
-                        ${top.map((s, i) => `
-                            <div class="rank-card" style="margin:0;">
-                                <div class="rank-pos top-${i+1}">#${i+1}</div>
-                                <div class="rank-info">
-                                    <span class="rank-name">${s.ciudad.nombre}</span>
-                                    <span class="rank-val">${(s.avg * 100).toFixed(0)} pts</span>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>` : ''}
+                ${podioHTML}
             `;
         }
 
