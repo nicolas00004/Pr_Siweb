@@ -79,13 +79,14 @@ function getUserId() {
  * Si es así, limpia la sesión y redirige al login.
  */
 async function verificarSesion(res) {
-    if (res.status === 404) {
+    if (res.status === 401 || res.status === 404) {
         // Clonamos la respuesta para poder leer el JSON sin agotar el body si otros scripts lo necesitan
         const tempRes = res.clone();
         try {
             const data = await tempRes.json();
-            if (data.error && data.error.includes("reinicia sesión")) {
-                alert("⚠️ Tu sesión ya no es válida (el servidor ha sido reiniciado). Por favor, inicia sesión de nuevo.");
+            // Si el error indica que el usuario no existe o la sesión no es válida
+            if (data.error && (data.error.includes("no encontrado") || data.error.includes("sesión no válida") || data.error.includes("reinicia sesión"))) {
+                alert("⚠️ Tu sesión ya no es válida (el servidor ha sido reiniciado o el usuario no existe). Por favor, inicia sesión de nuevo.");
                 localStorage.removeItem('usuarioInfo');
                 window.location.href = '/html/login.html';
                 return true;

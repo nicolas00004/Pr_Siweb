@@ -251,9 +251,8 @@
                 <li>
                     <a href="comunidad.html" class="active">Comunidad ▾</a>
                     <ul>
-                        <li><a href="#foro">Foro de preguntas rápidas</a></li>
-                        <li><a href="busqueda.html#comunidad">Añadir nueva ciudad</a></li>
-                        <li><a href="#escribir">Escribir una reseña</a></li>
+                        <li><a href="comunidad.html#foro">Foro</a></li>
+                        <li><a href="busqueda.html#comunidad">Añadir ciudad</a></li>
                     </ul>
                 </li>
                 <li>
@@ -707,6 +706,9 @@
                 });
 
                 if (!res.ok) {
+                    const sesionInvalida = await verificarSesion(res);
+                    if (sesionInvalida) return;
+
                     let detalle = '';
                     try {
                         const err = await res.json();
@@ -761,8 +763,11 @@
                     textoInput.value = "";
                     cargarOpiniones();
                 } else {
-                    const err = await res.json();
-                    alert(err.error || "Error al enviar la respuesta.");
+                    const sesionInvalida = await verificarSesion(res);
+                    if (!sesionInvalida) {
+                        const err = await res.json();
+                        alert(err.error || "Error al enviar la respuesta.");
+                    }
                 }
             } catch (err) {
                 alert("Error de conexión.");
@@ -797,9 +802,12 @@
                     this.reset();
                     cargarOpiniones(); // Recargar lista
                 } else {
-                    const error = await res.json();
-                    feedback.style.color = "#ef4444";
-                    feedback.innerText = error.error || "Error al publicar. Revisa los datos.";
+                    const sesionInvalida = await verificarSesion(res);
+                    if (!sesionInvalida) {
+                        const error = await res.json();
+                        feedback.style.color = "#ef4444";
+                        feedback.innerText = error.error || "Error al publicar. Revisa los datos.";
+                    }
                 }
             } catch (err) {
                 feedback.innerText = "Error de conexión con el servidor.";
