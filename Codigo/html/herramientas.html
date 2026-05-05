@@ -150,10 +150,7 @@
                 <li><a href="busqueda.html">Buscar</a></li>
                 <li><a href="destinos.html">Destinos</a></li>
                 <li>
-                    <a href="herramientas.html" class="active">Herramientas ▾</a>
-                    <ul>
-                        <li><a href="#comparador">Comparador Personalizado</a></li>
-                    </ul>
+                    <a href="herramientas.html" class="active">Comparador</a>
                 </li>
                 <li>
                     <a href="comunidad.html">Comunidad ▾</a>
@@ -174,19 +171,23 @@
     </header>
 
     <main>
-        <h2>🛠️ Herramientas de Decisión</h2>
-        <p class="texto-largo">Utiliza nuestros algoritmos simulados para ayudarte a tomar la mejor decisión académica.</p>
-
+        
         <div style="margin-top: 40px;">
 
             <!-- COMPARADOR VS DINÁMICO -->
             <div class="tool-panel" id="comparador">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h3>📊 Comparador de Destinos Multidestino</h3>
-                    <button class="btn-submit" id="btnAddCity" onclick="addCompareColumn()" style="width: auto; padding: 10px 20px; font-size: 0.9rem; margin-top: 0;">+ Añadir Ciudad</button>
+                    <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                        <label for="numCiudades" style="font-size:0.9rem; color:var(--text-muted); font-weight:600; display:flex; align-items:center; gap:6px;">
+                            Nº ciudades:
+                            <input type="number" id="numCiudades" min="2" max="10" value="2" style="width:70px; padding:8px 10px; border-radius:8px; border:1.5px solid #e2e8f0; font-family:inherit; font-size:0.9rem;">
+                        </label>
+                        <button class="btn-submit" id="btnAddCity" onclick="addCompareColumn()" style="width:auto; padding:10px 20px; font-size:0.9rem; margin-top:0;">+ Añadir Ciudad</button>
+                    </div>
                 </div>
                 
-                <p style="margin-bottom: 20px; color: var(--text-muted);">Compara hasta 4 ciudades simultáneamente para ver cuál se ajusta mejor a tu presupuesto y estilo de vida.</p>
+                <p style="margin-bottom: 20px; color: var(--text-muted);">Compara ciudades simultáneamente para ver cuál se ajusta mejor a tu presupuesto y estilo de vida.</p>
 
                 <!-- FILTROS DE CIUDADES -->
                 <div class="foro-tabs" id="filtrosCiudades">
@@ -256,6 +257,14 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <!-- RESULTADO: MEJOR OPCIÓN GLOBAL -->
+                <div id="resultadoBox" style="margin-top: 30px; padding: 25px; border-radius: 16px; background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border: 1px solid #e2e8f0;">
+                    <div style="font-size:0.78rem; color: var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; font-weight:700; text-align:center; margin-bottom: 8px;">🏆 Mejor opción global</div>
+                    <div id="resultadoComparador">
+                        <p style="color: var(--text-muted); text-align:center; margin: 0;">Selecciona al menos 2 ciudades para ver el resultado.</p>
+                    </div>
                 </div>
             </div>
 
@@ -427,6 +436,8 @@
                 addCompareColumn();
                 addCompareColumn();
 
+                inputNumCiudades.addEventListener('change', e => ajustarNumCiudades(e.target.value));
+
                 renderRankings();
             } catch (e) { console.error("Error cargando ciudades", e); }
         }
@@ -435,7 +446,12 @@
         const headerRow = document.getElementById('headerRow');
         const compareBody = document.getElementById('compareBody');
         const deleteRow = document.getElementById('deleteRow');
+        const inputNumCiudades = document.getElementById('numCiudades');
+        const MAX_CIUDADES = parseInt(inputNumCiudades.max) || 10;
+        const MIN_CIUDADES = parseInt(inputNumCiudades.min) || 2;
         let colCount = 0;
+        // Contador siempre creciente para garantizar IDs únicos aunque se borren columnas intermedias
+        let nextColId = 0;
 
         // Configuración de criterios: clave, tipo de render y obtención del valor.
         // tipo='euros' → menor es mejor; tipo='estrellas' → mayor es mejor; tipo='ambiente' sin ganador.
@@ -454,13 +470,14 @@
         ];
 
         function addCompareColumn() {
-            if (colCount >= 4) return; // Límite de 4 ciudades
+            if (colCount >= MAX_CIUDADES) return;
+            nextColId++;
             colCount++;
-            const id = `city_col_${colCount}`;
+            const id = `city_col_${nextColId}`;
 
             // Actualizar estado del botón
             const btnAdd = document.getElementById('btnAddCity');
-            if (colCount >= 4) {
+            if (colCount >= MAX_CIUDADES) {
                 btnAdd.disabled = true;
                 btnAdd.innerText = "Límite Alcanzado";
             }
@@ -495,6 +512,24 @@
             tdDel.id = `del_${id}`;
             tdDel.innerHTML = `<button onclick="removeColumn('${id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.8rem;">✖ Quitar</button>`;
             deleteRow.appendChild(tdDel);
+
+            sincronizarNumCiudades();
+        }
+
+        function sincronizarNumCiudades() {
+            inputNumCiudades.value = colCount;
+        }
+
+        function ajustarNumCiudades(target) {
+            target = Math.max(MIN_CIUDADES, Math.min(MAX_CIUDADES, parseInt(target) || MIN_CIUDADES));
+            while (colCount < target) addCompareColumn();
+            while (colCount > target) {
+                const headers = headerRow.querySelectorAll('th[id^="header_city_col_"]');
+                if (!headers.length) break;
+                const lastId = headers[headers.length - 1].id.replace('header_', '');
+                removeColumn(lastId);
+            }
+            inputNumCiudades.value = colCount;
         }
 
         function updateColumn(colId, ciudadId) {
@@ -528,6 +563,85 @@
                 }
             });
             destacarGanadores();
+            calcularMejorOpcion();
+        }
+
+        // Calcula la mejor ciudad ponderando todos los criterios numéricos.
+        // Cada criterio se normaliza a [0,1] (invertido para los que son "menor mejor")
+        // y se promedia; la ciudad con mayor media es la ganadora.
+        function calcularMejorOpcion() {
+            const resultadoEl = document.getElementById('resultadoComparador');
+            if (!resultadoEl) return;
+
+            const selects = headerRow.querySelectorAll('select.city-select');
+            const seleccionadas = Array.from(selects)
+                .map(sel => todasCiudades.find(c => String(c._id) === String(sel.value)))
+                .filter(Boolean);
+
+            if (seleccionadas.length < 2) {
+                resultadoEl.innerHTML = '<p style="color: var(--text-muted); text-align:center; margin: 0;">Selecciona al menos 2 ciudades para ver el resultado.</p>';
+                return;
+            }
+
+            const scores = new Map(seleccionadas.map(c => [String(c._id), { ciudad: c, total: 0, count: 0, ganados: 0 }]));
+
+            CRITERIOS.forEach(({ key, tipo, get }) => {
+                if (tipo === 'ambiente') return; // sin dirección de "mejor"
+                const menorMejor = (tipo === 'euros');
+                const valores = seleccionadas
+                    .map(c => ({ id: String(c._id), val: get(c) }))
+                    .filter(v => v.val != null && !isNaN(v.val));
+                if (valores.length < 2) return;
+
+                const min = Math.min(...valores.map(v => v.val));
+                const max = Math.max(...valores.map(v => v.val));
+                const mejor = menorMejor ? min : max;
+
+                valores.forEach(v => {
+                    const norm = (max === min)
+                        ? 1
+                        : (menorMejor ? (max - v.val) / (max - min) : (v.val - min) / (max - min));
+                    const s = scores.get(v.id);
+                    s.total += norm;
+                    s.count++;
+                    if (v.val === mejor) s.ganados++;
+                });
+            });
+
+            const ranking = Array.from(scores.values())
+                .filter(s => s.count > 0)
+                .map(s => ({ ...s, avg: s.total / s.count }))
+                .sort((a, b) => b.avg - a.avg);
+
+            if (!ranking.length) {
+                resultadoEl.innerHTML = '<p style="color: var(--text-muted); text-align:center; margin: 0;">Sin datos suficientes para comparar.</p>';
+                return;
+            }
+
+            const ganador = ranking[0];
+            const top = ranking.slice(0, Math.min(3, ranking.length));
+
+            resultadoEl.innerHTML = `
+                <div style="text-align:center;">
+                    <div style="font-size:2.2rem; font-weight:900; color: var(--accent-color); margin-bottom: 4px;">${ganador.ciudad.nombre}</div>
+                    <div style="font-size:0.95rem; color: var(--text-dark);">
+                        Puntuación global: <strong>${(ganador.avg * 100).toFixed(0)} / 100</strong>
+                        · Gana en <strong>${ganador.ganados}</strong> de ${ganador.count} criterios
+                    </div>
+                </div>
+                ${top.length > 1 ? `
+                    <div style="margin-top: 22px; display: grid; grid-template-columns: repeat(${top.length}, 1fr); gap: 12px;">
+                        ${top.map((s, i) => `
+                            <div class="rank-card" style="margin:0;">
+                                <div class="rank-pos top-${i+1}">#${i+1}</div>
+                                <div class="rank-info">
+                                    <span class="rank-name">${s.ciudad.nombre}</span>
+                                    <span class="rank-val">${(s.avg * 100).toFixed(0)} pts</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>` : ''}
+            `;
         }
 
         function destacarGanadores() {
@@ -575,7 +689,9 @@
             btnAdd.disabled = false;
             btnAdd.innerText = "+ Añadir Ciudad";
 
+            sincronizarNumCiudades();
             destacarGanadores();
+            calcularMejorOpcion();
         }
 
         function renderRankings() {
