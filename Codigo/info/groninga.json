@@ -1,0 +1,53 @@
+{
+    "id": "groninga",
+    "nombre": "Groninga",
+    "pais": "Países Bajos",
+    "etiquetas": {
+        "historia": "🚲 Capital Mundial del Ciclismo",
+        "transporte": "🚲 Todo en Bici",
+        "alojamiento": "🏠 Canales y Estudios"
+    },
+    "historia": "Groninga es la metrópolis del norte de los Países Bajos. Con una universidad fundada en 1614, la ciudad respira un aire joven y rebelde. Es conocida por haber expulsado casi por completo a los coches de su centro histórico en los años 70, convirtiéndose en el paraíso mundial de la bicicleta y el diseño urbano sostenible.",
+    "alojamiento": "El mercado de vivienda es muy tenso (el famoso 'Groningen Housing Crisis'). Una habitación suele costar entre 450€ y 650€. Se recomienda buscar con meses de antelación. Las zonas de Korrewegwijk y Schildersbuurt son las más populares entre los estudiantes por su cercanía al centro y al campus de Zernike.",
+    "barrios": "El Binnenstad (centro) es donde está toda la fiesta. Schildersbuurt es el barrio de las artes y muy pintoresco. Zernike es el parque científico al norte donde se encuentran muchas facultades modernas y empresas tecnológicas.",
+    "universidades": [
+        {
+            "nombre": "Rijksuniversiteit Groningen (UG)",
+            "descripcion": "Una de las 100 mejores universidades del mundo, con un edificio central neorrenacentista que es el corazón de la ciudad."
+        },
+        {
+            "nombre": "Hanze University of Applied Sciences",
+            "descripcion": "La universidad de ciencias aplicadas más grande del norte, famosa por su enfoque práctico y sus programas internacionales."
+        },
+        {
+            "nombre": "Zernike Campus",
+            "descripcion": "Un hub de innovación donde la universidad y las empresas colaboran en proyectos de energía y tecnología."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Martinitoren",
+            "categoria": "cultura",
+            "descripcion": "La torre de la iglesia de San Martín, el símbolo de la ciudad que ofrece las mejores vistas tras subir sus 251 escalones."
+        },
+        {
+            "nombre": "Groninger Museum",
+            "categoria": "cultura",
+            "descripcion": "Un edificio de arquitectura futurista y colorida situado sobre el canal, frente a la estación de tren."
+        },
+        {
+            "nombre": "Grote Markt",
+            "categoria": "ocio",
+            "descripcion": "La plaza principal, rodeada de bares con terrazas climatizadas que están llenas de estudiantes todo el año."
+        },
+        {
+            "nombre": "Drie Gezusters (Las Tres Hermanas)",
+            "categoria": "ocioNocturno",
+            "descripcion": "Dicen que es el pub más grande de Europa, un laberinto de casas conectadas con diferentes ambientes y música."
+        }
+    ],
+    "imagenes": [
+        "../img/groninga_1.jpg",
+        "../img/groninga_2.jpg"
+    ]
+}

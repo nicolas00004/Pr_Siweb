@@ -1,0 +1,31 @@
+{
+        "id": "lerida",
+        "nombre": "Lérida",
+        "etiquetas": {
+            "historia": "⛪ Seu Vella e Interior",
+            "transporte": "🚌 Movilidad Urbana",
+            "alojamiento": "🏠 Barrios del Segre"
+        },
+        "historia": "Punto estratégico entre la costa y el Pirineo. Su catedral vieja (Seu Vella) domina toda la ciudad desde una colina. Es el corazón de una rica zona agrícola.",
+        "alojamiento": "Precios moderados, unos 250-300€. La zona cercana a la Plaza de Ricard Viñes es la más animada.",
+        "barrios": "Cappont es el barrio universitario moderno al otro lado del río. Pardinyes es familiar y tranquilo.",
+        "universidades": [
+            {
+                "nombre": "Universitat de Lleida (UdL) - Campus Cappont",
+                "descripcion": "El campus más nuevo con la biblioteca central y ciencias sociales."
+            }
+        ],
+        "sitios": [
+            {
+                "nombre": "La Seu Vella",
+                "categoria": "cultura",
+                "descripcion": "Antigua catedral románica-gótica con un claustro espectacular."
+            },
+            {
+                "nombre": "Camps Elisis",
+                "categoria": "ocio",
+                "descripcion": "Parque de estilo francés donde se celebran las grandes fiestas locales."
+            }
+        ],
+        "imagenes": ["../img/lerida_1.jpg", "../img/lerida_2.jpg"]
+    }

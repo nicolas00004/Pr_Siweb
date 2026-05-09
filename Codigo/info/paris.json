@@ -1,0 +1,53 @@
+{
+    "id": "paris",
+    "nombre": "París",
+    "pais": "Francia",
+    "etiquetas": {
+        "historia": "🗼 Ciudad de la Luz",
+        "transporte": "🚇 Metro y RER",
+        "alojamiento": "🏠 Arrondissements y Estudios"
+    },
+    "historia": "Capital de Francia y epicentro mundial del arte, la moda y la gastronomía. Con más de dos milenios de historia, París alberga algunas de las instituciones educativas más antiguas y prestigiosas del mundo, como la Sorbona. Es una ciudad que combina la grandiosidad de sus bulevares haussmannianos con la vida bohemia de sus barrios periféricos.",
+    "alojamiento": "Es uno de los mercados más difíciles y caros de Europa. Una habitación en piso compartido difícilmente baja de los 700€-900€. Muchos estudiantes optan por vivir en la 'Petite Couronne' (ciudades colindantes como Montreuil o Pantin) para reducir costes, aprovechando la excelente conexión de metro.",
+    "barrios": "Le Marais es el centro histórico y trendy. El Barrio Latino (Quartier Latin) es el corazón universitario tradicional. Montmartre ofrece un ambiente artístico único, mientras que el Canal Saint-Martin es el punto de encuentro favorito de los jóvenes parisinos los fines de semana.",
+    "universidades": [
+        {
+            "nombre": "Sorbonne Université",
+            "descripcion": "Famosa mundialmente por sus facultades de letras y ciencias, situada en el corazón del Barrio Latino."
+        },
+        {
+            "nombre": "Sciences Po",
+            "descripcion": "Instituto de estudios políticos de élite, referente internacional en ciencias sociales y relaciones internacionales."
+        },
+        {
+            "nombre": "Université Paris Cité",
+            "descripcion": "Gran centro de salud y ciencias, con instalaciones repartidas por toda la ciudad y un enfoque muy investigador."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Torre Eiffel y Campo de Marte",
+            "categoria": "cultura",
+            "descripcion": "El símbolo indiscutible de Francia, ideal para picnics estudiantiles al atardecer."
+        },
+        {
+            "nombre": "Museo del Louvre",
+            "categoria": "cultura",
+            "descripcion": "El museo de arte más visitado del mundo, con una colección que abarca desde la antigüedad hasta el impresionismo."
+        },
+        {
+            "nombre": "Barrio de Belleville",
+            "categoria": "ocio",
+            "descripcion": "Zona multicultural con arte callejero, bares económicos y una de las mejores vistas de la ciudad desde su parque."
+        },
+        {
+            "nombre": "Le Rex / Garage",
+            "categoria": "ocioNocturno",
+            "descripcion": "Templos de la música electrónica y el ambiente nocturno en una ciudad que nunca duerme."
+        }
+    ],
+    "imagenes": [
+        "../img/paris_1.jpg",
+        "../img/paris_2.jpg"
+    ]
+}

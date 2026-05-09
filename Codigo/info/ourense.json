@@ -1,0 +1,31 @@
+{
+        "id": "ourense",
+        "nombre": "Ourense",
+        "etiquetas": {
+            "historia": "♨️ Termas y Puentes",
+            "transporte": "🚶 Ciudad Peatonal",
+            "alojamiento": "🏠 Ciudad del Miño"
+        },
+        "historia": "Conocida como la ciudad del agua. Sus fuentes termales (As Burgas) eran ya famosas en la época romana. El Puente Romano es su gran icono.",
+        "alojamiento": "Muy barato, unos 200-250€ por habitación. El barrio de 'As Lagoas' es el más solicitado por estar junto al campus.",
+        "barrios": "As Lagoas es universitario. El Casco Vello es la zona de pinchos (Os Viños). O Vinteún es una zona residencial más alejada pero económica.",
+        "universidades": [
+            {
+                "nombre": "Universidade de Vigo - Campus de Ourense",
+                "descripcion": "Conocido por el 'Campus del Agua' y sus grados en informática y turismo."
+            }
+        ],
+        "sitios": [
+            {
+                "nombre": "Termas de Outariz",
+                "categoria": "ocio",
+                "descripcion": "Pozas termales al aire libre junto al río Miño."
+            },
+            {
+                "nombre": "Catedral de San Martiño",
+                "categoria": "cultura",
+                "descripcion": "Catedral románica con el impresionante Pórtico del Paraíso."
+            }
+        ],
+        "imagenes": ["../img/ourense_1.jpg", "../img/ourense_2.jpg"]
+    }

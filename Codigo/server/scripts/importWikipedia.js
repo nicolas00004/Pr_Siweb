@@ -5,7 +5,7 @@
 const mongoose = require('mongoose');
 const axios = require('axios');
 
-mongoose.connect('mongodb://localhost:27017/bdd')
+mongoose.connect('mongodb://localhost:27017/infuni')
     .then(() => console.log('✅ Conectado a MongoDB'))
     .catch(err => { console.error(err); process.exit(1); });
 

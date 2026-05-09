@@ -1,0 +1,53 @@
+{
+    "id": "shanghai",
+    "nombre": "Shanghái",
+    "pais": "China",
+    "etiquetas": {
+        "historia": "🏙️ El Futuro de Asia",
+        "transporte": "🚄 Maglev y Metro",
+        "alojamiento": "🏠 Lilongs y Rascacielos"
+    },
+    "historia": "Shanghái pasó de ser un pequeño pueblo pesquero a convertirse en el puerto más grande del mundo y el centro financiero de China. Es una ciudad de contrastes: desde el Bund con su arquitectura europea de los años 30 hasta Lujiazui, el distrito financiero con rascacielos que parecen sacados de una película de ciencia ficción. Su universidad principal, Fudan, es una de las más prestigiosas del sistema C9 (la Ivy League china).",
+    "alojamiento": "El mercado es caro para los estándares chinos pero razonable para estudiantes internacionales. Una habitación en un piso compartido (coliving) en zonas céntricas ronda los 500€ - 800€. La Concesión Francesa es la zona más deseada por su ambiente bohemio, mientras que Yangpu es ideal para estar cerca de las universidades principales.",
+    "barrios": "The Bund es la zona histórica junto al río. Jing'an es el centro moderno lleno de centros comerciales y templos. La Concesión Francesa es famosa por sus calles arboladas y cafés. Pudong es el lado futurista al este del río Huangpu.",
+    "universidades": [
+        {
+            "nombre": "Fudan University",
+            "descripcion": "Una de las instituciones más selectivas y prestigiosas de China, con un campus cosmopolita y mucha vida internacional."
+        },
+        {
+            "nombre": "Shanghai Jiao Tong University (SJTU)",
+            "descripcion": "Famosa mundialmente por su excelencia en ingeniería y ciencias, situada en el corazón tecnológico de la ciudad."
+        },
+        {
+            "nombre": "Tongji University",
+            "descripcion": "Reconocida internacionalmente por sus programas de arquitectura, diseño e ingeniería civil."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "The Bund",
+            "categoria": "cultura",
+            "descripcion": "Paseo marítimo icónico que ofrece la mejor vista del skyline de Pudong, especialmente espectacular de noche."
+        },
+        {
+            "nombre": "Jardín Yuyuan",
+            "categoria": "cultura",
+            "descripcion": "Un jardín clásico chino del siglo XVI en el corazón de la Ciudad Vieja, un oasis de paz entre rascacielos."
+        },
+        {
+            "nombre": "Shanghai Tower",
+            "categoria": "ocio",
+            "descripcion": "El segundo rascacielos más alto del mundo; su mirador ofrece una perspectiva irreal de la inmensidad de la ciudad."
+        },
+        {
+            "nombre": "Found 158",
+            "categoria": "ocioNocturno",
+            "descripcion": "Un patio subterráneo gigante lleno de bares y restaurantes internacionales que es el epicentro de la fiesta expatriada."
+        }
+    ],
+    "imagenes": [
+        "../img/shanghai_1.jpg",
+        "../img/shanghai_2.jpg"
+    ]
+}

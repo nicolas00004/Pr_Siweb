@@ -1,0 +1,53 @@
+{
+    "id": "vigo",
+    "nombre": "Vigo",
+    "pais": "España",
+    "etiquetas": {
+        "historia": "⚓ Mar y Sector Naval",
+        "transporte": "🚌 Conexión Campus",
+        "alojamiento": "🏠 Vivienda y Colinas"
+    },
+    "historia": "Vigo es la ciudad más grande de Galicia, con una historia ligada estrechamente a su puerto y a la industria pesquera y naval. Su universidad, aunque joven (fundada en 1990), ha destacado rápidamente en investigación tecnológica y marina, siendo un referente en el noroeste peninsular.",
+    "alojamiento": "El precio es moderado. Una habitación en piso compartido suele rondar los 280€-320€. Las zonas favoritas para estudiantes son Casco Vello (histórico), Torrecedeira (cerca de Peritos) y la zona de Plaza América por su conexión directa con el campus principal.",
+    "barrios": "Torrecedeira es el barrio universitario por excelencia del centro. El Casco Vello es ideal para salir de tapas y copas pero es más difícil aparcar. Coia es una zona residencial más tranquila y verde, muy bien conectada por bus.",
+    "universidades": [
+        {
+            "nombre": "CUVI - Campus Universitario de Vigo",
+            "descripcion": "Situado en las afueras (Lagoas-Marcosende), es un complejo moderno rodeado de naturaleza que alberga la mayoría de ingenierías y facultades."
+        },
+        {
+            "nombre": "Escuela de Ingeniería Industrial (Sede Ciudad)",
+            "descripcion": "Ubicada en la calle Torrecedeira, en pleno núcleo urbano y rodeada de ambiente estudiantil."
+        },
+        {
+            "nombre": "Facultad de Ciencias del Mar",
+            "descripcion": "Referente internacional por su ubicación estratégica junto a la Ría de Vigo."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Islas Cíes",
+            "categoria": "cultura",
+            "descripcion": "Paraíso natural con una de las mejores playas del mundo (Rodas), accesible en barco."
+        },
+        {
+            "nombre": "Monte del Castro",
+            "categoria": "cultura",
+            "descripcion": "Parque en el centro de la ciudad con restos arqueológicos y las mejores vistas de la ría."
+        },
+        {
+            "nombre": "O Berbés / Casco Vello",
+            "categoria": "ocio",
+            "descripcion": "Zona histórica famosa por sus ostras, bares de raciones y ambiente nocturno alternativo."
+        },
+        {
+            "nombre": "Churruca",
+            "categoria": "ocioNocturno",
+            "descripcion": "Zona de marcha mítica por excelencia para estudiantes y amantes del rock e indie."
+        }
+    ],
+    "imagenes": [
+        "../img/vigo_1.jpg",
+        "../img/vigo_2.jpg"
+    ]
+}

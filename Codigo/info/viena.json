@@ -1,0 +1,53 @@
+{
+    "id": "viena",
+    "nombre": "Viena",
+    "pais": "Austria",
+    "etiquetas": {
+        "historia": "🎻 Capital de la Música",
+        "transporte": "🚇 Eficiencia Total",
+        "alojamiento": "🏠 Residencias de Diseño"
+    },
+    "historia": "Antigua sede del Imperio Austro-Húngaro, Viena es una mezcla espectacular de herencia imperial y modernidad. Es la ciudad de Mozart, Beethoven y Freud. Su universidad, fundada en 1365, es una de las más grandes y antiguas de Europa. Pasear por sus calles es como caminar por un museo de arquitectura que va desde el Barroco hasta el Modernismo de la Secesión.",
+    "alojamiento": "El alquiler es caro pero de altísima calidad. Una habitación en piso compartido (WG) está entre 450€ y 600€. Las residencias de estudiantes (Studentenheime) son muy populares y modernas. Leopoldstadt (Distrito 2) es muy buscado por su cercanía al Prater y a la WU, mientras que Josefstadt (Distrito 8) es el barrio estudiantil clásico por excelencia.",
+    "barrios": "Innere Stadt es el centro histórico monumental. Neubau (Distrito 7) es el barrio creativo, lleno de tiendas vintage y cafés modernos. Ottakring es una zona más multicultural y económica, famosa por su cervecería y ambiente urbano.",
+    "universidades": [
+        {
+            "nombre": "Universität Wien (UniWien)",
+            "descripcion": "La universidad principal, con un edificio central histórico en la Ringstraße que parece un palacio."
+        },
+        {
+            "nombre": "WU (Wirtschaftsuniversität Wien)",
+            "descripcion": "La universidad de economía más moderna de Europa, con un campus diseñado por Zaha Hadid que es una joya arquitectónica."
+        },
+        {
+            "nombre": "TU Wien (Technische Universität)",
+            "descripcion": "Situada en pleno centro, junto a la Karlsplatz, es el motor tecnológico de Austria."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Palacio de Schönbrunn",
+            "categoria": "cultura",
+            "descripcion": "La antigua residencia de verano de los Habsburgo, con jardines inmensos ideales para correr o pasear."
+        },
+        {
+            "nombre": "Stephansdom (Catedral de San Esteban)",
+            "categoria": "cultura",
+            "descripcion": "El corazón geográfico de Viena, con su tejado de azulejos de colores y su imponente torre gótica."
+        },
+        {
+            "nombre": "Museumsquartier (MQ)",
+            "categoria": "ocio",
+            "descripcion": "Un enorme complejo de museos con patios interiores llenos de tumbonas donde los estudiantes se relajan en verano."
+        },
+        {
+            "nombre": "Prater y Donaukanal",
+            "categoria": "ocio",
+            "descripcion": "El parque de atracciones histórico y el canal del Danubio, lleno de arte urbano y bares de playa en verano."
+        }
+    ],
+    "imagenes": [
+        "../img/viena_1.jpg",
+        "../img/viena_2.jpg"
+    ]
+}

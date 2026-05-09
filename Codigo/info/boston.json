@@ -1,0 +1,53 @@
+{
+    "id": "boston",
+    "nombre": "Boston",
+    "pais": "Estados Unidos",
+    "etiquetas": {
+        "historia": "🎓 Capital Académica Mundial",
+        "transporte": "🚇 The 'T' (Metro)",
+        "alojamiento": "🏠 Brownstones y Dorms"
+    },
+    "historia": "Fundada en 1630, Boston es una de las ciudades más antiguas y con mayor carga histórica de EE. UU. Fue el escenario del Boston Tea Party y el inicio de la Revolución Americana. Hoy es el centro neurálgico de la educación superior y la biotecnología, albergando en su área metropolitana más de 50 universidades y colegios mayores.",
+    "alojamiento": "El mercado es extremadamente caro y complejo. Una habitación en un piso compartido (apartment share) difícilmente baja de los 1.100$ - 1.500$ (1.000€-1.400€). Muchos estudiantes viven en Allston o Brighton (más baratos y con ambiente joven) o en los dormitorios de la propia universidad si consiguen beca.",
+    "barrios": "Back Bay es la zona de lujo con casas victorianas. North End es el barrio italiano, famoso por su comida. Allston es apodado 'Allston Rock City' por su gran población estudiantil y su escena musical. Cambridge, al otro lado del río, es donde están Harvard y el MIT.",
+    "universidades": [
+        {
+            "nombre": "Harvard University",
+            "descripcion": "La universidad más antigua de EE. UU. y un icono global de excelencia, situada justo al cruzar el río en Cambridge."
+        },
+        {
+            "nombre": "MIT (Massachusetts Institute of Technology)",
+            "descripcion": "Líder mundial en ciencia, ingeniería y tecnología, donde el futuro se diseña cada día."
+        },
+        {
+            "nombre": "Boston University (BU)",
+            "descripcion": "Una enorme universidad urbana que se extiende a lo largo de Commonwealth Avenue, con una vida estudiantil vibrante."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Freedom Trail",
+            "categoria": "cultura",
+            "descripcion": "Un camino de 4 km marcado en ladrillo rojo que pasa por los 16 puntos históricos más importantes de la ciudad."
+        },
+        {
+            "nombre": "Fenway Park",
+            "categoria": "ocio",
+            "descripcion": "El estadio de béisbol más antiguo de EE. UU., hogar de los Red Sox y un lugar de culto para el deporte americano."
+        },
+        {
+            "nombre": "Charles River Esplanade",
+            "categoria": "ocio",
+            "descripcion": "Parque a la orilla del río ideal para correr, navegar o simplemente ver el atardecer con vistas al skyline."
+        },
+        {
+            "nombre": "Quincy Market / Faneuil Hall",
+            "categoria": "ocio",
+            "descripcion": "Mercado histórico lleno de puestos de comida donde probar el famoso 'Clam Chowder' (crema de almejas)."
+        }
+    ],
+    "imagenes": [
+        "../img/boston_1.jpg",
+        "../img/boston_2.jpg"
+    ]
+}

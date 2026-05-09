@@ -1,0 +1,53 @@
+{
+    "id": "san-petersburgo",
+    "nombre": "San Petersburgo",
+    "pais": "Rusia",
+    "etiquetas": {
+        "historia": "👑 Capital Imperial",
+        "transporte": "🚇 Metro Profundo",
+        "alojamiento": "🏠 Komunalkas e Historia"
+    },
+    "historia": "Fundada por el zar Pedro el Grande en 1703 como una 'ventana a Europa', la ciudad fue la capital del Imperio Ruso durante dos siglos. Es conocida como la 'Venecia del Norte' por sus numerosos ríos y canales. Su centro histórico es Patrimonio de la Humanidad y alberga el Hermitage, uno de los museos más grandes y antiguos del mundo.",
+    "alojamiento": "Los precios son moderados para una gran metrópolis. Una habitación en piso compartido ronda los 250€-400€. Muchos estudiantes viven en 'obshchizhitie' (residencias universitarias), que son muy baratas pero básicas. La zona de Vasileostrovsky es ideal por su ambiente universitario, mientras que el distrito Tsentralny es el corazón de la acción.",
+    "barrios": "Vasileostrovsky es el núcleo académico. Petrogradskaya es una zona elegante con arquitectura Art Nouveau y muchos cafés. El distrito Central (Tsentralny) es donde están los monumentos y la fiesta. Kolomna es un barrio más tranquilo, romántico y bohemio.",
+    "universidades": [
+        {
+            "nombre": "Universidad Estatal de San Petersburgo (SPbU)",
+            "descripcion": "La universidad más antigua de Rusia, con una reputación académica altísima y edificios históricos en la isla Vasilievsky."
+        },
+        {
+            "nombre": "ITMO University",
+            "descripcion": "Líder mundial en programación, robótica y tecnologías de la información; famosa por ganar múltiples veces el mundial de programación."
+        },
+        {
+            "nombre": "Politécnica de San Petersburgo (SPbPU)",
+            "descripcion": "Un campus inmenso especializado en ingeniería y ciencias aplicadas con fuertes vínculos internacionales."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Museo del Hermitage",
+            "categoria": "cultura",
+            "descripcion": "Situado en el Palacio de Invierno, contiene millones de obras de arte y es el símbolo máximo de la ciudad."
+        },
+        {
+            "nombre": "Iglesia del Salvador sobre la Sangre Derramada",
+            "categoria": "cultura",
+            "descripcion": "Famosa por sus cúpulas de colores y mosaicos detallados, construida en el lugar donde fue asesinado el zar Alejandro II."
+        },
+        {
+            "nombre": "Nevsky Prospekt",
+            "categoria": "ocio",
+            "descripcion": "La avenida principal de la ciudad, llena de tiendas, cines, puentes y la vida social más activa."
+        },
+        {
+            "nombre": "Puentes Levadizos",
+            "categoria": "ocio",
+            "descripcion": "Durante las noches de verano, los puentes sobre el Neva se abren para dejar pasar barcos, un espectáculo que reúne a miles de personas."
+        }
+    ],
+    "imagenes": [
+        "../img/spb_1.jpg",
+        "../img/spb_2.jpg"
+    ]
+}

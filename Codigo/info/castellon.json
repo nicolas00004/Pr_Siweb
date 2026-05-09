@@ -1,0 +1,31 @@
+{
+        "id": "castellon",
+        "nombre": "Castellón de la Plana",
+        "etiquetas": {
+            "historia": "🍊 Azahar y Mar",
+            "transporte": "🚊 TRAM Castelló",
+            "alojamiento": "🏠 Ciudad Práctica"
+        },
+        "historia": "Fundada tras el traslado desde el cerro de la Magdalena en el siglo XIII. Es una ciudad abierta, de tradición agrícola y cerámica.",
+        "alojamiento": "Muy equilibrado, unos 230-280€. Muchos estudiantes prefieren vivir cerca de la UJI o en el centro y usar el TRAM.",
+        "barrios": "La zona UJI es prácticamente una ciudad universitaria. El Grao (puerto) está a unos km y es ideal para el verano.",
+        "universidades": [
+            {
+                "nombre": "Universitat Jaume I (UJI)",
+                "descripcion": "Campus único integrado y muy cómodo, referente en sostenibilidad."
+            }
+        ],
+        "sitios": [
+            {
+                "nombre": "El Fadrí",
+                "categoria": "cultura",
+                "descripcion": "Torre campanario exenta, símbolo de la identidad castellonense."
+            },
+            {
+                "nombre": "Parque Ribalta",
+                "categoria": "ocio",
+                "descripcion": "Histórico parque romántico en el centro de la ciudad."
+            }
+        ],
+        "imagenes": ["../img/castellon_1.jpg", "../img/castellon_2.jpg"]
+    }

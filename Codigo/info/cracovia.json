@@ -1,0 +1,53 @@
+{
+    "id": "cracovia",
+    "nombre": "Cracovia",
+    "pais": "Polonia",
+    "etiquetas": {
+        "historia": "🏰 Antigua Capital Real",
+        "transporte": "🚃 Tranvías Eficientes",
+        "alojamiento": "🏠 Kazimierz y Precios Bajos"
+    },
+    "historia": "Cracovia fue la capital de Polonia hasta 1596 y es una de las pocas ciudades del país que sobrevivió intacta a la II Guerra Mundial. Su centro histórico es Patrimonio de la Humanidad. La Universidad Jaguelónica, fundada en 1364, es una de las más antiguas y prestigiosas de Europa Central, donde estudió el mismísimo Copérnico.",
+    "alojamiento": "Es un paraíso para el bolsillo del estudiante. Una habitación en un piso compartido de calidad suele costar entre 250€ y 350€ (aunque los precios han subido algo recientemente). Las residencias públicas son extremadamente baratas. Kazimierz y Stare Miasto son las zonas con más alma, aunque algo más caras por el turismo.",
+    "barrios": "Stare Miasto es el centro medieval rodeado por el parque Planty. Kazimierz es el antiguo barrio judío, hoy lleno de bares alternativos, galerías de arte y mercadillos. Podgórze es la zona emergente al otro lado del río Vístula, más tranquila y moderna.",
+    "universidades": [
+        {
+            "nombre": "Universidad Jaguelónica (Uniwersytet Jagielloński)",
+            "descripcion": "La universidad más antigua de Polonia, famosa por su Collegium Maius y su excelencia en leyes y humanidades."
+        },
+        {
+            "nombre": "AGH University of Science and Technology",
+            "descripcion": "Una de las mejores universidades técnicas de Europa, con un campus enorme (Miasteczko Studenckie) que es una ciudad dentro de la ciudad."
+        },
+        {
+            "nombre": "Universidad de Economía de Cracovia (UEK)",
+            "descripcion": "Situada cerca de la estación central, es el núcleo de los estudios de negocios y una de las favoritas de los estudiantes internacionales."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Castillo de Wawel",
+            "categoria": "cultura",
+            "descripcion": "Residencia histórica de los reyes de Polonia, situada sobre una colina con vistas al río Vístula."
+        },
+        {
+            "nombre": "Rynek Główny (Plaza del Mercado)",
+            "categoria": "cultura",
+            "descripcion": "La plaza medieval más grande de Europa, corazón social de la ciudad con la Lonja de los Paños en el centro."
+        },
+        {
+            "nombre": "Kazimierz (Barrio Judío)",
+            "categoria": "ocio",
+            "descripcion": "El epicentro de la vida nocturna alternativa; imprescindible comer un 'Zapiekanka' en Plac Nowy a las 3 de la mañana."
+        },
+        {
+            "nombre": "Bunkier Club / Teatro Cubano",
+            "categoria": "ocioNocturno",
+            "descripcion": "Discotecas emblemáticas donde la fiesta universitaria no tiene fin cualquier día de la semana."
+        }
+    ],
+    "imagenes": [
+        "../img/cracovia_1.jpg",
+        "../img/cracovia_2.jpg"
+    ]
+}

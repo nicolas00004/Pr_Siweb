@@ -5,7 +5,7 @@
 
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/bdd')
+mongoose.connect('mongodb://localhost:27017/infuni')
     .then(() => console.log('✅ Conectado a MongoDB'))
     .catch(err => { console.error(err); process.exit(1); });
 

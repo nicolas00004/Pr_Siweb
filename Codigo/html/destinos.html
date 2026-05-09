@@ -19,9 +19,7 @@
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="busqueda.html">Buscar</a></li>
                 <li><a href="destinos.html" class="active">Destinos</a></li>
-                <li>
-                    <a href="herramientas.html">Comparador</a>
-                </li>
+                <li><a href="herramientas.html">Comparador</a></li>
                 <li>
                     <a href="comunidad.html">Comunidad ▾</a>
                     <ul>
@@ -29,37 +27,43 @@
                         <li><a href="busqueda.html#comunidad">Añadir ciudad</a></li>
                     </ul>
                 </li>
-                <li>
-                    <a href="ayuda-ahp.html" title="Ayuda sobre el método AHP">Ayuda </a>
-                </li>
-                <li>
-                    <a href="login.html" class="btn-login" id="btnSesion">Inicia Sesión 👤</a>
-                </li>
+                <li><a href="ayuda-ahp.html" title="Ayuda sobre el método AHP">Ayuda </a></li>
+                <li><a href="login.html" class="btn-login" id="btnSesion">Inicia Sesión 👤</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
         <section id="comparador">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; flex-wrap: wrap; gap: 20px;">
                 <div>
-                    <h2 style="margin: 0;">🌍 Explorar Todos los Destinos</h2>
-                    <p style="color: var(--text-muted);">Encuentra información detallada sobre cada ciudad universitaria.</p>
+                    <h2 style="margin: 0; font-size: 1.8rem; font-weight: 800;">🌍 Explorar Todos los Destinos</h2>
+                    <p style="color: var(--text-muted); margin-top: 5px;">Encuentra información detallada sobre cada ciudad universitaria.</p>
                 </div>
-                <div class="filtros" style="margin: 0;">
-                    <label>Filtrar por Ambiente:
-                        <select id="selectAmbiente" style="padding: 8px; border-radius: 10px; border: 1.5px solid #cbd5e1;">
+                
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <div class="filtros-container" style="background: white; padding: 10px 20px; border-radius: 15px; border: 1.5px solid #e2e8f0; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-sm);">
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Ambiente:</label>
+                        <select id="selectAmbiente" style="border: none; outline: none; font-weight: 700; color: var(--accent-color); cursor: pointer; background: transparent; font-size: 0.9rem;">
                             <option value="todos">Todos</option>
-                            <option value="tranquilo">Tranquilo</option>
-                            <option value="fiesta">Fiesta</option>
+                            <option value="tranquilo">🧘 Tranquilo</option>
+                            <option value="fiesta">🎉 Fiesta</option>
                         </select>
-                    </label>
+                    </div>
+
+                    <div class="filtros-container" style="background: white; padding: 10px 20px; border-radius: 15px; border: 1.5px solid #e2e8f0; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-sm);">
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Ordenar:</label>
+                        <select id="selectOrden" style="border: none; outline: none; font-weight: 700; color: var(--accent-color); cursor: pointer; background: transparent; font-size: 0.9rem;">
+                            <option value="relevancia">Relevancia</option>
+                            <option value="barato">💰 Más barato</option>
+                            <option value="caro">💎 Más caro</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
             <div class="grid-ciudades" id="contenedorCiudades">
-                <!-- Se cargará mediante JS -->
-                <p style="text-align: center; padding: 50px;">Cargando destinos...</p>
+                <p style="text-align: center; padding: 50px; grid-column: 1/-1;">Cargando destinos...</p>
             </div>
         </section>
     </main>
@@ -105,23 +109,56 @@
                 renderizarCiudades(ciudades);
             } catch (err) {
                 console.error("Error:", err);
+                document.getElementById('contenedorCiudades').innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Error al conectar con el servidor.</p>';
             }
+        }
+
+        // Lógica para filtrar y ordenar simultáneamente
+        function aplicarFiltrosYOrden() {
+            const ambiente = document.getElementById('selectAmbiente').value;
+            const orden = document.getElementById('selectOrden').value;
+
+            // 1. Filtrar
+            let resultado = ambiente === 'todos' 
+                ? [...ciudades] 
+                : ciudades.filter(c => c.tipoAmbiente === ambiente);
+
+            // 2. Ordenar
+            if (orden === 'barato') {
+                resultado.sort((a, b) => (a.presupuesto || 0) - (b.presupuesto || 0));
+            } else if (orden === 'caro') {
+                resultado.sort((a, b) => (b.presupuesto || 0) - (a.presupuesto || 0));
+            }
+
+            renderizarCiudades(resultado);
         }
 
         function renderizarCiudades(lista) {
             const container = document.getElementById('contenedorCiudades');
+            
+            if (!lista || lista.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 50px; color: var(--text-muted);">No se encontraron destinos que coincidan.</p>';
+                return;
+            }
+
             container.innerHTML = lista.map(c => {
                 const imgUrl = (c.imagenes && c.imagenes.length > 0) ? c.imagenes[0] : (c.imagen || `https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=800&q=80`);
-                const historiaTexto = c.historia ? c.historia.substring(0, 80) + '...' : 'Sin descripción disponible...';
+                const historiaTexto = c.historia ? c.historia.substring(0, 95) + '...' : 'Explora la cultura y oportunidades de esta ciudad universitaria...';
+                
                 return `
-                <div class="card" onclick="window.location.href='detalle.html?id=${c._id}'">
-                    <div class="card-img" style="background-image: url('${imgUrl}')"></div>
-                    <div class="card-body">
+                <div class="destinos-card" onclick="window.location.href='detalle.html?id=${c._id}'">
+                    <div class="destinos-card-img" style="background-image: url('${imgUrl}')">
+                        <div class="card-badge">${c.tipoAmbiente || 'Estudiante'}</div>
+                    </div>
+                    <div class="destinos-card-body">
                         <h3>${c.nombre}</h3>
                         <p>${historiaTexto}</p>
-                        <div class="card-footer">
-                            <span class="precio">${c.presupuesto || 700}€/mes</span>
-                            <button class="btn-ver">Ver Detalles</button>
+                        <div class="destinos-card-footer">
+                            <div class="precio-tag">
+                                <small>Presupuesto</small>
+                                <span>${c.presupuesto || 700}€<small>/mes</small></span>
+                            </div>
+                            <button class="btn-ver-new">Ver detalles →</button>
                         </div>
                     </div>
                 </div>
@@ -129,11 +166,9 @@
             }).join('');
         }
 
-        document.getElementById('selectAmbiente').addEventListener('change', (e) => {
-            const val = e.target.value;
-            const filtradas = val === 'todos' ? ciudades : ciudades.filter(c => c.tipoAmbiente === val);
-            renderizarCiudades(filtradas);
-        });
+        // Listeners
+        document.getElementById('selectAmbiente').addEventListener('change', aplicarFiltrosYOrden);
+        document.getElementById('selectOrden').addEventListener('change', aplicarFiltrosYOrden);
 
         cargarCiudades();
     </script>

@@ -1,0 +1,31 @@
+{
+        "id": "teruel",
+        "nombre": "Teruel",
+        "etiquetas": {
+            "historia": "🧡 Mudéjar y Amantes",
+            "transporte": "🚶 Todo a pie",
+            "alojamiento": "🏠 Pequeña y Barata"
+        },
+        "historia": "La capital del Mudéjar aragonés. Famosa por la leyenda de los Amantes de Teruel y por ser una ciudad tranquila pero con mucha personalidad.",
+        "alojamiento": "Precios muy bajos, alrededor de 180-220€. La mayoría de estudiantes viven en el centro o cerca de la Carretera de Alcañiz.",
+        "barrios": "El Centro Histórico concentra la mayoría de los servicios. El Ensanche es la zona de expansión con edificios más modernos.",
+        "universidades": [
+            {
+                "nombre": "Universidad de Zaragoza - Campus de Teruel",
+                "descripcion": "Campus acogedor con facultades de Bellas Artes, Psicología y Magisterio."
+            }
+        ],
+        "sitios": [
+            {
+                "nombre": "Mausoleo de los Amantes",
+                "categoria": "cultura",
+                "descripcion": "Lugar de descanso de Isabel de Segura y Diego de Marcilla."
+            },
+            {
+                "nombre": "Escalinata del Óvalo",
+                "categoria": "cultura",
+                "descripcion": "Obra neomudéjar que une la estación con el casco antiguo."
+            }
+        ],
+        "imagenes": ["../img/teruel_1.jpg", "../img/teruel_2.jpg"]
+    }

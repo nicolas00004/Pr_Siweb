@@ -1,0 +1,35 @@
+{
+        "id": "segovia",
+        "nombre": "Segovia",
+        "etiquetas": {
+            "historia": "🏰 Acueducto y Alcázar",
+            "transporte": "🚌 Líneas Urbanas",
+            "alojamiento": "🏠 Casco Antiguo"
+        },
+        "historia": "Ciudad Patrimonio de la Humanidad. Su acueducto romano es una de las obras de ingeniería más famosas del mundo. Fue corte de los Reyes Católicos.",
+        "alojamiento": "Precio medio de 280-350€. La llegada de la universidad privada IE ha subido algo los precios en el centro y barrio de San Lorenzo.",
+        "barrios": "La Judería y el centro son preciosos pero caros. San José y El Carmen son opciones más económicas y populares.",
+        "universidades": [
+            {
+                "nombre": "UVa - Campus María Zambrano",
+                "descripcion": "Edificio moderno con mucha luz dedicado a Ciencias Sociales y Comunicación."
+            },
+            {
+                "nombre": "IE University",
+                "descripcion": "Ubicada en el antiguo Convento de Santa Cruz la Real, con ambiente internacional."
+            }
+        ],
+        "sitios": [
+            {
+                "nombre": "El Alcázar",
+                "categoria": "cultura",
+                "descripcion": "Castillo de cuento de hadas que inspiró a Disney."
+            },
+            {
+                "nombre": "La Fuencisla",
+                "categoria": "ocio",
+                "descripcion": "Pradera bajo el Alcázar ideal para picnics y paseos."
+            }
+        ],
+        "imagenes": ["../img/segovia_1.jpg", "../img/segovia_2.jpg"]
+    }

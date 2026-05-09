@@ -1,0 +1,53 @@
+{
+    "id": "oporto",
+    "nombre": "Oporto",
+    "pais": "Portugal",
+    "etiquetas": {
+        "historia": "🍷 Ribera y Tradición",
+        "transporte": "🚃 Metro y Puentes",
+        "alojamiento": "🏠 Azulejos y Colinas"
+    },
+    "historia": "La 'Cidade Invicta' es famosa por su vino, sus puentes sobre el Duero y su casco histórico Patrimonio de la Humanidad. La Universidad de Oporto es la más grande de Portugal y una de las más prestigiosas en ingeniería y arquitectura (la famosa Escuela de Oporto). Es una ciudad con una luz única y una melancolía que atrapa a cualquier estudiante Erasmus.",
+    "alojamiento": "Los precios han subido, pero sigue habiendo opciones razonables. Una habitación en piso compartido suele rondar los 350€-450€. La zona de Cedofeita es la favorita de los estudiantes por su ambiente artístico, mientras que Paranhos es ideal para estar al lado del polo universitario principal.",
+    "barrios": "Ribeira es preciosa para pasear pero demasiado turística para vivir. Cedofeita es el barrio 'cool' y céntrico. Paranhos es el núcleo universitario puro. Bonfim es la zona emergente, más auténtica y con alquileres algo más bajos.",
+    "universidades": [
+        {
+            "nombre": "Universidade do Porto (U.Porto)",
+            "descripcion": "La mayor universidad del país, dividida en tres 'polos' urbanos, destacando especialmente en ingeniería (FEUP) y ciencias."
+        },
+        {
+            "nombre": "Politécnico do Porto (P.Porto)",
+            "descripcion": "Enfocado en formación técnica y artística, con una vida estudiantil muy dinámica."
+        },
+        {
+            "nombre": "Faculdade de Arquitetura (FAUP)",
+            "descripcion": "Referente mundial, diseñada por Álvaro Siza, situada sobre el río Duero."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Livraria Lello",
+            "categoria": "cultura",
+            "descripcion": "Una de las librerías más bellas del mundo, con su famosa escalera de madera que inspiró a muchos escritores."
+        },
+        {
+            "nombre": "Jardins do Palácio de Cristal",
+            "categoria": "cultura",
+            "descripcion": "El mejor sitio de la ciudad para estudiar al aire libre con vistas increíbles a la desembocadura del Duero."
+        },
+        {
+            "nombre": "Adega Leonor / Piolho",
+            "categoria": "ocio",
+            "descripcion": "Los puntos de encuentro legendarios para tomar una Super Bock barata antes de salir de fiesta."
+        },
+        {
+            "nombre": "Galerias de Paris",
+            "categoria": "ocioNocturno",
+            "descripcion": "Tres calles paralelas llenas de bares y discotecas que son el epicentro de la noche portuense."
+        }
+    ],
+    "imagenes": [
+        "../img/oporto_1.jpg",
+        "../img/oporto_2.jpg"
+    ]
+}

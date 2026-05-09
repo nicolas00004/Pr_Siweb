@@ -1,0 +1,31 @@
+{
+        "id": "huesca",
+        "nombre": "Huesca",
+        "etiquetas": {
+            "historia": "⛰️ Puerta del Pirineo",
+            "transporte": "🚲 Ciudad Compacta",
+            "alojamiento": "🏠 Tranquilidad"
+        },
+        "historia": "Ciudad con más de 2000 años de historia (la antigua Osca romana). Fue capital del Reino de Aragón y hoy es el centro neurálgico del prepirineo.",
+        "alojamiento": "Muy asequible y cómoda. Habitaciones por unos 250€. El centro y la zona de los Olivos son muy demandadas por su cercanía a todo.",
+        "barrios": "San Lorenzo es el corazón de la fiesta en agosto. El Casco Viejo es peatonal y acogedor. El barrio de Santo Domingo es ideal para vivir cerca del campus.",
+        "universidades": [
+            {
+                "nombre": "Universidad de Zaragoza - Campus de Huesca",
+                "descripcion": "Especializado en Ciencias de la Salud, Deporte y Agricultura."
+            }
+        ],
+        "sitios": [
+            {
+                "nombre": "Catedral de Huesca",
+                "categoria": "cultura",
+                "descripcion": "Templo gótico construido sobre una antigua mezquita."
+            },
+            {
+                "nombre": "Parque Miguel Servet",
+                "categoria": "ocio",
+                "descripcion": "El pulmón verde de la ciudad, perfecto para pasear."
+            }
+        ],
+        "imagenes": ["../img/huesca_1.jpg", "../img/huesca_2.jpg"]
+    }

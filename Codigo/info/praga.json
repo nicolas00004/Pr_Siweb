@@ -1,0 +1,53 @@
+{
+    "id": "praga",
+    "nombre": "Praga",
+    "pais": "República Checa",
+    "etiquetas": {
+        "historia": "🏰 La Ciudad de las Cien Torres",
+        "transporte": "🚇 Metro y Tranvía 24h",
+        "alojamiento": "🏠 Residencias y Vida de Barrio"
+    },
+    "historia": "Praga es el corazón mágico de Europa. Su centro histórico, que sobrevivió milagrosamente a los bombardeos de la II Guerra Mundial, es un laberinto de callejones medievales, puentes góticos y arquitectura barroca. La Universidad Carolina, fundada en 1348, es la más antigua de Europa Central y ha sido el hogar de mentes brillantes como Franz Kafka o Albert Einstein.",
+    "alojamiento": "El mercado de alquiler ha subido por el turismo, pero las residencias universitarias (Koleje) son de las más baratas de Europa (unos 150€-250€). En piso compartido, una habitación ronda los 400€-550€. Žižkov es el barrio estudiantil por excelencia, mientras que Vinohrady es la zona elegante preferida por los Erasmus con mayor presupuesto.",
+    "barrios": "Žižkov es el barrio con más densidad de bares por metro cuadrado. Vinohrady ofrece parques increíbles y cafeterías de especialidad. Holešovice es la zona industrial reconvertida en centros culturales y galerías de arte. Dejvice es ideal si estudias en la Universidad Técnica.",
+    "universidades": [
+        {
+            "nombre": "Univerzita Karlova (Universidad Carolina)",
+            "descripcion": "La institución más prestigiosa del país, con facultades históricas repartidas por todo el centro de la ciudad."
+        },
+        {
+            "nombre": "ČVUT (Universidad Técnica Checa)",
+            "descripcion": "Referente europeo en ingeniería, robótica y tecnología, situada en el moderno campus de Dejvice."
+        },
+        {
+            "nombre": "VŠE (Universidad de Economía de Praga)",
+            "descripcion": "Ubicada cerca de la estación central, es el epicentro de los negocios y muy activa en programas de intercambio."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Puente de Carlos",
+            "categoria": "cultura",
+            "descripcion": "Puente gótico flanqueado por estatuas negras que une la Ciudad Vieja con el Castillo; mágico al amanecer."
+        },
+        {
+            "nombre": "Castillo de Praga",
+            "categoria": "cultura",
+            "descripcion": "El castillo antiguo más grande del mundo, una ciudad dentro de la ciudad que domina el horizonte."
+        },
+        {
+            "nombre": "Parque Letná",
+            "categoria": "ocio",
+            "descripcion": "El 'Beer Garden' más famoso con las mejores vistas panorámicas de los puentes del río Moldava."
+        },
+        {
+            "nombre": "Karlovy Lázně",
+            "categoria": "ocioNocturno",
+            "descripcion": "La discoteca más grande de Europa Central, con 5 plantas de diferentes estilos musicales en un edificio del siglo XIV."
+        }
+    ],
+    "imagenes": [
+        "../img/praga_1.jpg",
+        "../img/praga_2.jpg"
+    ]
+}

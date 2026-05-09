@@ -1,0 +1,53 @@
+{
+    "id": "heidelberg",
+    "nombre": "Heidelberg",
+    "pais": "Alemania",
+    "etiquetas": {
+        "historia": "🏰 Romanticismo Alemán",
+        "transporte": "🚲 Ciudad de Bicis",
+        "alojamiento": "🏠 Altstadt y Residencias"
+    },
+    "historia": "Heidelberg es conocida mundialmente por su castillo en ruinas y su universidad, la Ruprecht-Karls-Universität, fundada en 1386. Fue el centro del romanticismo alemán y es una de las pocas ciudades que no fue destruida en la II Guerra Mundial. Hoy es un centro puntero en medicina y biotecnología a nivel mundial.",
+    "alojamiento": "El alojamiento es caro y escaso. Una habitación en piso compartido (WG) ronda los 450€-550€. Muchos estudiantes solicitan plaza en las residencias del 'Studierendenwerk' con mucha antelación para conseguir precios de unos 300€. Neuenheimer Feld es la zona ideal para científicos, mientras que el Altstadt es el corazón social.",
+    "barrios": "El Altstadt (Casco Antiguo) es donde están las humanidades y la vida nocturna. Neuenheim es un barrio señorial y verde, muy tranquilo. Weststadt es la zona 'hípster' preferida por los estudiantes de máster por sus cafés y cercanía a la estación central.",
+    "universidades": [
+        {
+            "nombre": "Ruprecht-Karls-Universität Heidelberg",
+            "descripcion": "La universidad más antigua de Alemania y una de las más laureadas con premios Nobel, especialmente en Medicina y Física."
+        },
+        {
+            "nombre": "Campus Neuenheimer Feld",
+            "descripcion": "Un enorme complejo científico-médico que alberga hospitales universitarios y centros de investigación de vanguardia."
+        },
+        {
+            "nombre": "SRH Hochschule Heidelberg",
+            "descripcion": "Una de las universidades privadas más antiguas y grandes de Alemania, conocida por su innovador modelo de enseñanza."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Schloss Heidelberg",
+            "categoria": "cultura",
+            "descripcion": "El castillo que domina la ciudad, un símbolo del romanticismo con el barril de vino más grande del mundo."
+        },
+        {
+            "nombre": "Philosophenweg (Paseo de los Filósofos)",
+            "categoria": "cultura",
+            "descripcion": "Un sendero con microclima y vistas espectaculares donde los pensadores de la universidad solían pasear."
+        },
+        {
+            "nombre": "Uniplatz y Untere Straße",
+            "categoria": "ocio",
+            "descripcion": "El centro neurálgico de la vida estudiantil, lleno de bares históricos como el 'Cerebro' o el 'Vetter'."
+        },
+        {
+            "nombre": "Halle02",
+            "categoria": "ocioNocturno",
+            "descripcion": "Un antiguo almacén reconvertido en club y centro cultural para conciertos y fiestas universitarias."
+        }
+    ],
+    "imagenes": [
+        "../img/heidelberg_1.jpg",
+        "../img/heidelberg_2.jpg"
+    ]
+}

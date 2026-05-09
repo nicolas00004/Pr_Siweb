@@ -1,0 +1,53 @@
+{
+    "id": "oxford",
+    "nombre": "Oxford",
+    "pais": "Reino Unido",
+    "etiquetas": {
+        "historia": "🎓 Ciudad de las Agujas de Ensueño",
+        "transporte": "🚲 Bicis y Buses",
+        "alojamiento": "🏠 Colleges y Victorian Houses"
+    },
+    "historia": "Oxford es sede de la universidad más antigua del mundo anglófono (fundada en el siglo XI). La ciudad es un museo viviente donde cada calle respira intelecto. Ha sido el hogar de mentes como Stephen Hawking, Oscar Wilde y J.R.R. Tolkien. Su arquitectura gótica y sus tradiciones académicas centenarias la hacen única en el mundo.",
+    "alojamiento": "Es extremadamente caro. Una habitación en una casa compartida (HMO) puede rondar las £600-£850 (aprox. 700€-1000€). Muchos estudiantes viven en los propios 'Colleges' de la universidad, que incluyen alojamiento y comida, aunque las plazas son muy competitivas.",
+    "barrios": "Cowley Road es el barrio estudiantil y multicultural por excelencia, lleno de bares y comida internacional. Jericho es una zona más elegante y bohemia. Headington es ideal si estudias medicina o vas a la Oxford Brookes University.",
+    "universidades": [
+        {
+            "nombre": "University of Oxford",
+            "descripcion": "Compuesta por 39 colleges independientes, es constantemente elegida como la mejor universidad del mundo."
+        },
+        {
+            "nombre": "Oxford Brookes University",
+            "descripcion": "Conocida por su enfoque moderno y práctico, especialmente prestigiosa en arquitectura y automovilismo."
+        },
+        {
+            "nombre": "Bodleian Library",
+            "descripcion": "Una de las bibliotecas más antiguas y majestuosas de Europa, corazón del estudio en la ciudad."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Christ Church College",
+            "categoria": "cultura",
+            "descripcion": "El college más famoso, cuyo comedor inspiró el Gran Comedor de Hogwarts en Harry Potter."
+        },
+        {
+            "nombre": "Radcliffe Camera",
+            "categoria": "cultura",
+            "descripcion": "Icónico edificio circular de la biblioteca Bodleiana y símbolo visual de la ciudad."
+        },
+        {
+            "nombre": "Turf Tavern",
+            "categoria": "ocio",
+            "descripcion": "Pub histórico escondido en un callejón donde generaciones de estudiantes han tomado cerveza desde el siglo XIII."
+        },
+        {
+            "nombre": "Punting en el río Cherwell",
+            "categoria": "ocio",
+            "descripcion": "Tradición veraniega de navegar en barcas de fondo plano impulsadas por una pértiga."
+        }
+    ],
+    "imagenes": [
+        "../img/oxford_1.jpg",
+        "../img/oxford_2.jpg"
+    ]
+}
