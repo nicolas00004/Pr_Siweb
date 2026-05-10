@@ -338,18 +338,11 @@
 
             <!-- COMPARADOR VS DINÁMICO -->
             <div class="tool-panel" id="comparador">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div style="margin-bottom: 12px;">
                     <h3>📊 Comparador de Destinos Multidestino</h3>
-                    <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-                        <label for="numCiudades" style="font-size:0.9rem; color:var(--text-muted); font-weight:600; display:flex; align-items:center; gap:6px;">
-                            Nº ciudades:
-                            <input type="number" id="numCiudades" min="2" max="10" value="2" style="width:70px; padding:8px 10px; border-radius:8px; border:1.5px solid #e2e8f0; font-family:inherit; font-size:0.9rem;">
-                        </label>
-                        <button class="btn-submit" id="btnAddCity" onclick="addCompareColumn()" style="width:auto; padding:10px 20px; font-size:0.9rem; margin-top:0;">+ Añadir Ciudad</button>
-                    </div>
                 </div>
-                
-                <p style="margin-bottom: 20px; color: var(--text-muted);">Compara ciudades simultáneamente para ver cuál se ajusta mejor a tu presupuesto y estilo de vida.</p>
+
+                <p style="margin-bottom: 20px; color: var(--text-muted);">Marca <strong>2 o más ciudades</strong> abajo para compararlas en función de tu perfil. Pulsa <em>Ajustar criterios</em> si quieres dar más peso a algún factor.</p>
 
                 <!-- FILTROS DE CIUDADES -->
                 <div class="foro-tabs" id="filtrosCiudades">
@@ -403,12 +396,19 @@
                     <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
                         <div>
                             <div class="foro-tabs-label">🏙️ Ciudades a comparar</div>
-                            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">Marca las ciudades que quieras añadir al comparador (máx. 10).</div>
+                            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">Pulsa una tarjeta para añadirla. Mínimo 2 · Máximo 10.</div>
                         </div>
-                        <span id="ciudadesSelectorCount" style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">0 seleccionadas</span>
+                        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                            <span id="ciudadesSelectorCount" style="font-size:0.85rem; color:var(--accent-color); font-weight:800; padding:4px 12px; background:#eff6ff; border-radius:50px;">0 / 10</span>
+                            <button type="button" id="btnLimpiarSeleccion" class="btn-reset-foro" title="Quitar todas">🗑 Limpiar</button>
+                        </div>
                     </div>
-                    <div id="ciudadesSelectorGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:6px; max-height:240px; overflow-y:auto; margin-top:10px; padding:10px; background:#f8fafc; border-radius:12px; border:1px dashed #e2e8f0;">
-                        <!-- Checkboxes generados por JS -->
+                    <input type="text" id="buscadorCiudadesSelector" placeholder="🔍 Filtrar por nombre…" style="width:100%; margin-top:10px; padding:9px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:0.88rem; outline:none;">
+                    <div id="ciudadesSelectorGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:8px; max-height:300px; overflow-y:auto; margin-top:10px; padding:10px; background:#f8fafc; border-radius:12px; border:1px dashed #e2e8f0;">
+                        <!-- Tarjetas generadas por JS -->
+                    </div>
+                    <div id="hintMinimo" style="display:none; text-align:center; margin-top:10px; padding:10px; background:#fef3c7; color:#92400e; border-radius:10px; font-size:0.85rem; font-weight:600;">
+                        ⚠️ Selecciona al menos 2 ciudades para comparar
                     </div>
                 </div>
 
@@ -616,12 +616,24 @@
         function renderCiudadesSelector() {
             const grid = document.getElementById('ciudadesSelectorGrid');
             if (!grid) return;
-            const ciudades = getCiudadesFiltradas().slice().sort((a, b) => a.nombre.localeCompare(b.nombre));
+            const buscador = document.getElementById('buscadorCiudadesSelector');
+            const texto = (buscador?.value || '').trim().toLowerCase();
+            let ciudades = getCiudadesFiltradas().slice();
+            if (texto) ciudades = ciudades.filter(c => (c.nombre || '').toLowerCase().includes(texto));
+            ciudades.sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+            if (ciudades.length === 0) {
+                grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--text-muted); font-size:0.85rem;">No hay ciudades con esos filtros.</div>';
+                actualizarContadorSeleccion();
+                return;
+            }
+
             grid.innerHTML = ciudades.map(c => {
-                const checked = ciudadIdToColId.has(String(c._id)) ? 'checked' : '';
-                return `<label style="display:flex; align-items:center; gap:6px; padding:6px 8px; border-radius:8px; background:white; border:1px solid #e2e8f0; cursor:pointer; font-size:0.82rem; user-select:none;">
-                    <input type="checkbox" data-ciudad-id="${c._id}" ${checked} style="cursor:pointer;">
-                    <span>${c.nombre}</span>
+                const sel = ciudadIdToColId.has(String(c._id));
+                return `<label class="ciudad-pick ${sel ? 'is-selected' : ''}" data-ciudad-id="${c._id}" style="position:relative; display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:10px; background:${sel ? 'var(--accent-color)' : 'white'}; color:${sel ? 'white' : 'var(--text-dark)'}; border:1.5px solid ${sel ? 'var(--accent-color)' : '#e2e8f0'}; cursor:pointer; font-size:0.85rem; font-weight:600; user-select:none; transition:all 0.15s; box-shadow:${sel ? '0 3px 10px rgba(59,130,246,0.3)' : 'none'};">
+                    <input type="checkbox" data-ciudad-id="${c._id}" ${sel ? 'checked' : ''} style="cursor:pointer; accent-color:white;">
+                    <span style="flex:1;">${c.nombre}</span>
+                    ${sel ? '<span style="font-size:1rem;">✓</span>' : ''}
                 </label>`;
             }).join('');
             actualizarContadorSeleccion();
@@ -635,7 +647,7 @@
             if (e.target.checked) {
                 if (colCount >= MAX_CIUDADES) {
                     e.target.checked = false;
-                    showToast && showToast(`Máximo ${MAX_CIUDADES} ciudades`, 'error');
+                    if (typeof showToast === 'function') showToast(`Máximo ${MAX_CIUDADES} ciudades`, 'error');
                     return;
                 }
                 addCompareColumn();
@@ -662,7 +674,9 @@
 
         function actualizarContadorSeleccion() {
             const c = document.getElementById('ciudadesSelectorCount');
-            if (c) c.textContent = `${ciudadIdToColId.size} seleccionada${ciudadIdToColId.size === 1 ? '' : 's'}`;
+            if (c) c.textContent = `${ciudadIdToColId.size} / ${MAX_CIUDADES}`;
+            const hint = document.getElementById('hintMinimo');
+            if (hint) hint.style.display = (ciudadIdToColId.size > 0 && ciudadIdToColId.size < 2) ? 'block' : 'none';
         }
 
         // 1. CARGAR CIUDADES INICIALES
@@ -691,7 +705,21 @@
                 // Render inicial del selector multi-ciudad (debajo de los criterios)
                 renderCiudadesSelector();
 
-                inputNumCiudades.addEventListener('change', e => ajustarNumCiudades(e.target.value));
+                if (inputNumCiudades) {
+                    inputNumCiudades.addEventListener('change', e => ajustarNumCiudades(e.target.value));
+                }
+
+                // Buscador y botón limpiar del selector
+                const buscadorCiudades = document.getElementById('buscadorCiudadesSelector');
+                if (buscadorCiudades) buscadorCiudades.addEventListener('input', renderCiudadesSelector);
+
+                const btnLimpiar = document.getElementById('btnLimpiarSeleccion');
+                if (btnLimpiar) btnLimpiar.addEventListener('click', () => {
+                    const ids = [...ciudadIdToColId.entries()];
+                    ids.forEach(([cid, colId]) => removeColumn(colId));
+                    ciudadIdToColId.clear();
+                    renderCiudadesSelector();
+                });
 
                 // Panel de pesos
                 renderPesos();
@@ -719,9 +747,9 @@
         const headerRow = document.getElementById('headerRow');
         const compareBody = document.getElementById('compareBody');
         const deleteRow = document.getElementById('deleteRow');
-        const inputNumCiudades = document.getElementById('numCiudades');
-        const MAX_CIUDADES = parseInt(inputNumCiudades.max) || 10;
-        const MIN_CIUDADES = parseInt(inputNumCiudades.min) || 2;
+        const inputNumCiudades = document.getElementById('numCiudades'); // ya no existe pero se mantiene por compat
+        const MAX_CIUDADES = 10;
+        const MIN_CIUDADES = 2;
         let colCount = 0;
         // Contador siempre creciente para garantizar IDs únicos aunque se borren columnas intermedias
         let nextColId = 0;
@@ -811,9 +839,9 @@
             colCount++;
             const id = `city_col_${nextColId}`;
 
-            // Actualizar estado del botón
+            // Estado del botón legacy "+ Añadir Ciudad" (ya no existe en el DOM, pero por si acaso)
             const btnAdd = document.getElementById('btnAddCity');
-            if (colCount >= MAX_CIUDADES) {
+            if (btnAdd && colCount >= MAX_CIUDADES) {
                 btnAdd.disabled = true;
                 btnAdd.innerText = "Límite Alcanzado";
             }
@@ -853,7 +881,7 @@
         }
 
         function sincronizarNumCiudades() {
-            inputNumCiudades.value = colCount;
+            if (inputNumCiudades) inputNumCiudades.value = colCount;
         }
 
         function ajustarNumCiudades(target) {
@@ -865,7 +893,7 @@
                 const lastId = headers[headers.length - 1].id.replace('header_', '');
                 removeColumn(lastId);
             }
-            inputNumCiudades.value = colCount;
+            if (inputNumCiudades) inputNumCiudades.value = colCount;
         }
 
         function updateColumn(colId, ciudadId) {
@@ -1047,10 +1075,12 @@
 
             colCount--;
 
-            // Reactivar botón si bajamos del límite
+            // Reactivar botón legacy si existe
             const btnAdd = document.getElementById('btnAddCity');
-            btnAdd.disabled = false;
-            btnAdd.innerText = "+ Añadir Ciudad";
+            if (btnAdd) {
+                btnAdd.disabled = false;
+                btnAdd.innerText = "+ Añadir Ciudad";
+            }
 
             sincronizarNumCiudades();
             destacarGanadores();

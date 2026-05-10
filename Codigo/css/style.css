@@ -158,15 +158,17 @@ header {
     display: flex;
     align-items: baseline;
     gap: 14px;
+    flex: 1;
 }
 
 .nav-global .logo::after {
-    content: 'Donde estudiar también se decide bien.';
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    font-weight: 500;
+    content: 'Donde tus estudios se deciden con mates.';
+    margin: 0 auto;
+    font-size: 1rem;
+    color: var(--text-dark);
+    font-weight: 600;
     font-style: italic;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
     white-space: nowrap;
 }
 
