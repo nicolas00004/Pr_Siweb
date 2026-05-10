@@ -87,9 +87,12 @@
                                 <span id="valorDistancia">Cualquiera</span>
                             </div>
                             <input type="range" id="rangoDistancia" min="50" max="2000" step="50" value="2000">
-                            <div class="geo-tools">
-                                <button id="btnGeo">📍 Usar mi ubicación</button>
+                            <div class="geo-tools" style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">
+                                <button id="btnGeo" style="flex:1; min-width:130px;">📍 Mi ubicación</button>
+                                <button id="btnPickOrigen" type="button" style="flex:1; min-width:130px;">🗺️ Elegir en el mapa</button>
                             </div>
+                            <div id="origenMiniMap" style="display:none; margin-top:8px; height:180px; border-radius:10px; border:1.5px solid #e2e8f0; overflow:hidden;"></div>
+                            <div id="origenInfo" style="font-size:0.72rem; color:var(--text-muted); margin-top:4px;"></div>
                         </div>
 
                         <div class="control-item">

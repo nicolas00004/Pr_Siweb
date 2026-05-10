@@ -38,9 +38,11 @@
         }
         .rank-card:hover {
             transform: translateX(5px);
-            border-color: #cbd5e1;
-            box-shadow: var(--shadow-sm);
+            border-color: var(--accent-color);
+            box-shadow: 0 4px 14px rgba(59,130,246,0.18);
         }
+        .rank-card-link { cursor: pointer; }
+        .rank-card-link:hover .rank-name { color: var(--accent-color); }
         .rank-pos {
             font-size: 1.2rem;
             font-weight: 800;
@@ -377,17 +379,36 @@
                             <div class="foro-tabs-label">⚖️ Ajustar pesos por criterio</div>
                             <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">Desliza a la derecha lo que más te importe (1 = poco · 5 = imprescindible).</div>
                         </div>
-                        <button type="button" id="btnResetPesos" class="btn-reset-foro" title="Restablecer pesos">↩ Reset</button>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <button type="button" id="btnTogglePesos" class="btn-reset-foro" aria-expanded="false" style="background:var(--accent-color); color:white; border:none;">⚙️ Ajustar criterios <span id="togglePesosArrow">▼</span></button>
+                            <button type="button" id="btnResetPesos" class="btn-reset-foro" title="Restablecer pesos">↩ Reset</button>
+                        </div>
                     </div>
-                    <div class="quick-profiles" id="quickProfilesPesos" style="display:flex; gap:6px; flex-wrap:wrap; padding:8px 10px; background:#f8fafc; border-radius:12px; border:1px dashed #e2e8f0; margin-top:4px;">
-                        <button type="button" class="qp-btn" data-perfil="economico">💸 Económico</button>
-                        <button type="button" class="qp-btn" data-perfil="academico">🎓 Académico</button>
-                        <button type="button" class="qp-btn" data-perfil="social">🎉 Social</button>
-                        <button type="button" class="qp-btn" data-perfil="seguro">🛡️ Seguro</button>
-                        <button type="button" class="qp-btn" data-perfil="equilibrado">⚖️ Equilibrado</button>
+                    <div id="pesosCollapsible" style="display:none; margin-top:12px;">
+                        <div class="quick-profiles" id="quickProfilesPesos" style="display:flex; gap:6px; flex-wrap:wrap; padding:8px 10px; background:#f8fafc; border-radius:12px; border:1px dashed #e2e8f0; margin-top:4px;">
+                            <button type="button" class="qp-btn" data-perfil="economico">💸 Económico</button>
+                            <button type="button" class="qp-btn" data-perfil="academico">🎓 Académico</button>
+                            <button type="button" class="qp-btn" data-perfil="social">🎉 Social</button>
+                            <button type="button" class="qp-btn" data-perfil="seguro">🛡️ Seguro</button>
+                            <button type="button" class="qp-btn" data-perfil="equilibrado">⚖️ Equilibrado</button>
+                        </div>
+                        <div class="pesos-grid" id="pesosGrid">
+                            <!-- Sliders generados por JS -->
+                        </div>
                     </div>
-                    <div class="pesos-grid" id="pesosGrid">
-                        <!-- Sliders generados por JS -->
+                </div>
+
+                <!-- SELECTOR MULTI-CIUDAD -->
+                <div class="foro-tabs" id="ciudadesSelectorPanel" style="margin-top:14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                        <div>
+                            <div class="foro-tabs-label">🏙️ Ciudades a comparar</div>
+                            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">Marca las ciudades que quieras añadir al comparador (máx. 10).</div>
+                        </div>
+                        <span id="ciudadesSelectorCount" style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">0 seleccionadas</span>
+                    </div>
+                    <div id="ciudadesSelectorGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:6px; max-height:240px; overflow-y:auto; margin-top:10px; padding:10px; background:#f8fafc; border-radius:12px; border:1px dashed #e2e8f0;">
+                        <!-- Checkboxes generados por JS -->
                     </div>
                 </div>
 
@@ -585,6 +606,63 @@
         function aplicarFiltrosCiudades() {
             actualizarStatusFiltrosCiudades();
             refrescarSelectsCompare();
+            renderCiudadesSelector();
+        }
+
+        // === SELECTOR MULTI-CIUDAD (debajo de los criterios) ===
+        // Mapa: ciudadId -> colId (para saber qué columna borrar al desmarcar)
+        const ciudadIdToColId = new Map();
+
+        function renderCiudadesSelector() {
+            const grid = document.getElementById('ciudadesSelectorGrid');
+            if (!grid) return;
+            const ciudades = getCiudadesFiltradas().slice().sort((a, b) => a.nombre.localeCompare(b.nombre));
+            grid.innerHTML = ciudades.map(c => {
+                const checked = ciudadIdToColId.has(String(c._id)) ? 'checked' : '';
+                return `<label style="display:flex; align-items:center; gap:6px; padding:6px 8px; border-radius:8px; background:white; border:1px solid #e2e8f0; cursor:pointer; font-size:0.82rem; user-select:none;">
+                    <input type="checkbox" data-ciudad-id="${c._id}" ${checked} style="cursor:pointer;">
+                    <span>${c.nombre}</span>
+                </label>`;
+            }).join('');
+            actualizarContadorSeleccion();
+            grid.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.addEventListener('change', onCiudadCheckboxChange);
+            });
+        }
+
+        function onCiudadCheckboxChange(e) {
+            const cid = String(e.target.dataset.ciudadId);
+            if (e.target.checked) {
+                if (colCount >= MAX_CIUDADES) {
+                    e.target.checked = false;
+                    showToast && showToast(`Máximo ${MAX_CIUDADES} ciudades`, 'error');
+                    return;
+                }
+                addCompareColumn();
+                // Asignar la última columna creada a esta ciudad
+                const headers = headerRow.querySelectorAll('th[id^="header_city_col_"]');
+                const lastTh = headers[headers.length - 1];
+                if (!lastTh) return;
+                const colId = lastTh.id.replace('header_', '');
+                const sel = lastTh.querySelector('select.city-select');
+                if (sel) {
+                    sel.value = cid;
+                    updateColumn(colId, cid);
+                }
+                ciudadIdToColId.set(cid, colId);
+            } else {
+                const colId = ciudadIdToColId.get(cid);
+                if (colId) {
+                    removeColumn(colId);
+                    ciudadIdToColId.delete(cid);
+                }
+            }
+            actualizarContadorSeleccion();
+        }
+
+        function actualizarContadorSeleccion() {
+            const c = document.getElementById('ciudadesSelectorCount');
+            if (c) c.textContent = `${ciudadIdToColId.size} seleccionada${ciudadIdToColId.size === 1 ? '' : 's'}`;
         }
 
         // 1. CARGAR CIUDADES INICIALES
@@ -610,9 +688,8 @@
                     aplicarFiltrosCiudades();
                 });
 
-                // Añadir las dos primeras ciudades por defecto
-                addCompareColumn();
-                addCompareColumn();
+                // Render inicial del selector multi-ciudad (debajo de los criterios)
+                renderCiudadesSelector();
 
                 inputNumCiudades.addEventListener('change', e => ajustarNumCiudades(e.target.value));
 
@@ -622,6 +699,17 @@
                     b.addEventListener('click', () => aplicarPerfilPesos(b.dataset.perfil));
                 });
                 document.getElementById('btnResetPesos').addEventListener('click', resetPesos);
+
+                // Toggle plegado del panel de pesos (oculto por defecto)
+                const btnTogglePesos = document.getElementById('btnTogglePesos');
+                const pesosCollapsible = document.getElementById('pesosCollapsible');
+                const togglePesosArrow = document.getElementById('togglePesosArrow');
+                btnTogglePesos.addEventListener('click', () => {
+                    const isOpen = pesosCollapsible.style.display !== 'none';
+                    pesosCollapsible.style.display = isOpen ? 'none' : 'block';
+                    btnTogglePesos.setAttribute('aria-expanded', String(!isOpen));
+                    togglePesosArrow.textContent = isOpen ? '▼' : '▲';
+                });
 
                 renderRankings();
             } catch (e) { console.error("Error cargando ciudades", e); }
@@ -967,20 +1055,31 @@
             sincronizarNumCiudades();
             destacarGanadores();
             calcularMejorOpcion();
+
+            // Sincronizar selector multi-ciudad: si esta colId estaba ligada a una ciudad, desmarcarla
+            for (const [cid, colId] of ciudadIdToColId.entries()) {
+                if (colId === id) {
+                    ciudadIdToColId.delete(cid);
+                    const cb = document.querySelector(`#ciudadesSelectorGrid input[data-ciudad-id="${cid}"]`);
+                    if (cb) cb.checked = false;
+                    break;
+                }
+            }
+            actualizarContadorSeleccion();
         }
 
         function renderRankings() {
             if (!todasCiudades || todasCiudades.length === 0) return;
 
-            // Función auxiliar para renderizar tarjetas
+            // Función auxiliar para renderizar tarjetas (clicables → detalle de ciudad)
             const createCard = (c, i, isPresupuesto) => `
-                <div class="rank-card">
+                <a href="detalle.html?id=${c._id}" class="rank-card rank-card-link" style="text-decoration:none; color:inherit; display:flex;">
                     <div class="rank-pos top-${i+1}">#${i+1}</div>
                     <div class="rank-info">
                         <span class="rank-name">${c.nombre}</span>
                         <span class="rank-val">${isPresupuesto ? c.presupuesto + '€ / mes' : '⭐'.repeat(c.valor || 0)}</span>
                     </div>
-                </div>
+                </a>
             `;
 
             // Baratas (menor presupuesto)

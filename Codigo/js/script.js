@@ -1220,6 +1220,48 @@ if (btnGeo) {
     };
 }
 
+// --- ELEGIR ORIGEN EN MAPA ---
+const btnPickOrigen = document.getElementById('btnPickOrigen');
+const origenMiniMap = document.getElementById('origenMiniMap');
+const origenInfo = document.getElementById('origenInfo');
+let miniMap = null;
+let miniMapMarker = null;
+
+if (btnPickOrigen && origenMiniMap) {
+    btnPickOrigen.onclick = () => {
+        const visible = origenMiniMap.style.display !== 'none';
+        if (visible) {
+            origenMiniMap.style.display = 'none';
+            btnPickOrigen.innerText = '🗺️ Elegir en el mapa';
+            return;
+        }
+        origenMiniMap.style.display = 'block';
+        btnPickOrigen.innerText = '✕ Cerrar mapa';
+
+        if (!miniMap) {
+            miniMap = L.map(origenMiniMap, { zoomControl: true, attributionControl: false }).setView(ORIGIN, 5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(miniMap);
+            miniMapMarker = L.marker(ORIGIN, { draggable: true }).addTo(miniMap);
+
+            const actualizarOrigen = (latlng) => {
+                ORIGIN = [latlng.lat, latlng.lng];
+                if (origenInfo) origenInfo.textContent = `Origen: ${latlng.lat.toFixed(3)}, ${latlng.lng.toFixed(3)}`;
+                if (originText) originText.innerText = '(punto en el mapa)';
+                if (btnGeo) btnGeo.innerText = '📍 Mi ubicación';
+                aplicarFiltros();
+            };
+
+            miniMapMarker.on('dragend', (e) => actualizarOrigen(e.target.getLatLng()));
+            miniMap.on('click', (e) => {
+                miniMapMarker.setLatLng(e.latlng);
+                actualizarOrigen(e.latlng);
+            });
+        }
+        // Forzar el redibujado tras hacerlo visible
+        setTimeout(() => miniMap.invalidateSize(), 80);
+    };
+}
+
 // --- NUEVOS FILTROS ---
 // Búsqueda por texto
 if (inputBusquedaTexto) {
