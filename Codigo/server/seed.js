@@ -3,8 +3,11 @@ const mongoose = require('mongoose');
 const fs = require('fs');   
 const path = require('path'); 
 
-mongoose.connect('mongodb://localhost:27017/infuni')
-    .then(() => console.log('✅ Conectado a MongoDB para el sembrado'))
+require('dotenv').config({ path: require('path').join(__dirname, '../../.env') });
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/infuni';
+
+mongoose.connect(MONGODB_URI)
+    .then(() => console.log(`✅ Conectado a MongoDB para el sembrado (${MONGODB_URI.replace(/\/\/.*@/, '//***@')})`))
     .catch(err => {
         console.error('❌ Error de conexión:', err);
         process.exit(1);

@@ -3,7 +3,8 @@ const id = params.get('id');
 const contenedor = document.getElementById('detalle-contenido');
 const headerSeccion = document.getElementById('detalle-header-seccion');
 const breadcrumbCiudad = document.getElementById('breadcrumb-ciudad');
-const API_BASE = 'http://localhost:3000';
+// URL relativa: usa el mismo host/puerto desde el que se sirvió la página
+const API_BASE = '';
 
 let globalCiudadData = null;
 

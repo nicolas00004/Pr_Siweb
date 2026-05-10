@@ -1,5 +1,6 @@
 // auth.js - Gestión global de sesión y navegación UI
-const API_AUTH = 'http://localhost:3000';
+// URL relativa: usa el mismo host/puerto desde el que se sirvió la página
+const API_AUTH = '';
 
 document.addEventListener('DOMContentLoaded', () => {
     const userInfo = JSON.parse(localStorage.getItem('usuarioInfo'));

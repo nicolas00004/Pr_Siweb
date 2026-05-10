@@ -20,7 +20,8 @@ let minSeguridad = 0;
 let map = null;
 let markers = [];
 
-const API_BASE = 'http://localhost:3000';
+// URL relativa: usa el mismo host/puerto desde el que se sirvió la página
+const API_BASE = '';
 let ciudades = [];
 let userFull = null;
 let userFavoritasIds = [];

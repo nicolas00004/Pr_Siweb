@@ -1,3 +1,6 @@
+// Cargar variables de entorno desde .env (si existe) en la raíz del proyecto
+require('dotenv').config({ path: require('path').join(__dirname, '../../.env') });
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -5,6 +8,10 @@ const path = require('path');
 const fs = require('fs');
 const { exec } = require('child_process');
 const app = express();
+
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/infuni';
+const PORT = parseInt(process.env.PORT, 10) || 3000;
+const IS_PROD = process.env.NODE_ENV === 'production';
 
 // CORS: Permitir todos los orígenes (incluido null de file://)
 app.use(cors({
@@ -20,8 +27,8 @@ app.use('/info', express.static(path.join(__dirname, '../info')));
 app.use('/img', express.static(path.join(__dirname, '../img')));
 
 // Conexión a MongoDB
-mongoose.connect('mongodb://localhost:27017/infuni')
-    .then(() => console.log('✅ Conectado a MongoDB (Base de datos: infuni)'))
+mongoose.connect(MONGODB_URI)
+    .then(() => console.log(`✅ Conectado a MongoDB (${MONGODB_URI})`))
     .catch(err => console.error('❌ Error de conexión:', err));
 
 // --- MODELOS MONGODB ---
@@ -640,13 +647,14 @@ app.post('/api/usuarios/:id/favorito', async (req, res) => {
 
 // --- AQUÍ HEMOS BORRADO EL CIUDAD.WATCH() QUE DABA ERROR ---
 
-app.listen(3000, () => {
-    console.log('🚀 Servidor corriendo en http://localhost:3000');
-    console.log('📂 Abriendo navegador automáticamente...');
-    // Abrir el navegador con la URL del servidor (evita el problema file://)
-    exec('xdg-open http://localhost:3000/html/index.html', (err) => {
-        if (err) {
-            console.log('ℹ️  Abre manualmente: http://localhost:3000/html/index.html');
-        }
-    });
+app.listen(PORT, () => {
+    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+    // En producción no intentamos abrir navegador (no hay GUI en el servidor)
+    if (!IS_PROD) {
+        exec(`xdg-open http://localhost:${PORT}/html/index.html`, (err) => {
+            if (err) {
+                console.log(`ℹ️  Abre manualmente: http://localhost:${PORT}/html/index.html`);
+            }
+        });
+    }
 });
