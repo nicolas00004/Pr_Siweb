@@ -1184,6 +1184,10 @@ if (btnGeo) {
             showToast("❌ Tu navegador no soporta geolocalización", "error");
             return;
         }
+        if (!window.isSecureContext) {
+            showToast("❌ La geolocalización requiere HTTPS", "error");
+            return;
+        }
         btnGeo.innerText = "📍 Localizando...";
         navigator.geolocation.getCurrentPosition(
             (pos) => {
@@ -1193,14 +1197,27 @@ if (btnGeo) {
                 aplicarFiltros();
             },
             (err) => {
-                console.error(err);
-                showToast("❌ Error al obtener ubicación", "error");
+                console.error("Geolocation error:", err.code, err.message);
+                let msg;
+                switch (err.code) {
+                    case err.PERMISSION_DENIED:
+                        msg = "❌ Permiso denegado. Habilítalo en el candado 🔒 de la barra de direcciones";
+                        break;
+                    case err.POSITION_UNAVAILABLE:
+                        msg = "❌ Ubicación no disponible (revisa GPS/conexión)";
+                        break;
+                    case err.TIMEOUT:
+                        msg = "❌ Tiempo de espera agotado, inténtalo de nuevo";
+                        break;
+                    default:
+                        msg = `❌ Error al obtener ubicación (${err.message})`;
+                }
+                showToast(msg, "error");
                 btnGeo.innerText = "Usar mi ubicación";
-            }
+            },
+            { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
         );
     };
-    // Obtener ubicación automáticamente al cargar la página
-    setTimeout(() => { btnGeo.click(); }, 500);
 }
 
 // --- NUEVOS FILTROS ---
