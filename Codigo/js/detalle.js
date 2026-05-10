@@ -236,18 +236,23 @@ async function cargarOpiniones(ciudadId) {
         const res = await fetch(`${API_BASE}/api/opiniones/${ciudadId}`);
         const ops = await res.json();
         
-        if (ops.length === 0) {
+        if (!Array.isArray(ops) || ops.length === 0) {
             opDiv.innerHTML = '<p style="color: var(--text-muted); font-style: italic;">Aún no hay reseñas para esta ciudad. ¡Sé el primero en compartir tu experiencia!</p>';
         } else {
-            opDiv.innerHTML = ops.map(o => `
+            const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+            opDiv.innerHTML = ops.map(o => {
+                const punt = Math.max(0, Math.min(5, parseInt(o.puntuacion, 10) || 0));
+                const nombre = escapeHtml(o.id_usuario?.nombre || 'Estudiante');
+                const texto = escapeHtml(o.texto_opinion || '');
+                return `
                 <div style="border-bottom: 1px solid #f1f5f9; padding: 20px 0;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <strong style="color: var(--primary-color);">${o.id_usuario ? o.id_usuario.nombre : 'Estudiante'}</strong>
-                        <span style="color: #fbbf24;">${"★".repeat(o.puntuacion)}${"☆".repeat(5-o.puntuacion)}</span>
+                        <strong style="color: var(--primary-color);">${nombre}</strong>
+                        <span style="color: #fbbf24;">${"★".repeat(punt)}${"☆".repeat(5 - punt)}</span>
                     </div>
-                    <p style="color: var(--text-dark); line-height: 1.6;">"${o.texto_opinion}"</p>
-                </div>
-            `).join('');
+                    <p style="color: var(--text-dark); line-height: 1.6;">"${texto}"</p>
+                </div>`;
+            }).join('');
         }
     } catch (e) {
         opDiv.innerHTML = '<p>No se pudieron cargar las opiniones.</p>';

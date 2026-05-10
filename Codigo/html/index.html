@@ -22,9 +22,16 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: url('https://images.unsplash.com/photo-1523050853063-bd388f9c7d13?auto=format&fit=crop&w=1920&q=60') center/cover;
-            opacity: 0.08;
+            background: url('../img/hero-mosaic.jpg') center/cover;
+            opacity: 0.35;
         }
+        .landing-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(15,23,42,0.78) 0%, rgba(30,58,95,0.65) 50%, rgba(59,130,246,0.55) 100%);
+        }
+        .landing-hero .hero-content { z-index: 2; }
         .hero-content {
             position: relative;
             max-width: 1000px;

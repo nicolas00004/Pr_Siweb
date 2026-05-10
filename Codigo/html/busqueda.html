@@ -52,27 +52,6 @@
         <!-- NUEVA CABECERA DE CONTROLES (REEMPLAZA AL HERO Y AL SIDEBAR) -->
         <section class="dashboard-header-controls">
 
-            <!-- Barra de acciones secundarias (compacta) -->
-            <div class="controls-top-bar" style="justify-content: center;">
-                <div class="controls-actions">
-                    <button id="btnBuscarDestinos" onclick="mostrarRanking()"
-                            class="btn-buscar-main"
-                            style="background: var(--accent-color); color: white; border: none; font-size: 1.15rem; font-weight: 800; padding: 14px 28px; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); transition: all 0.2s; white-space: nowrap;"
-                            onmouseover="if(!this.dataset.active) { this.style.background='var(--accent-hover)'; this.style.transform='translateY(-1px)'; }"
-                            onmouseout="if(!this.dataset.active) { this.style.background='var(--accent-color)'; this.style.transform='translateY(0)'; }">
-                        🔍 Ejecutar Búsqueda
-                    </button>
-                    <button id="btnGuardarBusquedaTop" style="display:none; background:#10b981; color:white; border:none; border-radius:50px; padding:8px 18px; font-weight:700; font-size:0.82rem; cursor:pointer; box-shadow:0 3px 10px rgba(16,185,129,0.3); transition:all 0.2s;"
-                            onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
-                        💾 Guardar
-                    </button>
-                    <a href="herramientas.html#comparador" class="btn-buscar-main" style="text-decoration:none; background: #f1f5f9; color: var(--primary-color); border: 1.5px solid #e2e8f0; font-size: 0.82rem; font-weight: 700; padding: 8px 18px; border-radius: 50px; display: flex; align-items: center; gap: 6px; transition: all 0.2s;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
-                        📊 Comparar Destinos
-                    </a>
-                    <a href="ayuda-ahp.html" class="help-badge-link" title="¿Cómo funciona el buscador?" style="text-decoration: none; background: #eff6ff; color: var(--accent-color); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; border: 1px solid #dbeafe; transition: all 0.3s;">❓</a>
-                </div>
-            </div>
-
             <div class="controls-grid-main">
                 <!-- COLUMNA 1: FILTROS -->
                 <div class="control-group-box">
@@ -200,6 +179,27 @@
                         <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;">Inicia sesión para guardar</p>
                         <a href="login.html" style="font-size:0.75rem; color:var(--accent-color); font-weight:700; text-decoration:none;">→ Entrar</a>
                     </div>
+                </div>
+            </div>
+
+            <!-- Barra de acciones secundarias (compacta) -->
+            <div class="controls-top-bar" style="justify-content: center; margin-top: 18px;">
+                <div class="controls-actions">
+                    <button id="btnBuscarDestinos" onclick="mostrarRanking()"
+                            class="btn-buscar-main"
+                            style="background: var(--accent-color); color: white; border: none; font-size: 1.15rem; font-weight: 800; padding: 14px 28px; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); transition: all 0.2s; white-space: nowrap;"
+                            onmouseover="if(!this.dataset.active) { this.style.background='var(--accent-hover)'; this.style.transform='translateY(-1px)'; }"
+                            onmouseout="if(!this.dataset.active) { this.style.background='var(--accent-color)'; this.style.transform='translateY(0)'; }">
+                        🔍 Ejecutar Búsqueda
+                    </button>
+                    <button id="btnGuardarBusquedaTop" style="display:none; background:#10b981; color:white; border:none; border-radius:50px; padding:8px 18px; font-weight:700; font-size:0.82rem; cursor:pointer; box-shadow:0 3px 10px rgba(16,185,129,0.3); transition:all 0.2s;"
+                            onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+                        💾 Guardar
+                    </button>
+                    <a href="herramientas.html#comparador" class="btn-buscar-main" style="text-decoration:none; background: #f1f5f9; color: var(--primary-color); border: 1.5px solid #e2e8f0; font-size: 0.82rem; font-weight: 700; padding: 8px 18px; border-radius: 50px; display: flex; align-items: center; gap: 6px; transition: all 0.2s;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
+                        📊 Comparar Destinos
+                    </a>
+                    <a href="ayuda-ahp.html" class="help-badge-link" title="¿Cómo funciona el buscador?" style="text-decoration: none; background: #eff6ff; color: var(--accent-color); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; border: 1px solid #dbeafe; transition: all 0.3s;">❓</a>
                 </div>
             </div>
 

@@ -320,7 +320,13 @@ header {
 .controls-title h2 { font-size: 1.4rem; color: var(--primary-color); margin-bottom: 2px; }
 .controls-title p { font-size: 0.85rem; color: var(--text-muted); }
 
-.controls-actions { display: flex; align-items: center; gap: 15px; }
+.controls-actions { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; justify-content: center; }
+
+@media (max-width: 600px) {
+    .controls-actions { gap: 8px; }
+    .controls-actions .btn-buscar-main { width: 100%; max-width: 360px; justify-content: center; }
+    .controls-actions a.btn-buscar-main, .controls-actions #btnGuardarBusquedaTop { width: auto; flex: 1 1 auto; min-width: 130px; }
+}
 
 .controls-grid-main {
     display: grid;
