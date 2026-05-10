@@ -35,32 +35,76 @@
 
     <main>
         <section id="comparador">
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; flex-wrap: wrap; gap: 20px;">
-                <div>
-                    <h2 style="margin: 0; font-size: 1.8rem; font-weight: 800;">🌍 Explorar Todos los Destinos</h2>
-                    <p style="color: var(--text-muted); margin-top: 5px;">Encuentra información detallada sobre cada ciudad universitaria.</p>
-                </div>
-                
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                    <div class="filtros-container" style="background: white; padding: 10px 20px; border-radius: 15px; border: 1.5px solid #e2e8f0; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-sm);">
-                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Ambiente:</label>
-                        <select id="selectAmbiente" style="border: none; outline: none; font-weight: 700; color: var(--accent-color); cursor: pointer; background: transparent; font-size: 0.9rem;">
-                            <option value="todos">Todos</option>
-                            <option value="tranquilo">🧘 Tranquilo</option>
-                            <option value="fiesta">🎉 Fiesta</option>
-                        </select>
-                    </div>
+            <div style="margin-bottom: 30px;">
+                <h2 style="margin: 0; font-size: 1.8rem; font-weight: 800;">🌍 Explorar Todos los Destinos</h2>
+                <p style="color: var(--text-muted); margin-top: 5px;">Encuentra información detallada sobre cada ciudad universitaria.</p>
+            </div>
 
-                    <div class="filtros-container" style="background: white; padding: 10px 20px; border-radius: 15px; border: 1.5px solid #e2e8f0; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-sm);">
-                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Ordenar:</label>
-                        <select id="selectOrden" style="border: none; outline: none; font-weight: 700; color: var(--accent-color); cursor: pointer; background: transparent; font-size: 0.9rem;">
-                            <option value="relevancia">Relevancia</option>
-                            <option value="barato">💰 Más barato</option>
-                            <option value="caro">💎 Más caro</option>
-                        </select>
+            <!-- BARRA DE FILTROS -->
+            <div class="destinos-filters-bar" style="background:white; padding:18px; border-radius:16px; border:1.5px solid #e2e8f0; box-shadow:var(--shadow-sm); margin-bottom:25px; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:15px; align-items:end;">
+
+                <div>
+                    <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">🔎 Buscar</label>
+                    <input id="inputBuscarTexto" type="text" placeholder="Nombre de ciudad…" style="width:100%; padding:9px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:0.88rem; outline:none;">
+                </div>
+
+                <div>
+                    <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">🌐 Región</label>
+                    <select id="selectRegion" style="width:100%; padding:9px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:0.88rem; cursor:pointer; background:white;">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">🏳️ País</label>
+                    <select id="selectPais" style="width:100%; padding:9px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:0.88rem; cursor:pointer; background:white;">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">🎭 Ambiente</label>
+                    <select id="selectAmbiente" style="width:100%; padding:9px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:0.88rem; cursor:pointer; background:white;">
+                        <option value="todos">Todos</option>
+                        <option value="tranquilo">🧘 Tranquilo</option>
+                        <option value="fiesta">🎉 Fiesta</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="display:flex; justify-content:space-between; font-size:0.78rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">
+                        <span>💶 Presupuesto máx.</span>
+                        <span id="valorPresupuesto" style="color:var(--accent-color);">2500€</span>
+                    </label>
+                    <input id="rangoPresupuesto" type="range" min="300" max="2500" step="50" value="2500" style="width:100%;">
+                </div>
+
+                <div>
+                    <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">🛡️ Seguridad mín.</label>
+                    <div id="filtroSeguridadDest" style="display:flex; gap:5px; flex-wrap:wrap;">
+                        <button type="button" class="seg-pill active" data-val="0" style="flex:1; min-width:55px; padding:7px 10px; border:1.5px solid #e2e8f0; border-radius:10px; background:white; font-size:0.78rem; font-weight:700; cursor:pointer;">Todas</button>
+                        <button type="button" class="seg-pill" data-val="3" style="flex:1; min-width:55px; padding:7px 10px; border:1.5px solid #e2e8f0; border-radius:10px; background:white; font-size:0.78rem; font-weight:700; cursor:pointer;">≥3★</button>
+                        <button type="button" class="seg-pill" data-val="4" style="flex:1; min-width:55px; padding:7px 10px; border:1.5px solid #e2e8f0; border-radius:10px; background:white; font-size:0.78rem; font-weight:700; cursor:pointer;">≥4★</button>
                     </div>
+                </div>
+
+                <div>
+                    <label style="display:block; font-size:0.78rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">↕️ Ordenar</label>
+                    <select id="selectOrden" style="width:100%; padding:9px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:0.88rem; cursor:pointer; background:white;">
+                        <option value="relevancia">Relevancia</option>
+                        <option value="barato">💰 Más barato</option>
+                        <option value="caro">💎 Más caro</option>
+                        <option value="seguridad">🛡️ + Seguridad</option>
+                        <option value="nombre">🔤 A-Z</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; align-items:end;">
+                    <button id="btnResetFiltros" type="button" style="width:100%; padding:9px 12px; border:1.5px dashed #cbd5e1; border-radius:10px; background:#f8fafc; color:var(--accent-color); font-size:0.85rem; font-weight:700; cursor:pointer;">↩ Reset</button>
                 </div>
             </div>
+
+            <p id="contadorResultados" style="margin:0 0 15px 0; font-size:0.88rem; color:var(--text-muted);"></p>
 
             <div class="grid-ciudades" id="contenedorCiudades">
                 <p style="text-align: center; padding: 50px; grid-column: 1/-1;">Cargando destinos...</p>
@@ -99,36 +143,86 @@
     </footer>
 
     <script>
-        const API_BASE = 'http://localhost:3000';
+        const API_BASE = '';
         let ciudades = [];
+        let minSeguridad = 0;
+
+        const PAIS_A_REGION = {
+            'España': 'Europa del Sur', 'Italia': 'Europa del Sur', 'Portugal': 'Europa del Sur', 'Grecia': 'Europa del Sur', 'Malta': 'Europa del Sur',
+            'Francia': 'Europa Occidental', 'Alemania': 'Europa Occidental', 'Países Bajos': 'Europa Occidental', 'Holanda': 'Europa Occidental',
+            'Bélgica': 'Europa Occidental', 'Luxemburgo': 'Europa Occidental', 'Suiza': 'Europa Occidental', 'Austria': 'Europa Occidental',
+            'Reino Unido': 'Islas Británicas', 'Irlanda': 'Islas Británicas',
+            'Suecia': 'Europa del Norte', 'Noruega': 'Europa del Norte', 'Dinamarca': 'Europa del Norte', 'Finlandia': 'Europa del Norte', 'Islandia': 'Europa del Norte',
+            'Polonia': 'Europa del Este', 'República Checa': 'Europa del Este', 'Chequia': 'Europa del Este', 'Hungría': 'Europa del Este',
+            'Rumanía': 'Europa del Este', 'Eslovaquia': 'Europa del Este', 'Croacia': 'Europa del Este',
+            'Estados Unidos': 'América', 'EE.UU.': 'América', 'México': 'América', 'Argentina': 'América', 'Chile': 'América', 'Colombia': 'América', 'Brasil': 'América', 'Canadá': 'América',
+            'Japón': 'Asia', 'China': 'Asia', 'Corea del Sur': 'Asia', 'India': 'Asia', 'Singapur': 'Asia', 'Tailandia': 'Asia'
+        };
+        const regionDePais = (pais) => PAIS_A_REGION[pais] || 'Otros';
 
         async function cargarCiudades() {
             try {
                 const res = await fetch(`${API_BASE}/api/ciudades`);
                 ciudades = await res.json();
-                renderizarCiudades(ciudades);
+                poblarSelectores();
+                aplicarFiltrosYOrden();
             } catch (err) {
                 console.error("Error:", err);
                 document.getElementById('contenedorCiudades').innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Error al conectar con el servidor.</p>';
             }
         }
 
-        // Lógica para filtrar y ordenar simultáneamente
+        function poblarSelectores() {
+            const selRegion = document.getElementById('selectRegion');
+            const selPais = document.getElementById('selectPais');
+            const region = selRegion.value;
+
+            const regiones = [...new Set(ciudades.map(c => regionDePais(c.pais)))].sort();
+            selRegion.innerHTML = '<option value="">Todas las regiones</option>' +
+                regiones.map(r => `<option value="${r}" ${r === region ? 'selected' : ''}>${r}</option>`).join('');
+
+            const paisesFiltrados = region
+                ? [...new Set(ciudades.filter(c => regionDePais(c.pais) === region).map(c => c.pais))]
+                : [...new Set(ciudades.map(c => c.pais))];
+            paisesFiltrados.sort();
+            const paisActual = selPais.value;
+            selPais.innerHTML = '<option value="">Todos los países</option>' +
+                paisesFiltrados.map(p => `<option value="${p}" ${p === paisActual ? 'selected' : ''}>${p}</option>`).join('');
+        }
+
         function aplicarFiltrosYOrden() {
+            const texto = document.getElementById('inputBuscarTexto').value.trim().toLowerCase();
+            const region = document.getElementById('selectRegion').value;
+            const pais = document.getElementById('selectPais').value;
             const ambiente = document.getElementById('selectAmbiente').value;
+            const presupuestoMax = parseInt(document.getElementById('rangoPresupuesto').value);
             const orden = document.getElementById('selectOrden').value;
 
-            // 1. Filtrar
-            let resultado = ambiente === 'todos' 
-                ? [...ciudades] 
-                : ciudades.filter(c => c.tipoAmbiente === ambiente);
+            let resultado = ciudades.filter(c => {
+                if (texto && !(c.nombre || '').toLowerCase().includes(texto)) return false;
+                if (region && regionDePais(c.pais) !== region) return false;
+                if (pais && c.pais !== pais) return false;
+                if (ambiente !== 'todos' && c.tipoAmbiente !== ambiente) return false;
+                if ((c.presupuesto || 0) > presupuestoMax) return false;
+                if (minSeguridad > 0) {
+                    const seg = c.metricas?.seguridad ?? 0;
+                    if (seg < minSeguridad) return false;
+                }
+                return true;
+            });
 
-            // 2. Ordenar
             if (orden === 'barato') {
                 resultado.sort((a, b) => (a.presupuesto || 0) - (b.presupuesto || 0));
             } else if (orden === 'caro') {
                 resultado.sort((a, b) => (b.presupuesto || 0) - (a.presupuesto || 0));
+            } else if (orden === 'seguridad') {
+                resultado.sort((a, b) => (b.metricas?.seguridad || 0) - (a.metricas?.seguridad || 0));
+            } else if (orden === 'nombre') {
+                resultado.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
             }
+
+            const cont = document.getElementById('contadorResultados');
+            if (cont) cont.textContent = `${resultado.length} de ${ciudades.length} ciudades`;
 
             renderizarCiudades(resultado);
         }
@@ -167,8 +261,61 @@
         }
 
         // Listeners
+        document.getElementById('inputBuscarTexto').addEventListener('input', aplicarFiltrosYOrden);
+        document.getElementById('selectRegion').addEventListener('change', () => {
+            document.getElementById('selectPais').value = '';
+            poblarSelectores();
+            aplicarFiltrosYOrden();
+        });
+        document.getElementById('selectPais').addEventListener('change', aplicarFiltrosYOrden);
         document.getElementById('selectAmbiente').addEventListener('change', aplicarFiltrosYOrden);
         document.getElementById('selectOrden').addEventListener('change', aplicarFiltrosYOrden);
+
+        const sliderPresupuesto = document.getElementById('rangoPresupuesto');
+        const valorPresupuesto = document.getElementById('valorPresupuesto');
+        sliderPresupuesto.addEventListener('input', () => {
+            const v = parseInt(sliderPresupuesto.value);
+            valorPresupuesto.textContent = v >= 2500 ? 'Cualquiera' : `${v}€`;
+            aplicarFiltrosYOrden();
+        });
+
+        document.getElementById('filtroSeguridadDest').addEventListener('click', (e) => {
+            const btn = e.target.closest('.seg-pill');
+            if (!btn) return;
+            document.querySelectorAll('#filtroSeguridadDest .seg-pill').forEach(b => {
+                b.classList.remove('active');
+                b.style.background = 'white';
+                b.style.color = '';
+                b.style.borderColor = '#e2e8f0';
+            });
+            btn.classList.add('active');
+            btn.style.background = 'var(--accent-color)';
+            btn.style.color = 'white';
+            btn.style.borderColor = 'var(--accent-color)';
+            minSeguridad = parseInt(btn.dataset.val);
+            aplicarFiltrosYOrden();
+        });
+        // Aplica estilo activo inicial al primer pill
+        const firstPill = document.querySelector('#filtroSeguridadDest .seg-pill.active');
+        if (firstPill) {
+            firstPill.style.background = 'var(--accent-color)';
+            firstPill.style.color = 'white';
+            firstPill.style.borderColor = 'var(--accent-color)';
+        }
+
+        document.getElementById('btnResetFiltros').addEventListener('click', () => {
+            document.getElementById('inputBuscarTexto').value = '';
+            document.getElementById('selectRegion').value = '';
+            document.getElementById('selectPais').value = '';
+            document.getElementById('selectAmbiente').value = 'todos';
+            document.getElementById('selectOrden').value = 'relevancia';
+            sliderPresupuesto.value = 2500;
+            valorPresupuesto.textContent = 'Cualquiera';
+            minSeguridad = 0;
+            document.querySelector('#filtroSeguridadDest .seg-pill[data-val="0"]').click();
+            poblarSelectores();
+            aplicarFiltrosYOrden();
+        });
 
         cargarCiudades();
     </script>
