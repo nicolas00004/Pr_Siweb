@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área Personal - INFUNI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .login-box {
+            background: var(--white);
+            color: var(--text-dark);
+            padding: 50px;
+            border-radius: 20px;
+            max-width: 450px;
+            margin: 60px auto;
+            text-align: left;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .login-box h3 { font-size: 1.8rem; margin-bottom: 20px; text-align: center; color: var(--primary-color); }
+        .login-box input { width: 100%; border: 1.5px solid #cbd5e1; padding: 12px; border-radius: 10px; margin-bottom: 15px; font-family: inherit; }
+        .login-box input:focus { outline: none; border-color: var(--accent-color); }
+        
+        #errorMsg { color: #ef4444; font-size: 0.9rem; text-align: center; margin-top: 15px; display: none; font-weight: 600; }
+    </style>
+</head>
+<body style="background: linear-gradient(135deg, #0f172a 0%, #3b82f6 100%); min-height: 100vh;">
+    
+    <div style="text-align: center; margin-top: 60px;">
+        <a href="index.html" style="text-decoration: none;">
+            <h1 style="color: white; font-size: 2.8rem; letter-spacing: -1px; font-weight: 800;">INF<span style="color:#60a5fa;">UNI</span></h1>
+        </a>
+    </div>
+
+    <div class="login-box">
+        <h3>Bienvenido de nuevo</h3>
+        <form id="loginForm">
+            <label style="font-weight: 600; display: block; margin-bottom: 5px;">Correo Electrónico</label>
+            <input type="email" id="emailInput" placeholder="maria@universidad.es" required>
+            
+            <label style="font-weight: 600; display: block; margin-bottom: 5px;">Contraseña</label>
+            <input type="password" id="passInput" placeholder="••••••••" required>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn-submit" style="flex: 1;">Acceder</button>
+                <button type="button" class="btn-submit" style="flex: 1; background: var(--white); color: var(--primary-color); border: 2px solid var(--primary-color);" onclick="window.location.href='registro.html'">Crear Cuenta</button>
+            </div>
+            <p id="errorMsg"></p>
+        </form>
+
+        <p style="text-align: center; margin-top: 25px; color: var(--text-muted);">
+            <a href="index.html" style="color: #64748b; font-weight: 600; text-decoration: none;">← Volver al Portal Seguro</a>
+        </p>
+    </div>
+
+    <script>
+        const API = '';
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('emailInput').value.trim();
+            const password = document.getElementById('passInput').value;
+            const errorMsg = document.getElementById('errorMsg');
+            
+            errorMsg.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('usuarioInfo', JSON.stringify({
+                        id: data._id,
+                        nombre: data.nombre,
+                        email: data.email
+                    }));
+                    window.location.href = 'perfil.html';
+                } else {
+                    errorMsg.innerText = data.error || 'Error de validación.';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (err) {
+                errorMsg.innerText = 'No se pudo conectar al servidor. ¿Está node server.js corriendo?';
+                errorMsg.style.display = 'block';
+                console.error(err);
+            }
+        });
+    </script>
+<script src="../js/auth.js"></script>
+</body>
+</html>

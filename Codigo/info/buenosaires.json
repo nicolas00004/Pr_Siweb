@@ -1,0 +1,53 @@
+{
+    "id": "buenos-aires",
+    "nombre": "Buenos Aires",
+    "pais": "Argentina",
+    "etiquetas": {
+        "historia": "🎭 Capital Cultural y Humana",
+        "transporte": "🚇 El 'Subte' y Colectivos",
+        "alojamiento": "🏠 PHs y Vida de Barrio"
+    },
+    "historia": "Buenos Aires es una metrópolis vibrante, famosa por su arquitectura europea, su pasión por el fútbol y su vida nocturna interminable. La UBA (Universidad de Buenos Aires) es una de las instituciones más prestigiosas de Iberoamérica, habiendo formado a cinco premios Nobel. Es una ciudad de librerías abiertas de noche, cafés históricos y una calidez social única.",
+    "alojamiento": "El mercado es peculiar debido a la inflación. Para estudiantes extranjeros, lo más común es buscar en Palermo (cool y seguro), Recoleta (elegante y cerca de facultades) o Almagro (más bohemio y económico). Una habitación en un piso compartido puede rondar los 300$ - 450$ USD, aunque los precios en moneda local fluctúan constantemente.",
+    "barrios": "Palermo es el epicentro del ocio y diseño. San Telmo es el barrio histórico con empedrados y ferias de antigüedades. Puerto Madero es la zona moderna frente al río. Caballito es el centro geográfico, residencial y muy bien conectado.",
+    "universidades": [
+        {
+            "nombre": "Universidad de Buenos Aires (UBA)",
+            "descripcion": "Gigante, pública y gratuita. Sus facultades (como Medicina o Derecho) son monumentos en sí mismos y referentes mundiales."
+        },
+        {
+            "nombre": "UTN - Universidad Tecnológica Nacional",
+            "descripcion": "El motor de la ingeniería en Argentina, con un enfoque muy práctico y vinculado a la industria."
+        },
+        {
+            "nombre": "UCA / Universidad de Palermo",
+            "descripcion": "Opciones privadas con campus modernos y una gran comunidad de estudiantes internacionales."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Teatro Colón",
+            "categoria": "cultura",
+            "descripcion": "Uno de los teatros de ópera más importantes del mundo por su acústica y arquitectura."
+        },
+        {
+            "nombre": "Librería El Ateneo Grand Splendid",
+            "categoria": "cultura",
+            "descripcion": "Un antiguo teatro convertido en una de las librerías más bellas del planeta."
+        },
+        {
+            "nombre": "Bosques de Palermo",
+            "categoria": "ocio",
+            "descripcion": "El pulmón verde de la ciudad, ideal para hacer deporte, tomar mate o navegar en su lago."
+        },
+        {
+            "nombre": "Avenida Corrientes",
+            "categoria": "ocioNocturno",
+            "descripcion": "La calle que nunca duerme: teatros, pizzerías clásicas y librerías abiertas hasta la madrugada."
+        }
+    ],
+    "imagenes": [
+        "../img/buenosaires_1.jpg",
+        "../img/buenosaires_2.jpg"
+    ]
+}

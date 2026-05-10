@@ -1,0 +1,35 @@
+{
+        "id": "elche",
+        "nombre": "Elche",
+        "etiquetas": {
+            "historia": "🌴 Palmeral y Tradición",
+            "transporte": "🚌 Bus Elx",
+            "alojamiento": "🏠 Barrios Obreros"
+        },
+        "historia": "Famosa por su Palmeral (Patrimonio UNESCO) y el Misteri d'Elx. Es una ciudad con una potente industria del calzado y una historia íbera milenaria.",
+        "alojamiento": "Precio medio de 220-270€. Altabix es el barrio universitario por excelencia al estar pegado a la UMH.",
+        "barrios": "Altabix es joven y con servicios. El centro es para compras y paseos históricos. Carrús es el barrio más populoso y económico.",
+        "universidades": [
+            {
+                "nombre": "Universidad Miguel Hernández (UMH)",
+                "descripcion": "Campus principal con excelentes instalaciones deportivas y tecnológicas."
+            },
+            {
+                "nombre": "CEU Cardenal Herrera",
+                "descripcion": "Sede de la universidad privada con enfoque en salud y educación."
+            }
+        ],
+        "sitios": [
+            {
+                "nombre": "Huerto del Cura",
+                "categoria": "cultura",
+                "descripcion": "Jardín botánico dentro del palmeral con la famosa Palmera Imperial."
+            },
+            {
+                "nombre": "Basilica de Santa María",
+                "categoria": "cultura",
+                "descripcion": "Donde se representa el Misteri d'Elx cada año."
+            }
+        ],
+        "imagenes": ["../img/elche_1.jpg", "../img/elche_2.jpg"]
+    }

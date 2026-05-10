@@ -1,0 +1,53 @@
+{
+    "id": "padua",
+    "nombre": "Padua",
+    "pais": "Italia",
+    "etiquetas": {
+        "historia": "📜 Tradición Académica",
+        "transporte": "🚲 Ciudad de Bicicletas",
+        "alojamiento": "🏠 Spritz y Pórticos"
+    },
+    "historia": "Fundada en 1222, la Universidad de Padua es la segunda más antigua de Italia y una de las más prestigiosas del mundo; por sus aulas pasó Galileo Galilei. La ciudad es famosa por sus frescos de Giotto en la Capilla de los Scrovegni y por tener una de las plazas más grandes de Europa, el Prato della Valle.",
+    "alojamiento": "El mercado es dinámico pero puede ser difícil encontrar sitio al inicio del curso. Una habitación cuesta entre 350€ y 500€. La zona de Portello es el barrio estudiantil por excelencia, lleno de facultades y bares. El centro histórico es precioso pero más caro y ruidoso.",
+    "barrios": "Portello es donde ocurre todo lo universitario. Guizza es una zona más residencial y barata, conectada perfectamente con el centro por el tranvía (tram). El centro histórico es ideal para vivir la verdadera esencia italiana bajo sus famosos pórticos.",
+    "universidades": [
+        {
+            "nombre": "Università degli Studi di Padova (UNIPD)",
+            "descripcion": "Una institución multidisciplinar de renombre mundial, famosa por su jardín botánico y su teatro anatómico histórico."
+        },
+        {
+            "nombre": "Palazzo del Bo",
+            "descripcion": "Sede histórica de la universidad en pleno centro, donde se encuentran las facultades de derecho y medicina."
+        },
+        {
+            "nombre": "Campus de Agripolis",
+            "descripcion": "Situado a las afueras, especializado en medicina veterinaria y ciencias agrarias con instalaciones de vanguardia."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Prato della Valle",
+            "categoria": "cultura",
+            "descripcion": "Una plaza monumental rodeada de un canal y 78 estatuas, punto de reunión clave para estudiantes."
+        },
+        {
+            "nombre": "Basilica di Sant'Antonio",
+            "categoria": "cultura",
+            "descripcion": "Lugar de peregrinación mundial y una joya arquitectónica que mezcla estilos bizantino, románico y gótico."
+        },
+        {
+            "nombre": "Piazza delle Erbe",
+            "categoria": "ocio",
+            "descripcion": "El lugar sagrado del 'Spritz' al atardecer. Mercado por la mañana y centro de la vida social por la tarde."
+        },
+        {
+            "nombre": "Navigli Padova",
+            "categoria": "ocioNocturno",
+            "descripcion": "Zona junto al río que en primavera y verano se llena de kioscos, música y ambiente universitario al aire libre."
+        }
+    ],
+    "imagenes": [
+        "../img/padua_1.jpg",
+        "../img/padua_2.jpg"
+    ]
+}

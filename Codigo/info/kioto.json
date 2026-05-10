@@ -1,0 +1,53 @@
+{
+    "id": "kioto",
+    "nombre": "Kioto",
+    "pais": "Japón",
+    "etiquetas": {
+        "historia": "⛩️ Corazón del Japón Tradicional",
+        "transporte": "🚲 Ciudad de Bicis y Autobús",
+        "alojamiento": "🏠 Casas de Madera y Residencias"
+    },
+    "historia": "Kioto fue la capital de Japón durante más de mil años. Es el centro cultural del país, con más de 1.600 templos budistas y 400 santuarios sintoístas. A diferencia de Tokio, Kioto conserva un ritmo más pausado y tradicional, siendo sede de la prestigiosa Universidad de Kioto, cuna de numerosos premios Nobel.",
+    "alojamiento": "El precio es razonable comparado con otras metrópolis globales. Una habitación en una 'Gaijin House' (casa para extranjeros) o un apartamento pequeño ronda los 45.000 - 70.000 yenes (aprox. 300€-450€). La zona cerca de la Universidad de Kioto (Sakyo-ku) es muy popular y está llena de cafés y librerías baratas para estudiantes.",
+    "barrios": "Sakyo-ku es el distrito intelectual y universitario. Gion es el famoso barrio de las geishas, precioso pero caro y turístico. Nakagyo-ku es el centro comercial y social. Arashiyama, al oeste, es un paraíso natural con su famoso bosque de bambú.",
+    "universidades": [
+        {
+            "nombre": "Kyoto University (Kyodai)",
+            "descripcion": "La segunda universidad más antigua de Japón y una de las más prestigiosas de Asia, famosa por su ambiente de libertad académica."
+        },
+        {
+            "nombre": "Ritsumeikan University",
+            "descripcion": "Muy popular entre estudiantes internacionales, con un campus moderno y una gran oferta de programas en inglés."
+        },
+        {
+            "nombre": "Kyoto City University of Arts",
+            "descripcion": "Referente en artes tradicionales y diseño, situada en un entorno que inspira creatividad."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Kinkaku-ji (Pabellón Dorado)",
+            "categoria": "cultura",
+            "descripcion": "Un templo zen recubierto de pan de oro que se refleja en un estanque, una de las imágenes más icónicas de Japón."
+        },
+        {
+            "nombre": "Fushimi Inari-taisha",
+            "categoria": "cultura",
+            "descripcion": "Famoso por sus miles de toriis rojos que serpentean por la montaña; el camino de senderismo favorito de los estudiantes."
+        },
+        {
+            "nombre": "Pontocho Alley",
+            "categoria": "ocio",
+            "descripcion": "Un estrecho callejón junto al río Kamo lleno de tabernas tradicionales (Izakayas) y restaurantes escondidos."
+        },
+        {
+            "nombre": "Río Kamo (Kamogawa)",
+            "categoria": "ocio",
+            "descripcion": "El punto de encuentro social: en verano los estudiantes se sientan en la orilla a charlar, tocar música y cenar al aire libre."
+        }
+    ],
+    "imagenes": [
+        "../img/kioto_1.jpg",
+        "../img/kioto_2.jpg"
+    ]
+}

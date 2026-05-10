@@ -1,0 +1,53 @@
+{
+    "id": "ciudad-de-mexico",
+    "nombre": "Ciudad de México",
+    "pais": "México",
+    "etiquetas": {
+        "historia": "🌋 Metrópolis de los Palacios",
+        "transporte": "🚇 Metro y Metrobús",
+        "alojamiento": "🏠 Colonias y Terrazas"
+    },
+    "historia": "Construida sobre las ruinas de la antigua Tenochtitlan, CDMX es una de las ciudades más antiguas de América. Es el centro político, económico y cultural de México. Su universidad principal, la UNAM, tiene un campus central que es Patrimonio de la Humanidad por la UNESCO. Con más de 150 museos, es la segunda ciudad con más museos del mundo, solo después de Londres.",
+    "alojamiento": "La ciudad ofrece opciones para todos los presupuestos. Los estudiantes suelen buscar en colonias como Roma o Condesa (muy hípsters y seguras, pero caras), Coyoacán (bohemio y cerca de la UNAM) o la San Rafael (céntrica y más económica). Una habitación en un piso compartido puede costar entre 300$ y 600$ USD (aprox. 280€-550€), dependiendo de la zona.",
+    "barrios": "La Condesa y Roma son el epicentro de la vida nocturna y cafés. Coyoacán es el barrio de Frida Kahlo, con un aire de pueblo colonial. Santa Fe es el distrito financiero moderno y futurista. El Centro Histórico es el corazón monumental de la ciudad.",
+    "universidades": [
+        {
+            "nombre": "UNAM - Universidad Nacional Autónoma de México",
+            "descripcion": "La universidad más grande de Iberoamérica. Su Ciudad Universitaria (CU) es famosa por sus murales de Rivera y Siqueiros."
+        },
+        {
+            "nombre": "Instituto Politécnico Nacional (IPN)",
+            "descripcion": "Líder en ingeniería y ciencias exactas, con una gran tradición en la formación técnica del país."
+        },
+        {
+            "nombre": "ITAM / Tecnológico de Monterrey (Tec)",
+            "descripcion": "Instituciones privadas de élite con campus modernos y fuertes lazos con el sector empresarial internacional."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Castillo de Chapultepec",
+            "categoria": "cultura",
+            "descripcion": "El único castillo real en América, situado en lo alto de un cerro con vistas espectaculares al Paseo de la Reforma."
+        },
+        {
+            "nombre": "Museo Nacional de Antropología",
+            "categoria": "cultura",
+            "descripcion": "Una joya arquitectónica que alberga la colección más importante de arte prehispánico del mundo."
+        },
+        {
+            "nombre": "Zócalo y Catedral Metropolitana",
+            "categoria": "cultura",
+            "descripcion": "Una de las plazas más grandes del mundo, rodeada de edificios históricos y restos del Templo Mayor azteca."
+        },
+        {
+            "nombre": "Xochimilco",
+            "categoria": "ocio",
+            "descripcion": "Canales antiguos donde puedes pasear en 'trajineras' decoradas, ideal para fiestas y comidas con grupos grandes de estudiantes."
+        }
+    ],
+    "imagenes": [
+        "../img/cdmx_1.jpg",
+        "../img/cdmx_2.jpg"
+    ]
+}

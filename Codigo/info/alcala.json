@@ -1,0 +1,31 @@
+{
+    "id": "alcala",
+    "nombre": "Alcalá de Henares",
+    "etiquetas": {
+      "historia": "🖋️ Ciudad de Cervantes",
+      "transporte": "🚆 Cercanías a Madrid",
+      "alojamiento": "🏠 Tradición académica"
+    },
+    "historia": "Ciudad Patrimonio de la Humanidad, cuna de Miguel de Cervantes y sede de una de las universidades históricas de Europa.",
+    "alojamiento": "El centro histórico y la zona del campus externo (Científico-Tecnológico). Precios: 300€-450€.",
+    "barrios": "Calle Mayor es el eje social. El barrio de los Escritores es una zona residencial tranquila.",
+    "universidades": [
+      {
+        "nombre": "Universidad de Alcalá (UAH)",
+        "descripcion": "Famosa por su paraninfo y su arquitectura renacentista, es un referente en filología."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Casa Natal de Cervantes",
+        "categoria": "cultura",
+        "descripcion": "Museo en la casa donde nació el autor de El Quijote."
+      },
+      {
+        "nombre": "Plaza de Cervantes",
+        "categoria": "ocio",
+        "descripcion": "Gran plaza ajardinada que sirve de punto de encuentro principal."
+      }
+    ],
+    "imagenes": ["../img/alcala_1.jpg", "../img/alcala_2.jpg"]
+  }

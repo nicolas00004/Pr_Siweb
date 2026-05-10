@@ -1,0 +1,47 @@
+{
+        "id": "murcia",
+        "nombre": "Murcia",
+        "etiquetas": {
+            "historia": "🍋 Huerta y Barroco",
+            "transporte": "🚋 Tranvía y Bici",
+            "alojamiento": "🏠 Vida Estudiantil"
+        },
+        "historia": "Fundada en el año 825 por Abderramán II en el valle del río Segura. Es famosa por su huerta, su impresionante catedral barroca y una de las tradiciones de Semana Santa más importantes del país.",
+        "alojamiento": "Ciudad muy económica y con mucha oferta. Una habitación ronda los 220€ - 280€. Las zonas favoritas son Espinardo (cerca del campus principal) o el barrio de Vistalegre y La Fama por su cercanía al centro.",
+        "barrios": "El Carmen es el barrio con más solera al otro lado del río. Santa María de Gracia es ideal para estudiantes por su ambiente joven. El centro alrededor de la Plaza de las Flores es el corazón del tapeo.",
+        "universidades": [
+            {
+                "nombre": "Universidad de Murcia (UMU) - Campus de la Merced",
+                "descripcion": "Campus histórico en pleno centro que alberga Derecho y Letras."
+            },
+            {
+                "nombre": "UMU - Campus de Espinardo",
+                "descripcion": "Gran ciudad universitaria a las afueras con la mayoría de facultades científicas."
+            },
+            {
+                "nombre": "UCAM",
+                "descripcion": "Universidad privada situada en el Monasterio de Los Jerónimos."
+            }
+        ],
+        "sitios": [
+            {
+                "nombre": "Catedral de Murcia",
+                "categoria": "cultura",
+                "descripcion": "Obra maestra del barroco español con una torre de 93 metros de altura."
+            },
+            {
+                "nombre": "Plaza de las Flores",
+                "categoria": "ocio",
+                "descripcion": "El lugar más emblemático para disfrutar de la cultura del pastel de carne y el tapeo."
+            },
+            {
+                "nombre": "Teatro Romea",
+                "categoria": "cultura",
+                "descripcion": "Uno de los teatros con más historia y leyendas de España."
+            }
+        ],
+        "imagenes": [
+            "../img/murcia_1.jpg",
+            "../img/murcia_2.jpg"
+        ]
+    }

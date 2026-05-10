@@ -1,0 +1,31 @@
+{
+        "id": "guadalajara",
+        "nombre": "Guadalajara",
+        "etiquetas": {
+            "historia": "🏰 Palacio del Infantado",
+            "transporte": "🚆 Cercanías Madrid",
+            "alojamiento": "🏠 Expansión"
+        },
+        "historia": "Importante centro de la familia Mendoza durante el Renacimiento. Hoy es una ciudad que mezcla su patrimonio con una fuerte actividad industrial por su cercanía a Madrid.",
+        "alojamiento": "Los precios se ven influenciados por Madrid, rondando los 280-350€. La zona centro y el área cerca de la estación son las más comunes para estudiantes.",
+        "barrios": "El centro alrededor de la calle Mayor tiene mucha vida. La zona de Aguas Vivas es moderna y con muchas instalaciones deportivas.",
+        "universidades": [
+            {
+                "nombre": "UAH - Campus de Guadalajara",
+                "descripcion": "Dependiente de la Universidad de Alcalá, con un fuerte enfoque en Magisterio y Enfermería."
+            }
+        ],
+        "sitios": [
+            {
+                "nombre": "Palacio del Infantado",
+                "categoria": "cultura",
+                "descripcion": "Joyel del estilo gótico isabelino y símbolo de la ciudad."
+            },
+            {
+                "nombre": "Panteón de la Condesa de la Vega del Pozo",
+                "categoria": "cultura",
+                "descripcion": "Monumento funerario de impresionante arquitectura bizantina."
+            }
+        ],
+        "imagenes": ["../img/guadalajara_1.jpg", "../img/guadalajara_2.jpg"]
+    }

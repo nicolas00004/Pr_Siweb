@@ -1,0 +1,35 @@
+{
+    "id": "pamplona",
+    "nombre": "Pamplona",
+    "etiquetas": {
+      "historia": "🐂 Reino de Navarra",
+      "transporte": "🚲 Carriles sostenibles",
+      "alojamiento": "🏠 Muy buen nivel"
+    },
+    "historia": "Famosa mundialmente por los Sanfermines, Pamplona es una ciudad fortificada con una altísima calidad de vida y zonas verdes.",
+    "alojamiento": "Iturrama es el barrio universitario por excelencia. San Juan es también popular. Precios medios: 300€-500€.",
+    "barrios": "Casco Viejo para el ambiente de pinchos y juerga. El Ensanche es la zona más comercial y moderna.",
+    "universidades": [
+      {
+        "nombre": "Universidad Pública de Navarra (UPNA)",
+        "descripcion": "Campus moderno y tecnológico con enfoque en ingenierías y ciencias sociales."
+      },
+      {
+        "nombre": "Universidad de Navarra (UNAV)",
+        "descripcion": "Privada, con uno de los campus más grandes y cuidados de España."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Ciudadela de Pamplona",
+        "categoria": "ocio",
+        "descripcion": "Antigua fortificación renacentista hoy convertida en el gran parque central."
+      },
+      {
+        "nombre": "Plaza del Castillo",
+        "categoria": "ocio",
+        "descripcion": "El 'cuarto de estar' de los pamploneses, rodeado de cafés históricos."
+      }
+    ],
+    "imagenes": ["../img/pamplona_1.jpg", "../img/pamplona_2.jpg"]
+  }

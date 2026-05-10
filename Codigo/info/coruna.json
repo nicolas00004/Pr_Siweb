@@ -1,0 +1,31 @@
+{
+    "id": "coruna",
+    "nombre": "La Coruña",
+    "etiquetas": {
+      "historia": "🕯️ Torre de Hércules",
+      "transporte": "🚌 Red urbana completa",
+      "alojamiento": "🌊 Ciudad de Cristal"
+    },
+    "historia": "Ciudad peninsular conocida por sus fachadas de galerías de vidrio y por albergar el faro romano en funcionamiento más antiguo del mundo.",
+    "alojamiento": "Zonas de Labañou (cerca de educación) o Riazor. Precios medios: 250€-400€.",
+    "barrios": "Monte Alto es el barrio bohemio y de moda. Los Cantones forman el centro comercial y financiero.",
+    "universidades": [
+      {
+        "nombre": "Universidad de la Coruña (UDC)",
+        "descripcion": "Destaca en arquitectura e informática con campus repartidos por la ciudad y Ferrol."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Torre de Hércules",
+        "categoria": "cultura",
+        "descripcion": "Faro de origen romano y símbolo indiscutible de la ciudad."
+      },
+      {
+        "nombre": "Playa de Riazor",
+        "categoria": "ocio",
+        "descripcion": "Enorme playa urbana que se integra perfectamente en el centro."
+      }
+    ],
+    "imagenes": ["../img/coruna_1.jpg", "../img/coruna_2.jpg"]
+  }

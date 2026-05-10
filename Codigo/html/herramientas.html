@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramientas - INFUNI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .tool-panel {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e2e8f0;
+        }
+
+        .tool-panel h3 { color: var(--primary-color); margin-bottom: 20px; font-size: 1.5rem; }
+        
+        .compare-box { display: flex; justify-content: space-between; gap: 20px; }
+        .city-select { flex: 1; padding: 15px; border-radius: 10px; border: 1.5px solid #cbd5e1; font-family: inherit; font-size: 1rem; }
+        
+        .compare-table { width: 100%; margin-top: 25px; border-collapse: collapse; }
+        .compare-table th, .compare-table td { padding: 15px; border-bottom: 1px solid #e2e8f0; text-align: center; }
+        .compare-table th { color: var(--text-muted); font-weight: 500; }
+        .compare-table tr:hover { background: var(--bg-light); }
+        .winner { font-weight: bold; color: var(--accent-color); }
+        
+        /* Ranking Cards */
+        .rank-card {
+            display: flex;
+            align-items: center;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease-out;
+        }
+        .rank-card:hover {
+            transform: translateX(5px);
+            border-color: var(--accent-color);
+            box-shadow: 0 4px 14px rgba(59,130,246,0.18);
+        }
+        .rank-card-link { cursor: pointer; }
+        .rank-card-link:hover .rank-name { color: var(--accent-color); }
+        .rank-pos {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            width: 35px;
+        }
+        .rank-pos.top-1 { color: #fbbf24; }
+        .rank-pos.top-2 { color: #94a3b8; }
+        .rank-pos.top-3 { color: #b45309; }
+        .rank-info { flex: 1; }
+        .rank-name { font-weight: 700; color: var(--primary-color); display: block; font-size: 1.05rem; }
+        .rank-val { font-size: 0.9rem; color: var(--accent-color); font-weight: 600; }
+        
+        .btn-submit:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Filtros de ciudades (mismo look que comunidad) */
+        .foro-tabs {
+            background: var(--white);
+            padding: 16px 20px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .foro-tabs-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .foro-filtros-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+        @media (max-width: 600px) { .foro-filtros-row { grid-template-columns: 1fr; } }
+        .foro-filtro { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .foro-filtro label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .foro-filtro select {
+            width: 100%;
+            padding: 9px 12px;
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            background: #f8fafc;
+            font-size: 0.88rem;
+            font-family: inherit;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .foro-filtro select:hover { background: #fff; border-color: #cbd5e1; }
+        .foro-filtro select:focus { outline: none; border-color: var(--accent-color); background: #fff; }
+        .foro-filtro select:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
+        .btn-reset-foro {
+            background: #f1f5f9;
+            border: 1.5px solid #e2e8f0;
+            padding: 9px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            color: var(--text-dark);
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-reset-foro:hover { background: #e2e8f0; }
+        .foro-filtros-status {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            background: #f8fafc;
+            padding: 6px 12px;
+            border-radius: 10px;
+            display: inline-block;
+            align-self: flex-start;
+        }
+        .foro-filtros-status.is-active { background: #eff6ff; color: var(--accent-color); }
+
+        /* Pesos por criterio */
+        .pesos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px 18px;
+            margin-top: 6px;
+        }
+        .peso-control { display: flex; flex-direction: column; gap: 4px; }
+        .peso-control-head { display: flex; justify-content: space-between; align-items: center; }
+        .peso-control-label { font-size: 0.82rem; font-weight: 600; color: var(--text-dark); }
+        .peso-control-value {
+            font-size: 0.78rem; font-weight: 700;
+            color: var(--accent-color); background: #eff6ff;
+            padding: 2px 9px; border-radius: 10px; min-width: 32px; text-align: center;
+        }
+        .peso-control input[type=range] {
+            width: 100%; accent-color: var(--accent-color);
+            height: 6px;
+        }
+
+        /* Resultado del comparador — vencedor */
+        .winner-hero {
+            position: relative;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #ea580c 100%);
+            color: white;
+            padding: 40px 24px 34px;
+            border-radius: 20px;
+            text-align: center;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(245, 158, 11, 0.35);
+            animation: winner-in 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        .winner-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% -10%, rgba(255,255,255,0.4) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .winner-hero::after {
+            content: '✦';
+            position: absolute;
+            color: rgba(255,255,255,0.45);
+            font-size: 1.4rem;
+            top: 22px;
+            right: 32px;
+            animation: sparkle 2.6s ease-in-out infinite;
+        }
+        .winner-trophy-big {
+            font-size: 4rem;
+            line-height: 1;
+            display: inline-block;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));
+            animation: trophy-float 2.4s ease-in-out infinite;
+        }
+        .winner-label {
+            margin-top: 6px;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 700;
+            opacity: 0.92;
+        }
+        .winner-city {
+            font-size: clamp(2.4rem, 5vw, 3.6rem);
+            font-weight: 900;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            margin: 6px 0 20px;
+            text-shadow: 0 4px 14px rgba(0,0,0,0.2);
+        }
+        .winner-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .winner-score {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            background: rgba(255,255,255,0.22);
+            padding: 8px 18px;
+            border-radius: 50px;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .winner-score-num { font-size: 2rem; font-weight: 900; line-height: 1; }
+        .winner-score-suffix { font-size: 0.85rem; opacity: 0.85; font-weight: 600; }
+        .winner-pill {
+            background: rgba(255,255,255,0.95);
+            color: #b45309;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .winner-reasons {
+            display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+            margin-top: 16px;
+        }
+        .winner-chip {
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.35);
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        @keyframes winner-in {
+            from { opacity: 0; transform: translateY(18px) scale(0.96); }
+            to   { opacity: 1; transform: translateY(0)    scale(1); }
+        }
+        @keyframes trophy-float {
+            0%, 100% { transform: translateY(0)    rotate(-4deg); }
+            50%      { transform: translateY(-8px) rotate(4deg); }
+        }
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; transform: scale(1)   rotate(0deg); }
+            50%      { opacity: 1;   transform: scale(1.3) rotate(180deg); }
+        }
+
+        /* Podio top-3 */
+        .podium {
+            display: grid;
+            gap: 12px;
+            margin-top: 28px;
+            align-items: end;
+        }
+        .podium-step {
+            text-align: center;
+            padding: 16px 10px 14px;
+            border-radius: 12px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s;
+        }
+        .podium-step:hover { transform: translateY(-3px); }
+        .podium-1 {
+            transform: translateY(-14px);
+            border: 2px solid #fbbf24;
+            background: linear-gradient(180deg, #fffbeb 0%, white 100%);
+            box-shadow: 0 12px 30px rgba(251, 191, 36, 0.25);
+        }
+        .podium-1:hover { transform: translateY(-17px); }
+        .podium-2 { border-color: #cbd5e1; }
+        .podium-3 { border-color: #d97706; }
+        .podium-medal { font-size: 1.9rem; line-height: 1; }
+        .podium-name { font-weight: 700; color: var(--primary-color); margin: 6px 0 2px; font-size: 0.98rem; }
+        .podium-score { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+        @media (max-width: 500px) {
+            .podium { grid-template-columns: 1fr !important; }
+            .podium-1 { transform: none; }
+            .podium-1:hover { transform: translateY(-3px); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="nav-global">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: inherit;">
+                    <h1>INF<span>UNI</span></h1>
+                </a>
+            </div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <ul id="navMenu">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="busqueda.html">Buscar</a></li>
+                <li><a href="destinos.html">Destinos</a></li>
+                <li>
+                    <a href="herramientas.html" class="active">Comparador</a>
+                </li>
+                <li>
+                    <a href="comunidad.html">Comunidad ▾</a>
+                    <ul>
+                        <li><a href="comunidad.html#foro">Foro</a></li>
+                        <li><a href="busqueda.html#comunidad">Añadir ciudad</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="ayuda-ahp.html" title="Ayuda sobre el método AHP">Ayuda </a>
+                </li>
+                <li>
+                    <a href="login.html" class="btn-login" id="btnSesion">Inicia Sesión 👤</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        
+        <div style="margin-top: 40px;">
+
+            <!-- COMPARADOR VS DINÁMICO -->
+            <div class="tool-panel" id="comparador">
+                <div style="margin-bottom: 12px;">
+                    <h3>📊 Comparador de Destinos Multidestino</h3>
+                </div>
+
+                <p style="margin-bottom: 20px; color: var(--text-muted);">Marca <strong>2 o más ciudades</strong> abajo para compararlas en función de tu perfil. Pulsa <em>Ajustar criterios</em> si quieres dar más peso a algún factor.</p>
+
+                <!-- FILTROS DE CIUDADES -->
+                <div class="foro-tabs" id="filtrosCiudades">
+                    <div class="foro-tabs-label">📍 Filtrar ciudades por:</div>
+                    <div class="foro-filtros-row">
+                        <div class="foro-filtro">
+                            <label for="filtroRegion">🌍 Región</label>
+                            <select id="filtroRegion">
+                                <option value="">Todas las regiones</option>
+                            </select>
+                        </div>
+                        <div class="foro-filtro">
+                            <label for="filtroPais">🏳️ País</label>
+                            <select id="filtroPais">
+                                <option value="">Todos los países</option>
+                            </select>
+                        </div>
+                        <button type="button" id="btnResetFiltrosCiudades" class="btn-reset-foro" title="Restablecer filtros">↩ Reset</button>
+                    </div>
+                    <div class="foro-filtros-status" id="filtrosCiudadesStatus">Mostrando todas las ciudades.</div>
+                </div>
+
+                <!-- PANEL DE PESOS (importancia por criterio) -->
+                <div class="foro-tabs" id="pesosPanel">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                        <div>
+                            <div class="foro-tabs-label">⚖️ Ajustar pesos por criterio</div>
+                            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">Desliza a la derecha lo que más te importe (1 = poco · 5 = imprescindible).</div>
+                        </div>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <button type="button" id="btnTogglePesos" class="btn-reset-foro" aria-expanded="false" style="background:var(--accent-color); color:white; border:none;">⚙️ Ajustar criterios <span id="togglePesosArrow">▼</span></button>
+                            <button type="button" id="btnResetPesos" class="btn-reset-foro" title="Restablecer pesos">↩ Reset</button>
+                        </div>
+                    </div>
+                    <div id="pesosCollapsible" style="display:none; margin-top:12px;">
+                        <div class="quick-profiles" id="quickProfilesPesos" style="display:flex; gap:6px; flex-wrap:wrap; padding:8px 10px; background:#f8fafc; border-radius:12px; border:1px dashed #e2e8f0; margin-top:4px;">
+                            <button type="button" class="qp-btn" data-perfil="economico">💸 Económico</button>
+                            <button type="button" class="qp-btn" data-perfil="academico">🎓 Académico</button>
+                            <button type="button" class="qp-btn" data-perfil="social">🎉 Social</button>
+                            <button type="button" class="qp-btn" data-perfil="seguro">🛡️ Seguro</button>
+                            <button type="button" class="qp-btn" data-perfil="equilibrado">⚖️ Equilibrado</button>
+                        </div>
+                        <div class="pesos-grid" id="pesosGrid">
+                            <!-- Sliders generados por JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SELECTOR MULTI-CIUDAD -->
+                <div class="foro-tabs" id="ciudadesSelectorPanel" style="margin-top:14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                        <div>
+                            <div class="foro-tabs-label">🏙️ Ciudades a comparar</div>
+                            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">Pulsa una tarjeta para añadirla. Mínimo 2 · Máximo 10.</div>
+                        </div>
+                        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                            <span id="ciudadesSelectorCount" style="font-size:0.85rem; color:var(--accent-color); font-weight:800; padding:4px 12px; background:#eff6ff; border-radius:50px;">0 / 10</span>
+                            <button type="button" id="btnLimpiarSeleccion" class="btn-reset-foro" title="Quitar todas">🗑 Limpiar</button>
+                        </div>
+                    </div>
+                    <input type="text" id="buscadorCiudadesSelector" placeholder="🔍 Filtrar por nombre…" style="width:100%; margin-top:10px; padding:9px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:0.88rem; outline:none;">
+                    <div id="ciudadesSelectorGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:8px; max-height:300px; overflow-y:auto; margin-top:10px; padding:10px; background:#f8fafc; border-radius:12px; border:1px dashed #e2e8f0;">
+                        <!-- Tarjetas generadas por JS -->
+                    </div>
+                    <div id="hintMinimo" style="display:none; text-align:center; margin-top:10px; padding:10px; background:#fef3c7; color:#92400e; border-radius:10px; font-size:0.85rem; font-weight:600;">
+                        ⚠️ Selecciona al menos 2 ciudades para comparar
+                    </div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="compare-table" id="tablaCompare">
+                        <thead>
+                            <tr id="headerRow">
+                                <th style="text-align: left; min-width: 150px;">Criterio</th>
+                                <!-- Columnas dinámicas aquí -->
+                            </tr>
+                        </thead>
+                        <tbody id="compareBody">
+                            <tr data-criterio="presupuesto">
+                                <td style="text-align: left;"><strong>💶 Presupuesto Est.</strong></td>
+                            </tr>
+                            <tr data-criterio="alquiler">
+                                <td style="text-align: left;"><strong>🏠 Alquiler Medio</strong></td>
+                            </tr>
+                            <tr data-criterio="costeOcio">
+                                <td style="text-align: left;"><strong>🍻 Coste Ocio</strong></td>
+                            </tr>
+                            <tr data-criterio="ambiente">
+                                <td style="text-align: left;"><strong>🎭 Ambiente</strong></td>
+                            </tr>
+                            <tr data-criterio="seguridad">
+                                <td style="text-align: left;"><strong>🛡️ Seguridad</strong></td>
+                            </tr>
+                            <tr data-criterio="transporte">
+                                <td style="text-align: left;"><strong>🚌 Transporte</strong></td>
+                            </tr>
+                            <tr data-criterio="ocio">
+                                <td style="text-align: left;"><strong>🌃 Vida Nocturna</strong></td>
+                            </tr>
+                            <tr data-criterio="turismo">
+                                <td style="text-align: left;"><strong>🏛️ Turismo y Monumentos</strong></td>
+                            </tr>
+                            <tr data-criterio="gastronomia">
+                                <td style="text-align: left;"><strong>🍴 Gastronomía</strong></td>
+                            </tr>
+                            <tr data-criterio="academica">
+                                <td style="text-align: left;"><strong>🎓 Calidad Académica</strong></td>
+                            </tr>
+                            <tr data-criterio="conectividad">
+                                <td style="text-align: left;"><strong>🌐 Wi-Fi / Conexión</strong></td>
+                            </tr>
+                            <tr id="deleteRow">
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- RESULTADO: MEJOR OPCIÓN GLOBAL -->
+                <div id="resultadoComparador" style="margin-top: 30px;">
+                    <p style="color: var(--text-muted); text-align:center; padding: 25px; background: #f8fafc; border-radius: 16px; margin: 0;">Selecciona al menos 2 ciudades para ver el resultado.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SECCIÓN DE RANKINGS DINÁMICOS -->
+        <div style="margin-top: 60px;">
+            <h3 style="color: var(--primary-color); text-align: center; margin-bottom: 30px;">🏆 Rankings en Tiempo Real</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+                <div class="tool-panel fade-in" style="padding: 30px;" id="rankBaratas">
+                    <h4>💰 Más Económicas</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Menor presupuesto mensual est.</p>
+                    <div id="listBaratas" style="margin-top: 15px;">
+                        <!-- Dinámico -->
+                    </div>
+                </div>
+                <div class="tool-panel fade-in" style="padding: 30px; animation-delay: 0.1s;" id="rankSeguras">
+                    <h4>🛡️ Más Seguras</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Mayor puntuación en seguridad</p>
+                    <div id="listSeguras" style="margin-top: 15px;">
+                        <!-- Dinámico -->
+                    </div>
+                </div>
+                <div class="tool-panel fade-in" style="padding: 30px; animation-delay: 0.2s;" id="rankOcio">
+                    <h4>🎭 Mejor Ocio</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Mejor oferta de actividades</p>
+                    <div id="listOcio" style="margin-top: 15px;">
+                        <!-- Dinámico -->
+                    </div>
+                </div>
+                <div class="tool-panel fade-in" style="padding: 30px; animation-delay: 0.3s;" id="rankTurismo">
+                    <h4>🌍 Más Turísticas</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Mejor patrimonio monumental</p>
+                    <div id="listTurismo" style="margin-top: 15px;">
+                        <!-- Dinámico -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- LOGICA FRONT END HERRAMIENTAS -->
+    <script>
+        const API_BASE = '';
+        let todasCiudades = [];
+        let ciudadesCargadas = false;
+
+        // Filtros de ciudades (mismo esquema que el foro de comunidad)
+        const filtroRegion = document.getElementById('filtroRegion');
+        const filtroPais = document.getElementById('filtroPais');
+        const btnResetFiltrosCiudades = document.getElementById('btnResetFiltrosCiudades');
+        const filtrosCiudadesStatus = document.getElementById('filtrosCiudadesStatus');
+
+        const PAIS_A_REGION = {
+            'España': 'Europa del Sur',
+            'Italia': 'Europa del Sur',
+            'Portugal': 'Europa del Sur',
+            'Grecia': 'Europa del Sur',
+            'Malta': 'Europa del Sur',
+            'Francia': 'Europa Occidental',
+            'Alemania': 'Europa Occidental',
+            'Países Bajos': 'Europa Occidental',
+            'Holanda': 'Europa Occidental',
+            'Bélgica': 'Europa Occidental',
+            'Luxemburgo': 'Europa Occidental',
+            'Suiza': 'Europa Occidental',
+            'Austria': 'Europa Occidental',
+            'Reino Unido': 'Islas Británicas',
+            'Irlanda': 'Islas Británicas',
+            'Suecia': 'Europa del Norte',
+            'Noruega': 'Europa del Norte',
+            'Dinamarca': 'Europa del Norte',
+            'Finlandia': 'Europa del Norte',
+            'Islandia': 'Europa del Norte',
+            'Polonia': 'Europa del Este',
+            'República Checa': 'Europa del Este',
+            'Chequia': 'Europa del Este',
+            'Hungría': 'Europa del Este',
+            'Rumanía': 'Europa del Este',
+            'Eslovaquia': 'Europa del Este',
+            'Croacia': 'Europa del Este'
+        };
+        const regionDePais = (pais) => PAIS_A_REGION[pais] || 'Otros';
+
+        function getCiudadesFiltradas() {
+            const region = filtroRegion.value;
+            const pais = filtroPais.value;
+            return todasCiudades.filter(c => {
+                if (region && regionDePais(c.pais) !== region) return false;
+                if (pais && c.pais !== pais) return false;
+                return true;
+            });
+        }
+
+        function poblarFiltroRegion() {
+            const regiones = [...new Set(todasCiudades.map(c => regionDePais(c.pais)))].sort();
+            filtroRegion.innerHTML = '<option value="">Todas las regiones</option>' +
+                regiones.map(r => `<option value="${r}">${r}</option>`).join('');
+        }
+        function poblarFiltroPais() {
+            const region = filtroRegion.value;
+            const fuente = region ? todasCiudades.filter(c => regionDePais(c.pais) === region) : todasCiudades;
+            const paises = [...new Set(fuente.map(c => c.pais).filter(Boolean))].sort();
+            filtroPais.innerHTML = '<option value="">Todos los países</option>' +
+                paises.map(p => `<option value="${p}">${p}</option>`).join('');
+            filtroPais.disabled = paises.length === 0;
+        }
+
+        function actualizarStatusFiltrosCiudades() {
+            const partes = [];
+            if (filtroRegion.value) partes.push(filtroRegion.value);
+            if (filtroPais.value) partes.push(filtroPais.value);
+            if (partes.length) {
+                filtrosCiudadesStatus.textContent = `Filtrando: ${partes.join(' › ')}`;
+                filtrosCiudadesStatus.classList.add('is-active');
+            } else {
+                filtrosCiudadesStatus.textContent = 'Mostrando todas las ciudades.';
+                filtrosCiudadesStatus.classList.remove('is-active');
+            }
+        }
+
+        // Reconstruye los <select> de cada columna del comparador con la lista filtrada,
+        // preservando la ciudad ya elegida aunque quede fuera del filtro.
+        function refrescarSelectsCompare() {
+            const ciudadesFiltradas = getCiudadesFiltradas();
+            document.querySelectorAll('#headerRow select.city-select').forEach(sel => {
+                const prev = sel.value;
+                let opciones = ciudadesFiltradas.slice();
+                if (prev && !opciones.some(c => String(c._id) === String(prev))) {
+                    const actual = todasCiudades.find(c => String(c._id) === String(prev));
+                    if (actual) opciones = [actual, ...opciones];
+                }
+                sel.innerHTML = '<option value="">Selecciona...</option>' +
+                    opciones.map(c => `<option value="${c._id}">${c.nombre}</option>`).join('');
+                sel.value = prev;
+            });
+        }
+
+        function aplicarFiltrosCiudades() {
+            actualizarStatusFiltrosCiudades();
+            refrescarSelectsCompare();
+            renderCiudadesSelector();
+        }
+
+        // === SELECTOR MULTI-CIUDAD (debajo de los criterios) ===
+        // Mapa: ciudadId -> colId (para saber qué columna borrar al desmarcar)
+        const ciudadIdToColId = new Map();
+
+        function renderCiudadesSelector() {
+            const grid = document.getElementById('ciudadesSelectorGrid');
+            if (!grid) return;
+            const buscador = document.getElementById('buscadorCiudadesSelector');
+            const texto = (buscador?.value || '').trim().toLowerCase();
+            let ciudades = getCiudadesFiltradas().slice();
+            if (texto) ciudades = ciudades.filter(c => (c.nombre || '').toLowerCase().includes(texto));
+            ciudades.sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+            if (ciudades.length === 0) {
+                grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px; color:var(--text-muted); font-size:0.85rem;">No hay ciudades con esos filtros.</div>';
+                actualizarContadorSeleccion();
+                return;
+            }
+
+            grid.innerHTML = ciudades.map(c => {
+                const sel = ciudadIdToColId.has(String(c._id));
+                return `<label class="ciudad-pick ${sel ? 'is-selected' : ''}" data-ciudad-id="${c._id}" style="position:relative; display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:10px; background:${sel ? 'var(--accent-color)' : 'white'}; color:${sel ? 'white' : 'var(--text-dark)'}; border:1.5px solid ${sel ? 'var(--accent-color)' : '#e2e8f0'}; cursor:pointer; font-size:0.85rem; font-weight:600; user-select:none; transition:all 0.15s; box-shadow:${sel ? '0 3px 10px rgba(59,130,246,0.3)' : 'none'};">
+                    <input type="checkbox" data-ciudad-id="${c._id}" ${sel ? 'checked' : ''} style="cursor:pointer; accent-color:white;">
+                    <span style="flex:1;">${c.nombre}</span>
+                    ${sel ? '<span style="font-size:1rem;">✓</span>' : ''}
+                </label>`;
+            }).join('');
+            actualizarContadorSeleccion();
+            grid.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.addEventListener('change', onCiudadCheckboxChange);
+            });
+        }
+
+        function onCiudadCheckboxChange(e) {
+            const cid = String(e.target.dataset.ciudadId);
+            if (e.target.checked) {
+                if (colCount >= MAX_CIUDADES) {
+                    e.target.checked = false;
+                    if (typeof showToast === 'function') showToast(`Máximo ${MAX_CIUDADES} ciudades`, 'error');
+                    return;
+                }
+                addCompareColumn();
+                // Asignar la última columna creada a esta ciudad
+                const headers = headerRow.querySelectorAll('th[id^="header_city_col_"]');
+                const lastTh = headers[headers.length - 1];
+                if (!lastTh) return;
+                const colId = lastTh.id.replace('header_', '');
+                const sel = lastTh.querySelector('select.city-select');
+                if (sel) {
+                    sel.value = cid;
+                    updateColumn(colId, cid);
+                }
+                ciudadIdToColId.set(cid, colId);
+            } else {
+                const colId = ciudadIdToColId.get(cid);
+                if (colId) {
+                    removeColumn(colId);
+                    ciudadIdToColId.delete(cid);
+                }
+            }
+            actualizarContadorSeleccion();
+        }
+
+        function actualizarContadorSeleccion() {
+            const c = document.getElementById('ciudadesSelectorCount');
+            if (c) c.textContent = `${ciudadIdToColId.size} / ${MAX_CIUDADES}`;
+            const hint = document.getElementById('hintMinimo');
+            if (hint) hint.style.display = (ciudadIdToColId.size > 0 && ciudadIdToColId.size < 2) ? 'block' : 'none';
+        }
+
+        // 1. CARGAR CIUDADES INICIALES
+        async function init() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ciudades`);
+                todasCiudades = await res.json();
+                ciudadesCargadas = true;
+
+                poblarFiltroRegion();
+                poblarFiltroPais();
+
+                filtroRegion.addEventListener('change', () => {
+                    filtroPais.value = '';
+                    poblarFiltroPais();
+                    aplicarFiltrosCiudades();
+                });
+                filtroPais.addEventListener('change', aplicarFiltrosCiudades);
+                btnResetFiltrosCiudades.addEventListener('click', () => {
+                    filtroRegion.value = '';
+                    filtroPais.value = '';
+                    poblarFiltroPais();
+                    aplicarFiltrosCiudades();
+                });
+
+                // Render inicial del selector multi-ciudad (debajo de los criterios)
+                renderCiudadesSelector();
+
+                if (inputNumCiudades) {
+                    inputNumCiudades.addEventListener('change', e => ajustarNumCiudades(e.target.value));
+                }
+
+                // Buscador y botón limpiar del selector
+                const buscadorCiudades = document.getElementById('buscadorCiudadesSelector');
+                if (buscadorCiudades) buscadorCiudades.addEventListener('input', renderCiudadesSelector);
+
+                const btnLimpiar = document.getElementById('btnLimpiarSeleccion');
+                if (btnLimpiar) btnLimpiar.addEventListener('click', () => {
+                    const ids = [...ciudadIdToColId.entries()];
+                    ids.forEach(([cid, colId]) => removeColumn(colId));
+                    ciudadIdToColId.clear();
+                    renderCiudadesSelector();
+                });
+
+                // Panel de pesos
+                renderPesos();
+                document.querySelectorAll('#quickProfilesPesos .qp-btn').forEach(b => {
+                    b.addEventListener('click', () => aplicarPerfilPesos(b.dataset.perfil));
+                });
+                document.getElementById('btnResetPesos').addEventListener('click', resetPesos);
+
+                // Toggle plegado del panel de pesos (oculto por defecto)
+                const btnTogglePesos = document.getElementById('btnTogglePesos');
+                const pesosCollapsible = document.getElementById('pesosCollapsible');
+                const togglePesosArrow = document.getElementById('togglePesosArrow');
+                btnTogglePesos.addEventListener('click', () => {
+                    const isOpen = pesosCollapsible.style.display !== 'none';
+                    pesosCollapsible.style.display = isOpen ? 'none' : 'block';
+                    btnTogglePesos.setAttribute('aria-expanded', String(!isOpen));
+                    togglePesosArrow.textContent = isOpen ? '▼' : '▲';
+                });
+
+                renderRankings();
+            } catch (e) { console.error("Error cargando ciudades", e); }
+        }
+
+        // 2. LÓGICA COMPARADOR DINÁMICO
+        const headerRow = document.getElementById('headerRow');
+        const compareBody = document.getElementById('compareBody');
+        const deleteRow = document.getElementById('deleteRow');
+        const inputNumCiudades = document.getElementById('numCiudades'); // ya no existe pero se mantiene por compat
+        const MAX_CIUDADES = 10;
+        const MIN_CIUDADES = 2;
+        let colCount = 0;
+        // Contador siempre creciente para garantizar IDs únicos aunque se borren columnas intermedias
+        let nextColId = 0;
+
+        // Configuración de criterios: clave, tipo de render, etiqueta y obtención del valor.
+        // tipo='euros' → menor es mejor; tipo='estrellas' → mayor es mejor; tipo='ambiente' sin ganador.
+        const CRITERIOS = [
+            { key: 'presupuesto', label: '💶 Presupuesto',  tipo: 'euros',     escala: 1500, get: c => c.presupuesto },
+            { key: 'alquiler',    label: '🏠 Alquiler',     tipo: 'euros',     escala: 1200, get: c => c.metricas?.costeAlquilerMedio },
+            { key: 'costeOcio',   label: '🍻 Coste Ocio',   tipo: 'euros',     escala: 400,  get: c => c.metricas?.costeOcioMedio },
+            { key: 'ambiente',    label: '🎭 Ambiente',     tipo: 'ambiente',                get: c => c.tipoAmbiente },
+            { key: 'seguridad',   label: '🛡️ Seguridad',    tipo: 'estrellas',               get: c => c.metricas?.seguridad },
+            { key: 'transporte',  label: '🚌 Transporte',   tipo: 'estrellas',               get: c => c.metricas?.calidadTransporte },
+            { key: 'ocio',        label: '🌃 Vida Nocturna',tipo: 'estrellas',               get: c => c.metricas?.ambienteNocturno },
+            { key: 'turismo',     label: '🏛️ Turismo',      tipo: 'estrellas',               get: c => c.metricas?.turismo },
+            { key: 'gastronomia', label: '🍴 Gastronomía',  tipo: 'estrellas',               get: c => c.metricas?.gastronomia },
+            { key: 'academica',   label: '🎓 Académica',    tipo: 'estrellas',               get: c => c.metricas?.calidadAcademica },
+            { key: 'conectividad',label: '📶 Conectividad', tipo: 'estrellas',               get: c => c.metricas?.conectividad }
+        ];
+
+        // Pesos por criterio (1-5). Solo los criterios con dirección "mejor" entran al cálculo.
+        const PESO_DEFECTO = 3;
+        const pesos = {};
+        CRITERIOS.forEach(c => { if (c.tipo !== 'ambiente') pesos[c.key] = PESO_DEFECTO; });
+
+        // Perfiles rápidos — adaptados a las claves de criterios del comparador.
+        const PERFILES_PESOS = {
+            economico:   { presupuesto: 5, alquiler: 5, costeOcio: 4, conectividad: 3, transporte: 3, seguridad: 3, ocio: 2, turismo: 2, gastronomia: 2, academica: 2 },
+            academico:   { academica: 5, conectividad: 4, seguridad: 4, transporte: 3, presupuesto: 3, alquiler: 3, costeOcio: 2, ocio: 2, turismo: 2, gastronomia: 2 },
+            social:      { ocio: 5, turismo: 5, gastronomia: 4, transporte: 3, conectividad: 3, seguridad: 2, academica: 2, presupuesto: 2, alquiler: 2, costeOcio: 3 },
+            seguro:      { seguridad: 5, academica: 4, conectividad: 3, transporte: 3, presupuesto: 3, alquiler: 3, costeOcio: 2, ocio: 2, turismo: 2, gastronomia: 2 },
+            equilibrado: { presupuesto: 3, alquiler: 3, costeOcio: 3, seguridad: 3, transporte: 3, ocio: 3, turismo: 3, gastronomia: 3, academica: 3, conectividad: 3 }
+        };
+
+        function renderPesos() {
+            const grid = document.getElementById('pesosGrid');
+            if (!grid) return;
+            grid.innerHTML = CRITERIOS
+                .filter(c => c.tipo !== 'ambiente')
+                .map(c => {
+                    const v = pesos[c.key];
+                    return `
+                        <div class="peso-control" data-key="${c.key}">
+                            <div class="peso-control-head">
+                                <span class="peso-control-label">${c.label}</span>
+                                <span class="peso-control-value">${v.toFixed(1)}</span>
+                            </div>
+                            <input type="range" min="1" max="5" step="0.1" value="${v}" data-key="${c.key}">
+                        </div>`;
+                }).join('');
+
+            grid.querySelectorAll('input[type=range]').forEach(input => {
+                input.addEventListener('input', e => {
+                    const key = e.target.dataset.key;
+                    const val = parseFloat(e.target.value);
+                    pesos[key] = val;
+                    const wrap = e.target.closest('.peso-control');
+                    if (wrap) wrap.querySelector('.peso-control-value').textContent = val.toFixed(1);
+                    // Limpiar perfil activo (el usuario está personalizando)
+                    document.querySelectorAll('#quickProfilesPesos .qp-btn.active').forEach(b => b.classList.remove('active'));
+                    calcularMejorOpcion();
+                });
+            });
+        }
+
+        function aplicarPerfilPesos(nombre) {
+            const perfil = PERFILES_PESOS[nombre];
+            if (!perfil) return;
+            Object.keys(perfil).forEach(k => { if (k in pesos) pesos[k] = perfil[k]; });
+            renderPesos();
+            document.querySelectorAll('#quickProfilesPesos .qp-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.perfil === nombre);
+            });
+            calcularMejorOpcion();
+        }
+
+        function resetPesos() {
+            Object.keys(pesos).forEach(k => pesos[k] = PESO_DEFECTO);
+            renderPesos();
+            document.querySelectorAll('#quickProfilesPesos .qp-btn.active').forEach(b => b.classList.remove('active'));
+            calcularMejorOpcion();
+        }
+
+        function addCompareColumn() {
+            if (colCount >= MAX_CIUDADES) return;
+            nextColId++;
+            colCount++;
+            const id = `city_col_${nextColId}`;
+
+            // Estado del botón legacy "+ Añadir Ciudad" (ya no existe en el DOM, pero por si acaso)
+            const btnAdd = document.getElementById('btnAddCity');
+            if (btnAdd && colCount >= MAX_CIUDADES) {
+                btnAdd.disabled = true;
+                btnAdd.innerText = "Límite Alcanzado";
+            }
+
+            // Crear Header (Select) — respeta los filtros activos
+            const ciudadesDisponibles = ciudadesCargadas ? getCiudadesFiltradas() : todasCiudades;
+            const th = document.createElement('th');
+            th.id = `header_${id}`;
+            th.style.minWidth = "200px";
+            th.innerHTML = `
+                <select class="city-select" onchange="updateColumn('${id}', this.value)" style="margin-bottom:10px;">
+                    <option value="">Selecciona...</option>
+                    ${ciudadesDisponibles.map(c => `<option value="${c._id}">${c.nombre}</option>`).join('')}
+                </select>
+            `;
+            headerRow.appendChild(th);
+
+            // Crear celdas en el cuerpo (una por criterio)
+            CRITERIOS.forEach(({ key }) => {
+                const tr = document.querySelector(`tr[data-criterio="${key}"]`);
+                if (tr) {
+                    const td = document.createElement('td');
+                    td.id = `${key}_${id}`;
+                    td.style.verticalAlign = "middle";
+                    td.innerHTML = "---";
+                    tr.appendChild(td);
+                }
+            });
+
+            // Botón eliminar
+            const tdDel = document.createElement('td');
+            tdDel.id = `del_${id}`;
+            tdDel.innerHTML = `<button onclick="removeColumn('${id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.8rem;">✖ Quitar</button>`;
+            deleteRow.appendChild(tdDel);
+
+            sincronizarNumCiudades();
+        }
+
+        function sincronizarNumCiudades() {
+            if (inputNumCiudades) inputNumCiudades.value = colCount;
+        }
+
+        function ajustarNumCiudades(target) {
+            target = Math.max(MIN_CIUDADES, Math.min(MAX_CIUDADES, parseInt(target) || MIN_CIUDADES));
+            while (colCount < target) addCompareColumn();
+            while (colCount > target) {
+                const headers = headerRow.querySelectorAll('th[id^="header_city_col_"]');
+                if (!headers.length) break;
+                const lastId = headers[headers.length - 1].id.replace('header_', '');
+                removeColumn(lastId);
+            }
+            if (inputNumCiudades) inputNumCiudades.value = colCount;
+        }
+
+        function updateColumn(colId, ciudadId) {
+            const ciudad = todasCiudades.find(c => c._id === ciudadId);
+
+            CRITERIOS.forEach(({ key, tipo, escala, get }) => {
+                const element = document.getElementById(`${key}_${colId}`);
+                if (!element) return;
+
+                if (!ciudad) {
+                    element.innerHTML = "---";
+                    element.className = "";
+                    return;
+                }
+
+                const val = get(ciudad);
+
+                if (tipo === 'euros') {
+                    if (val == null) { element.innerHTML = "---"; return; }
+                    const pct = Math.min(100, (val / escala) * 100);
+                    element.innerHTML = `
+                        <div>${val}€</div>
+                        <div style="height:6px; background:#e2e8f0; border-radius:3px; margin-top:8px; overflow:hidden;">
+                            <div style="width:${pct}%; height:100%; background:var(--primary-color);"></div>
+                        </div>
+                    `;
+                } else if (tipo === 'ambiente') {
+                    element.innerText = val === 'fiesta' ? '🎭 Vida Social' : (val ? '🧘 Tranquilidad' : '---');
+                } else if (tipo === 'estrellas') {
+                    element.innerHTML = `<div>${'⭐'.repeat(val || 0) || '---'}</div>`;
+                }
+            });
+            destacarGanadores();
+            calcularMejorOpcion();
+        }
+
+        // Calcula la mejor ciudad ponderando todos los criterios numéricos.
+        // Cada criterio se normaliza a [0,1] (invertido para los que son "menor mejor")
+        // y se promedia; la ciudad con mayor media es la ganadora.
+        function calcularMejorOpcion() {
+            const resultadoEl = document.getElementById('resultadoComparador');
+            if (!resultadoEl) return;
+
+            const selects = headerRow.querySelectorAll('select.city-select');
+            const seleccionadas = Array.from(selects)
+                .map(sel => todasCiudades.find(c => String(c._id) === String(sel.value)))
+                .filter(Boolean);
+
+            if (seleccionadas.length < 2) {
+                resultadoEl.innerHTML = '<p style="color: var(--text-muted); text-align:center; padding: 25px; background: #f8fafc; border-radius: 16px; margin: 0;">Selecciona al menos 2 ciudades para ver el resultado.</p>';
+                return;
+            }
+
+            const scores = new Map(seleccionadas.map(c => [String(c._id), { ciudad: c, total: 0, totalPeso: 0, count: 0, ganados: 0, aportes: [] }]));
+
+            CRITERIOS.forEach(({ key, label, tipo, get }) => {
+                if (tipo === 'ambiente') return; // sin dirección de "mejor"
+                const peso = pesos[key] ?? PESO_DEFECTO;
+                if (peso <= 0) return;
+                const menorMejor = (tipo === 'euros');
+                const valores = seleccionadas
+                    .map(c => ({ id: String(c._id), val: get(c) }))
+                    .filter(v => v.val != null && !isNaN(v.val));
+                if (valores.length < 2) return;
+
+                const min = Math.min(...valores.map(v => v.val));
+                const max = Math.max(...valores.map(v => v.val));
+                const mejor = menorMejor ? min : max;
+
+                valores.forEach(v => {
+                    const norm = (max === min)
+                        ? 1
+                        : (menorMejor ? (max - v.val) / (max - min) : (v.val - min) / (max - min));
+                    const s = scores.get(v.id);
+                    s.total += norm * peso;
+                    s.totalPeso += peso;
+                    s.count++;
+                    if (v.val === mejor) s.ganados++;
+                    s.aportes.push({ key, label, aporte: norm * peso, peso, esGanador: v.val === mejor });
+                });
+            });
+
+            const ranking = Array.from(scores.values())
+                .filter(s => s.totalPeso > 0)
+                .map(s => ({ ...s, avg: s.total / s.totalPeso }))
+                .sort((a, b) => b.avg - a.avg);
+
+            if (!ranking.length) {
+                resultadoEl.innerHTML = '<p style="color: var(--text-muted); text-align:center; padding: 25px; background: #f8fafc; border-radius: 16px; margin: 0;">Sin datos suficientes para comparar.</p>';
+                return;
+            }
+
+            const ganador = ranking[0];
+            const top = ranking.slice(0, Math.min(3, ranking.length));
+            const medals = ['🥇', '🥈', '🥉'];
+            const podiumClass = ['podium-1', 'podium-2', 'podium-3'];
+            // Orden visual del podio: 2º a la izquierda, 1º al centro elevado, 3º a la derecha
+            const visualOrder = top.length === 3 ? [1, 0, 2] : [0, 1].slice(0, top.length);
+            const podioHTML = top.length >= 2 ? `
+                <div class="podium" style="grid-template-columns: repeat(${top.length}, 1fr);">
+                    ${visualOrder.map(idx => {
+                        const s = top[idx];
+                        return `
+                            <div class="podium-step ${podiumClass[idx]}">
+                                <div class="podium-medal">${medals[idx]}</div>
+                                <div class="podium-name">${s.ciudad.nombre}</div>
+                                <div class="podium-score">${(s.avg * 100).toFixed(0)} pts</div>
+                            </div>`;
+                    }).join('')}
+                </div>` : '';
+
+            // Top razones: criterios donde el ganador puntúa mejor (mayor aporte ponderado)
+            const razones = (ganador.aportes || [])
+                .slice()
+                .sort((a, b) => b.aporte - a.aporte)
+                .slice(0, 3)
+                .filter(r => r.aporte > 0);
+
+            const razonesHTML = razones.length ? `
+                <div class="winner-reasons">
+                    ${razones.map(r => `<span class="winner-chip">${r.label} · peso ${r.peso.toFixed(1)}</span>`).join('')}
+                </div>` : '';
+
+            resultadoEl.innerHTML = `
+                <div class="winner-hero">
+                    <div class="winner-trophy-big">🏆</div>
+                    <div class="winner-label">Ganador del comparador</div>
+                    <div class="winner-city">${ganador.ciudad.nombre}</div>
+                    <div class="winner-meta">
+                        <div class="winner-score">
+                            <span class="winner-score-num">${(ganador.avg * 100).toFixed(0)}</span>
+                            <span class="winner-score-suffix">/ 100</span>
+                        </div>
+                        <div class="winner-pill">✓ Gana en ${ganador.ganados} de ${ganador.count} criterios</div>
+                    </div>
+                    ${razonesHTML}
+                </div>
+                ${podioHTML}
+            `;
+        }
+
+        function destacarGanadores() {
+            CRITERIOS.forEach(({ key, tipo }) => {
+                if (tipo === 'ambiente') return; // sin ganador para ambiente
+                const menorMejor = (tipo === 'euros');
+                const celdas = Array.from(document.querySelectorAll(`tr[data-criterio="${key}"] td`)).slice(1);
+                let bestVal = menorMejor ? Infinity : -Infinity;
+
+                celdas.forEach(td => {
+                    td.classList.remove("winner");
+                    const rawText = td.innerText.replace('€', '').replace(/⭐/g, '1');
+                    const val = parseFloat(rawText);
+                    if (!isNaN(val)) {
+                        if (menorMejor && val < bestVal) bestVal = val;
+                        if (!menorMejor && val > bestVal) bestVal = val;
+                    }
+                });
+
+                if (bestVal !== Infinity && bestVal !== -Infinity) {
+                    celdas.forEach(td => {
+                        const rawText = td.innerText.replace('€', '').replace(/⭐/g, '1');
+                        if (parseFloat(rawText) === bestVal) td.classList.add("winner");
+                    });
+                }
+            });
+        }
+
+        function removeColumn(id) {
+            const elHeader = document.getElementById(`header_${id}`);
+            if (elHeader) elHeader.remove();
+
+            CRITERIOS.forEach(({ key }) => {
+                const elCrit = document.getElementById(`${key}_${id}`);
+                if (elCrit) elCrit.remove();
+            });
+
+            const elDel = document.getElementById(`del_${id}`);
+            if (elDel) elDel.remove();
+
+            colCount--;
+
+            // Reactivar botón legacy si existe
+            const btnAdd = document.getElementById('btnAddCity');
+            if (btnAdd) {
+                btnAdd.disabled = false;
+                btnAdd.innerText = "+ Añadir Ciudad";
+            }
+
+            sincronizarNumCiudades();
+            destacarGanadores();
+            calcularMejorOpcion();
+
+            // Sincronizar selector multi-ciudad: si esta colId estaba ligada a una ciudad, desmarcarla
+            for (const [cid, colId] of ciudadIdToColId.entries()) {
+                if (colId === id) {
+                    ciudadIdToColId.delete(cid);
+                    const cb = document.querySelector(`#ciudadesSelectorGrid input[data-ciudad-id="${cid}"]`);
+                    if (cb) cb.checked = false;
+                    break;
+                }
+            }
+            actualizarContadorSeleccion();
+        }
+
+        function renderRankings() {
+            if (!todasCiudades || todasCiudades.length === 0) return;
+
+            // Función auxiliar para renderizar tarjetas (clicables → detalle de ciudad)
+            const createCard = (c, i, isPresupuesto) => `
+                <a href="detalle.html?id=${c._id}" class="rank-card rank-card-link" style="text-decoration:none; color:inherit; display:flex;">
+                    <div class="rank-pos top-${i+1}">#${i+1}</div>
+                    <div class="rank-info">
+                        <span class="rank-name">${c.nombre}</span>
+                        <span class="rank-val">${isPresupuesto ? c.presupuesto + '€ / mes' : '⭐'.repeat(c.valor || 0)}</span>
+                    </div>
+                </a>
+            `;
+
+            // Baratas (menor presupuesto)
+            const baratas = [...todasCiudades].sort((a, b) => a.presupuesto - b.presupuesto).slice(0, 3);
+            document.getElementById('listBaratas').innerHTML = baratas.map((c, i) => createCard(c, i, true)).join('');
+
+            // Seguras (mayor seguridad)
+            const seguras = [...todasCiudades].map(c => ({...c, valor: c.metricas?.seguridad})).sort((a, b) => (b.valor || 0) - (a.valor || 0)).slice(0, 3);
+            document.getElementById('listSeguras').innerHTML = seguras.map((c, i) => createCard(c, i, false)).join('');
+
+            // Ocio (mayor ambiente nocturno)
+            const ocio = [...todasCiudades].map(c => ({...c, valor: c.metricas?.ambienteNocturno})).sort((a, b) => (b.valor || 0) - (a.valor || 0)).slice(0, 3);
+            document.getElementById('listOcio').innerHTML = ocio.map((c, i) => createCard(c, i, false)).join('');
+
+            // Turismo (mayor turismo)
+            const turismo = [...todasCiudades].map(c => ({...c, valor: c.metricas?.turismo})).sort((a, b) => (b.valor || 0) - (a.valor || 0)).slice(0, 3);
+            document.getElementById('listTurismo').innerHTML = turismo.map((c, i) => createCard(c, i, false)).join('');
+        }
+
+        init();
+    </script>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Guías de Destino</h4>
+                <ul>
+                    <li><a href="ayuda-ahp.html">Primeros pasos</a></li>
+                    <li><a href="destinos.html">Explorar destinos</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Comunidad</h4>
+                <ul>
+                    <li><a href="comunidad.html#foro">Foro</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacidad.html">Política de Privacidad</a></li>
+                    <li><a href="terminos.html">Términos y Condiciones</a></li>
+                    <li><a href="cookies.html">Política de Cookies</a></li>
+                </ul>
+            </div>
+        </div>
+        <p>&copy; 2026 INFUNI S.L. - Jóvenes por el mundo</p>
+    </footer>
+<script src="../js/auth.js"></script>
+</body>
+</html>

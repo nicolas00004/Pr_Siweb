@@ -1,0 +1,31 @@
+{
+    "id": "leon",
+    "nombre": "León",
+    "etiquetas": {
+      "historia": "🕍 Gótico y Tapas",
+      "transporte": "🚶 Ciudad compacta",
+      "alojamiento": "🏠 Gastronomía incluida"
+    },
+    "historia": "Antigua capital del Reino de León, famosa por su catedral de vidrieras infinitas y su hospitalidad jacobea.",
+    "alojamiento": "Barrio de San Mamés (cerca de la universidad) y El Ejido. Precios muy competitivos: 200€-300€.",
+    "barrios": "Barrio Húmedo es legendario por sus tapas gratuitas con la bebida. Barrio Romántico es más alternativo.",
+    "universidades": [
+      {
+        "nombre": "Universidad de León (ULE)",
+        "descripcion": "Referente nacional en Veterinaria y Ciberseguridad."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Catedral de León",
+        "categoria": "cultura",
+        "descripcion": "La 'Pulchra Leonina', joya del gótico con las vidrieras más famosas de España."
+      },
+      {
+        "nombre": "Casa Botines",
+        "categoria": "cultura",
+        "descripcion": "Uno de los pocos edificios diseñados por Gaudí fuera de Cataluña."
+      }
+    ],
+    "imagenes": ["../img/leon_1.jpg", "../img/leon_2.jpg"]
+  }

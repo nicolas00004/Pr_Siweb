@@ -1,0 +1,35 @@
+{
+    "id": "bilbao",
+    "nombre": "Bilbao",
+    "etiquetas": {
+      "historia": "🖼️ Vanguardia y Ría",
+      "transporte": "🚇 Metro de Foster",
+      "alojamiento": "🏠 Renovación urbana"
+    },
+    "historia": "De ciudad industrial a referente mundial del diseño. Bilbao combina su pasado portuario con el titanio del Guggenheim.",
+    "alojamiento": "Deusto es el barrio universitario por excelencia. San Mamés también es muy demandado. Precios altos, 400€-600€.",
+    "barrios": "Casco Viejo (Siete Calles) para pintxos y ambiente tradicional. Abandoibarra es la zona moderna.",
+    "universidades": [
+      {
+        "nombre": "Universidad del País Vasco (UPV/EHU)",
+        "descripcion": "Campus disperso con gran oferta en San Mamés y Leioa."
+      },
+      {
+        "nombre": "Universidad de Deusto",
+        "descripcion": "Prestigiosa universidad privada con una arquitectura impresionante frente a la ría."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Museo Guggenheim",
+        "categoria": "cultura",
+        "descripcion": "Icono de Frank Gehry que cambió el destino de la ciudad."
+      },
+      {
+        "nombre": "Mercado de la Ribera",
+        "categoria": "ocio",
+        "descripcion": "Uno de los mercados cubiertos más grandes de Europa junto a la ría."
+      }
+    ],
+    "imagenes": ["../img/bilbao_1.jpg", "../img/bilbao_2.jpg"]
+  }

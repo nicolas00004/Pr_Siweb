@@ -1,0 +1,52 @@
+{
+    "id": "madrid",
+    "nombre": "Madrid",
+    "etiquetas": {
+        "historia": "🏛️ Historia de la Capital",
+        "transporte": "🚇 Conectividad Metro",
+        "alojamiento": "🏠 Alquiler y Estilo de Vida"
+    },
+    "historia": "Convertida en capital por Felipe II en 1561, Madrid es el corazón político y cultural de España. Es una ciudad que nunca duerme, conocida por sus museos de clase mundial y su vibrante vida callejera.",
+    "alojamiento": "El mercado de vivienda es altamente competitivo. Las habitaciones en pisos compartidos oscilan entre 500€ y 800€. Moncloa y Argüelles son los barrios universitarios por excelencia.",
+    "barrios": "Malasaña es el barrio hipster y creativo. Lavapiés destaca por su multiculturalidad. Salamanca es la zona más exclusiva y elegante.",
+    "universidades": [
+        {
+            "nombre": "Universidad Complutense de Madrid (UCM)",
+            "descripcion": "Una de las universidades más antiguas y grandes del mundo, situada en Ciudad Universitaria."
+        },
+        {
+            "nombre": "Universidad Autónoma de Madrid (UAM)",
+            "descripcion": "Destacada por su nivel de investigación y un campus verde fuera del centro."
+        },
+        {
+            "nombre": "Universidad Politécnica de Madrid (UPM)",
+            "descripcion": "Referencia nacional en ingenierías y arquitectura."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Museo del Prado",
+            "categoria": "cultura",
+            "descripcion": "Uno de los museos más importantes del mundo con obras de Velázquez y Goya."
+        },
+        {
+            "nombre": "Parque del Retiro",
+            "categoria": "ocio",
+            "descripcion": "El pulmón verde de la ciudad, ideal para remar en su estanque."
+        },
+        {
+            "nombre": "Plaza Mayor",
+            "categoria": "cultura",
+            "descripcion": "Centro neurálgico del Madrid de los Austrias."
+        },
+        {
+            "nombre": "Teatro Kapital",
+            "categoria": "ocioNocturno",
+            "descripcion": "Famosa discoteca de 7 plantas en una antigua sala de cine."
+        }
+    ],
+    "imagenes": [
+        "../img/madrid_1.jpg",
+        "../img/madrid_2.jpg"
+    ]
+}

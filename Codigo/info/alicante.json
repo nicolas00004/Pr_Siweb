@@ -1,0 +1,31 @@
+{
+    "id": "alicante",
+    "nombre": "Alicante",
+    "etiquetas": {
+      "historia": "🏰 Castillo de Santa Bárbara",
+      "transporte": "🚋 TRAM metropolitano",
+      "alojamiento": "🌅 Costa Blanca"
+    },
+    "historia": "La 'Ciudad de la Luz'. Una ciudad portuaria dinámica, abierta al Mediterráneo y con un clima envidiable todo el año.",
+    "alojamiento": "San Vicente del Raspeig es donde está la universidad (está a las afueras). Precios: 250€-400€.",
+    "barrios": "El Barrio (Casco Antiguo) es el corazón de la fiesta nocturna. El Postiguet es la playa del centro.",
+    "universidades": [
+      {
+        "nombre": "Universidad de Alicante (UA)",
+        "descripcion": "Famosa por tener uno de los campus ajardinados más bonitos de España."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Castillo de Santa Bárbara",
+        "categoria": "cultura",
+        "descripcion": "Fortaleza medieval en lo alto del monte Benacantil con vistas a toda la bahía."
+      },
+      {
+        "nombre": "Explanada de España",
+        "categoria": "ocio",
+        "descripcion": "Paseo marítimo icónico hecho con millones de teselas de mármol."
+      }
+    ],
+    "imagenes": ["../img/alicante_1.jpg", "../img/alicante_2.jpg"]
+  }

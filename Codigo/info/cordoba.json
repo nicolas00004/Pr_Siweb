@@ -1,0 +1,31 @@
+{
+    "id": "cordoba",
+    "nombre": "Córdoba",
+    "etiquetas": {
+      "historia": "🕌 Esencia Califal",
+      "transporte": "🚲 Ciudad compacta",
+      "alojamiento": "🏠 Estilo andaluz"
+    },
+    "historia": "Antigua capital del Califato, Córdoba es un crisol de culturas donde la Mezquita-Catedral domina el paisaje de una de las ciudades con más títulos de Patrimonio de la Humanidad.",
+    "alojamiento": "Ciudad Jardín es el barrio universitario por excelencia. Precios económicos, entre 200€-350€ por habitación.",
+    "barrios": "La Judería es el alma histórica. San Lorenzo y Santa Marina mantienen la tradición de los Patios Cordobeses.",
+    "universidades": [
+      {
+        "nombre": "Universidad de Córdoba (UCO)",
+        "descripcion": "Destaca en agronomía, veterinaria y humanidades con un campus moderno en Rabanales."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Mezquita-Catedral",
+        "categoria": "cultura",
+        "descripcion": "Monumento único en el mundo que fusiona el arte omeya con el renacimiento."
+      },
+      {
+        "nombre": "Puente Romano",
+        "categoria": "ocio",
+        "descripcion": "Paseo icónico sobre el Guadalquivir con vistas espectaculares al atardecer."
+      }
+    ],
+    "imagenes": ["../img/cordoba_1.jpg", "../img/cordoba_2.jpg"]
+  }

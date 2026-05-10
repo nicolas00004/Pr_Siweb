@@ -1,0 +1,25 @@
+{
+    "id": "salamanca",
+    "nombre": "Salamanca",
+    "etiquetas": {
+        "historia": "🏛️ Ciudad del Saber",
+        "transporte": "🚶 Ciudad Peatonal",
+        "alojamiento": "🏠 Residencias y Pisos"
+    },
+    "historia": "Su universidad es la más antigua de España y una de las más antiguas de Europa, fundada en 1218 por Alfonso IX. La ciudad es Patrimonio de la Humanidad y un ejemplo cumbre del plateresco español.",
+    "alojamiento": "Precios muy asequibles. Por 250€-350€ puedes tener una buena habitación muy cerca de tu facultad. El ambiente es puramente universitario.",
+    "barrios": "El centro histórico lo es todo en Salamanca. El Barrio del Oeste ofrece algo más urbano y bohemio con su arte callejero contemporáneo.",
+    "universidades": [
+        { "nombre": "Universidad de Salamanca (USAL)", "descripcion": "La universidad más antigua de España con edificios históricos impresionantes." },
+        { "nombre": "Universidad Pontificia de Salamanca (UPSA)", "descripcion": "Especializada en teología, filosofía y comunicación." }
+    ],
+    "sitios": [
+        { "nombre": "Plaza Mayor", "categoria": "cultura", "descripcion": "Considerada una de las plazas más bellas de España y centro de la vida social." },
+        { "nombre": "La Casa de las Conchas", "categoria": "cultura", "descripcion": "Edificio histórico decorado con más de 300 conchas de piedra." },
+        { "nombre": "Huerto de Calixto y Melibea", "categoria": "ocio", "descripcion": "Jardín romántico con vistas a las catedrales." }
+    ],
+    "imagenes": [
+        "../img/salamanca_1.jpg",
+        "../img/salamanca_2.jpg"
+    ]
+}

@@ -1,0 +1,53 @@
+{
+    "id": "lyon",
+    "nombre": "Lyon",
+    "pais": "Francia",
+    "etiquetas": {
+        "historia": "🦁 Capital de las Galias",
+        "transporte": "🚇 Metro y Velo'v",
+        "alojamiento": "🏠 Vieux Lyon y Presqu'île"
+    },
+    "historia": "Fundada por los romanos como Lugdunum, Lyon es la tercera ciudad más grande de Francia. Es famosa por su arquitectura renacentista, sus pasajes antiguos (Traboules) y por ser el lugar de nacimiento del cine gracias a los hermanos Lumière. Su red universitaria es de las más importantes del país, atrayendo a miles de Erasmus cada año.",
+    "alojamiento": "El mercado es competitivo. Una habitación en piso compartido (colocation) suele estar entre los 450€ y 600€. Las zonas favoritas son Guillotière (ambiente joven y multicultural), Jean Macé y el 7ème arrondissement por su cercanía a las facultades.",
+    "barrios": "La Presqu'île es el corazón comercial y social. El Vieux Lyon es histórico y turístico pero mágico para vivir. Croix-Rousse es el barrio bohemio con cuestas empinadas y mucha personalidad 'arty'.",
+    "universidades": [
+        {
+            "nombre": "Université Lumière Lyon 2",
+            "descripcion": "Especializada en ciencias sociales, artes y humanidades, con un campus histórico impresionante junto al Ródano."
+        },
+        {
+            "nombre": "Université Jean Moulin Lyon 3",
+            "descripcion": "Referente en Derecho y Gestión, ubicada en la emblemática Manufacture des Tabacs."
+        },
+        {
+            "nombre": "ENS Lyon (École Normale Supérieure)",
+            "descripcion": "Una de las instituciones de enseñanza superior más prestigiosas de Francia en ciencias puras y letras."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Basilique Notre-Dame de Fourvière",
+            "categoria": "cultura",
+            "descripcion": "Icono de la ciudad en lo alto de la colina con las mejores vistas panorámicas."
+        },
+        {
+            "nombre": "Parc de la Tête d'Or",
+            "categoria": "cultura",
+            "descripcion": "Uno de los parques urbanos más grandes y bonitos de Francia, con lago y zoo gratuito."
+        },
+        {
+            "nombre": "Les Halles de Lyon Paul Bocuse",
+            "categoria": "ocio",
+            "descripcion": "El mercado gastronómico más famoso del mundo. Parada obligatoria para los amantes del buen comer."
+        },
+        {
+            "nombre": "Le Petit Salon / Sucre",
+            "categoria": "ocioNocturno",
+            "descripcion": "Clubs de referencia para la música electrónica y el ambiente universitario nocturno."
+        }
+    ],
+    "imagenes": [
+        "../img/lyon_1.jpg",
+        "../img/lyon_2.jpg"
+    ]
+}

@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFUNI | Encuentra tu Ciudad Ideal</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* ---- LANDING HERO ---- */
+        .landing-hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #3b82f6 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .landing-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('../img/hero-mosaic.jpg') center/cover;
+            opacity: 0.35;
+        }
+        .landing-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(15,23,42,0.78) 0%, rgba(30,58,95,0.65) 50%, rgba(59,130,246,0.55) 100%);
+        }
+        .landing-hero .hero-content { z-index: 2; }
+        .hero-content {
+            position: relative;
+            max-width: 1000px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(59,130,246,0.25);
+            border: 1px solid rgba(59,130,246,0.5);
+            color: #93c5fd;
+            padding: 8px 22px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 24px;
+        }
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 900;
+            color: white;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+        .hero-title span { color: #60a5fa; }
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            color: #94a3b8;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero-ctas {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-hero-primary {
+            padding: 18px 42px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(59,130,246,0.4);
+        }
+        .btn-hero-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(59,130,246,0.5);
+        }
+        .btn-hero-secondary {
+            padding: 18px 42px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border: 1.5px solid rgba(255,255,255,0.25);
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        .btn-hero-secondary:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        /* ---- STATS ---- */
+        .landing-stats {
+            background: white;
+            padding: 50px 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .stat-item .stat-num {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+        .stat-item .stat-num span { color: var(--accent-color); }
+        .stat-item p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        /* ---- QUÉ ES ---- */
+        .landing-section {
+            padding: 90px 20px;
+        }
+        .landing-section.alt { background: #f8fafc; }
+        .section-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .section-label {
+            display: inline-block;
+            background: #eff6ff;
+            color: var(--accent-color);
+            padding: 5px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 900;
+            color: var(--primary-color);
+            line-height: 1.2;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            max-width: 620px;
+        }
+        .que-es-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin-top: 0;
+        }
+        .que-es-points {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .que-es-point {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        .point-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .que-es-visual {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 30px;
+            padding: 40px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(15,23,42,0.2);
+        }
+        .visual-big { font-size: 5rem; margin-bottom: 10px; }
+        .visual-text { font-size: 1.2rem; font-weight: 700; opacity: 0.9; }
+        .visual-sub { font-size: 0.85rem; opacity: 0.6; margin-top: 5px; }
+
+        /* ---- CÓMO FUNCIONA ---- */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 35px;
+            margin-top: 50px;
+        }
+        .step-card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px 30px;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .step-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border-color: var(--accent-color);
+        }
+        .step-number {
+            position: absolute;
+            top: -18px;
+            left: 30px;
+            background: var(--accent-color);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(59,130,246,0.4);
+        }
+        .step-icon { font-size: 2.5rem; margin-bottom: 15px; }
+        .step-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        .step-card p { color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; }
+
+        /* ---- FEATURES ---- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 50px;
+        }
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.07);
+            border-color: var(--accent-color);
+        }
+        .feature-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 18px;
+        }
+        .feature-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        .feature-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+
+        /* ---- CTA FINAL ---- */
+        .landing-cta-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e3a5f 100%);
+            padding: 100px 20px;
+            text-align: center;
+        }
+        .landing-cta-section h2 {
+            color: white;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            margin-bottom: 16px;
+        }
+        .landing-cta-section p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 900px) {
+            .que-es-grid { grid-template-columns: 1fr; }
+            .que-es-visual { display: none; }
+            .steps-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .hero-ctas { flex-direction: column; align-items: center; }
+            .btn-hero-primary, .btn-hero-secondary { width: 100%; max-width: 300px; text-align: center; }
+        }
+
+        /* ---- SCROLL REVEAL ---- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            will-change: opacity, transform;
+        }
+        .reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { opacity: 1; transform: none; transition: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="nav-global">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: inherit;">
+                    <h1>INF<span>UNI</span></h1>
+                </a>
+            </div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <ul id="navMenu">
+                <li><a href="index.html" class="active">Inicio</a></li>
+                <li><a href="busqueda.html">Buscar</a></li>
+                <li><a href="destinos.html">Destinos</a></li>
+                <li>
+                    <a href="herramientas.html">Comparador</a>
+                </li>
+                <li>
+                    <a href="comunidad.html">Comunidad ▾</a>
+                    <ul>
+                        <li><a href="comunidad.html#foro">Foro</a></li>
+                        <li><a href="busqueda.html#comunidad">Añadir ciudad</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="ayuda-ahp.html" title="Ayuda sobre el método AHP">Ayuda </a>
+                </li>
+                <li>
+                    <a href="login.html" class="btn-login" id="btnSesion">Inicia Sesión 👤</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="home-main">
+
+        <!-- HERO -->
+        <section class="landing-hero">
+            <div class="hero-content">
+     
+                <h1 class="hero-title">Tu ciudad soñada <br>
+                    <span>a un clic de distancia</span>
+                </h1>
+                <p class="hero-subtitle">
+                    INFUNI analiza tus preferencias con el algoritmo científico AHP-Sort II y te recomienda
+                    el destino que mejor encaja con tu estilo de vida, presupuesto y objetivos académicos.
+                </p>
+                <div class="hero-ctas">
+                    <a href="busqueda.html" class="btn-hero-primary">🚀 Empezar a buscar</a>
+                    <a href="destinos.html" class="btn-hero-secondary">🗺️ Ver todos los destinos</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- STATS -->
+        <section class="landing-stats">
+            <div class="stats-grid">
+                <div class="stat-item reveal">
+                    <div class="stat-num">61<span>+</span></div>
+                    <p>Ciudades analizadas</p>
+                </div>
+                <div class="stat-item reveal reveal-delay-1">
+                    <div class="stat-num">5</div>
+                    <p>Criterios de evaluación</p>
+                </div>
+                <div class="stat-item reveal reveal-delay-2">
+                    <div class="stat-num"><span>AHP</span></div>
+                    <p>Algoritmo científico</p>
+                </div>
+                <div class="stat-item reveal reveal-delay-3">
+                    <div class="stat-num">100<span>%</span></div>
+                    <p>Personalizado para ti</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUÉ ES INFUNI -->
+        <section class="landing-section">
+            <div class="section-inner">
+                <div class="que-es-grid">
+                    <div class="reveal">
+                        <span class="section-label">¿Qué es INFUNI?</span>
+                        <h2 class="section-title">La brújula del estudiante universitario</h2>
+                        <p class="section-desc">
+                            Elegir dónde estudiar es una de las decisiones más importantes de tu vida.
+                            INFUNI no te da una lista genérica — usa tus prioridades reales para calcular
+                            qué ciudad española se adapta mejor a ti.
+                        </p>
+                        <div class="que-es-points">
+                            <div class="que-es-point">
+                                <div class="point-icon">🎯</div>
+                                <div>
+                                    <strong>Ranking personalizado</strong>
+                                    <p style="color:var(--text-muted); font-size:0.9rem; margin-top:3px;">Cada usuario obtiene un ranking único basado en sus pesos y perfil.</p>
+                                </div>
+                            </div>
+                            <div class="que-es-point">
+                                <div class="point-icon">🔬</div>
+                                <div>
+                                    <strong>Base científica sólida</strong>
+                                    <p style="color:var(--text-muted); font-size:0.9rem; margin-top:3px;">El método AHP-Sort II es una técnica de decisión multicriterio reconocida internacionalmente.</p>
+                                </div>
+                            </div>
+                            <div class="que-es-point">
+                                <div class="point-icon">🤝</div>
+                                <div>
+                                    <strong>Comunidad activa</strong>
+                                    <p style="color:var(--text-muted); font-size:0.9rem; margin-top:3px;">Reseñas reales de estudiantes que ya han vivido en cada ciudad.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="que-es-visual reveal reveal-delay-2">
+                        <div class="visual-big">🏆</div>
+                        <div class="visual-text">Tu Ranking Personalizado</div>
+                        <div class="visual-sub">Calculado con AHP-Sort II</div>
+                        <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 10px; text-align: left;">
+                            <div style="background: rgba(255,255,255,0.15); padding: 10px 15px; border-radius: 10px; display: flex; justify-content: space-between;">
+                                <span>🥇 Madrid</span><span style="color:#fbbf24; font-weight:700;">4.8/5</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 10px; display: flex; justify-content: space-between;">
+                                <span>🥈 Barcelona</span><span style="font-weight:700;">4.6/5</span>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 10px; display: flex; justify-content: space-between;">
+                                <span>🥉 Sevilla</span><span style="font-weight:700;">4.4/5</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CÓMO FUNCIONA -->
+        <section class="landing-section alt">
+            <div class="section-inner">
+                <div class="reveal" style="text-align: center; max-width: 600px; margin: 0 auto;">
+                    <span class="section-label">Proceso</span>
+                    <h2 class="section-title">¿Cómo funciona?</h2>
+                    <p class="section-desc" style="margin: 0 auto;">En tres pasos sencillos obtienes tu recomendación personalizada.</p>
+                </div>
+                <div class="steps-grid">
+                    <div class="step-card reveal">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">⚙️</div>
+                        <h3>Configura tus prioridades</h3>
+                        <p>Ajusta mediante sliders cuánto valoras el transporte, la seguridad, el ocio nocturno, la calidad académica y el coste de vida. Puedes usar la Matriz AHP para mayor precisión.</p>
+                    </div>
+                    <div class="step-card reveal reveal-delay-1">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">🔬</div>
+                        <h3>El algoritmo analiza</h3>
+                        <p>AHP-Sort II pondera las métricas reales de cada ciudad según tus prioridades y calcula una puntuación global que refleja tu compatibilidad con cada destino.</p>
+                    </div>
+                    <div class="step-card reveal reveal-delay-2">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">🗺️</div>
+                        <h3>Descubre tu destino</h3>
+                        <p>Consulta el ranking, explora el mapa interactivo, compara ciudades en detalle y guarda tus búsquedas favoritas para volver más tarde.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CARACTERÍSTICAS -->
+        <section class="landing-section">
+            <div class="section-inner">
+                <div class="reveal" style="text-align: center; max-width: 600px; margin: 0 auto 50px auto;">
+                    <span class="section-label">Herramientas</span>
+                    <h2 class="section-title">Todo lo que necesitas para decidir</h2>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card reveal">
+                        <div class="feature-icon">🏆</div>
+                        <h3>Ranking AHP-Sort II</h3>
+                        <p>Clasificación científica de ciudades adaptada en tiempo real a tus pesos personalizados.</p>
+                    </div>
+                    <div class="feature-card reveal reveal-delay-1">
+                        <div class="feature-icon">🗺️</div>
+                        <h3>Mapa interactivo</h3>
+                        <p>Visualiza los destinos geolocalizados en el mapa con marcadores de color según su posición en el ranking.</p>
+                    </div>
+                    <div class="feature-card reveal reveal-delay-2">
+                        <div class="feature-icon">⚖️</div>
+                        <h3>Comparador de ciudades</h3>
+                        <p>Pon cara a cara hasta 4 destinos simultáneamente para analizar sus diferencias en detalle.</p>
+                    </div>
+                    <div class="feature-card reveal">
+                        <div class="feature-icon">💬</div>
+                        <h3>Comunidad y reseñas</h3>
+                        <p>Lee opiniones de estudiantes que ya han vivido en cada destino y comparte tu propia experiencia.</p>
+                    </div>
+                    <div class="feature-card reveal reveal-delay-1">
+                        <div class="feature-icon">📋</div>
+                        <h3>Guías de supervivencia</h3>
+                        <p>Checklists detalladas con todo lo que debes gestionar antes, durante y después de tu llegada.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA FINAL -->
+        <section class="landing-cta-section">
+            <div class="reveal">
+                <h2>¿Listo para encontrar tu ciudad?</h2>
+                <p>Únete y obtén tu recomendación personalizada en menos de 2 minutos.</p>
+                <div class="hero-ctas">
+                    <a href="registro.html" class="btn-hero-primary">Crear cuenta gratis</a>
+                    <a href="busqueda.html" class="btn-hero-secondary">Probar sin cuenta</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Plataforma</h4>
+                <ul>
+                    <li><a href="busqueda.html">Buscar destino</a></li>
+                    <li><a href="destinos.html">Explorar ciudades</a></li>
+                    <li><a href="herramientas.html">Comparador</a></li>
+                    <li><a href="ayuda-ahp.html">Ayuda AHP</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Comunidad</h4>
+                <ul>
+                    <li><a href="comunidad.html#foro">Foro</a></li>
+                    <li><a href="comunidad.html#escribir">Escribir una reseña</a></li>
+                    <li><a href="registro.html">Crear cuenta</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacidad.html">Política de Privacidad</a></li>
+                    <li><a href="terminos.html">Términos y Condiciones</a></li>
+                    <li><a href="cookies.html">Política de Cookies</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+        <p>&copy; 2026 INFUNI S.L. - Jóvenes por el mundo</p>
+    </footer>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/responsive.js"></script>
+    <script>
+        // Scroll reveal: añade .is-visible cuando un .reveal entra en viewport
+        (function () {
+            const targets = document.querySelectorAll('.reveal');
+            if (!targets.length) return;
+
+            if (!('IntersectionObserver' in window)) {
+                targets.forEach(el => el.classList.add('is-visible'));
+                return;
+            }
+
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        io.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+            targets.forEach(el => io.observe(el));
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunidad - INFUNI</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .comunidad-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; margin-top: 40px; align-items: start; }
+        @media (max-width: 900px) { .comunidad-grid { grid-template-columns: 1fr; } }
+        
+        .foro-contenedor { display: flex; flex-direction: column; gap: 20px; }
+
+        .foro-tabs {
+            background: var(--white);
+            padding: 16px 20px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .foro-tabs-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .foro-filtros-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr) auto;
+            gap: 12px;
+            align-items: end;
+        }
+        @media (max-width: 900px) { .foro-filtros-row { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 500px) { .foro-filtros-row { grid-template-columns: 1fr; } }
+        .foro-filtro { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .foro-filtro label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .foro-filtro select {
+            width: 100%;
+            padding: 9px 12px;
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            background: #f8fafc;
+            font-size: 0.88rem;
+            font-family: inherit;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .foro-filtro select:hover { background: #fff; border-color: #cbd5e1; }
+        .foro-filtro select:focus { outline: none; border-color: var(--accent-color); background: #fff; }
+        .foro-filtro select:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
+        .btn-reset-foro {
+            background: #f1f5f9;
+            border: 1.5px solid #e2e8f0;
+            padding: 9px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            color: var(--text-dark);
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-reset-foro:hover { background: #e2e8f0; }
+        .foro-filtros-status {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            background: #f8fafc;
+            padding: 6px 12px;
+            border-radius: 10px;
+            display: inline-block;
+            align-self: flex-start;
+        }
+        .foro-filtros-status.is-active { background: #eff6ff; color: var(--accent-color); }
+        
+        .hilo-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid var(--accent-color);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .hilo-header { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; }
+        .hilo-autor { font-weight: bold; color: var(--primary-color); display: flex; align-items: center; gap: 10px; }
+        .hilo-ciudad { background: var(--bg-light); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: var(--accent-color); }
+        .hilo-texto { color: var(--text-dark); line-height: 1.6; }
+        .hilo-footer { margin-top: 15px; display: flex; gap: 15px; color: var(--text-muted); font-size: 0.9rem; }
+        .hilo-footer span { cursor: pointer; }
+        .hilo-footer span:hover { color: var(--accent-color); }
+
+        .sidebar-form {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar-form h3 { color: var(--primary-color); margin-bottom: 20px; }
+        .sidebar-form label { font-weight: 600; display: block; margin-bottom: 5px; margin-top: 15px; }
+        .sidebar-form input, .sidebar-form select, .sidebar-form textarea {
+            width: 100%; padding: 12px; border-radius: 10px; border: 1.5px solid #cbd5e1;
+            font-family: inherit; margin-bottom: 5px;
+        }
+        .sidebar-form textarea { resize: vertical; min-height: 120px; }
+        
+        .slider-item { margin-bottom: 10px; }
+        .slider-item input[type="range"] { width: 100%; margin: 5px 0; }
+        
+        .pesos-tag-container { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+        .peso-tag { 
+            font-size: 0.75rem; background: #e0f2fe; color: #0369a1; 
+            padding: 2px 8px; border-radius: 12px; font-weight: 600;
+        }
+
+        .respuesta-card {
+            background: #f1f5f9;
+            margin-top: 10px;
+            padding: 15px;
+            border-radius: 10px;
+            margin-left: 30px;
+            border-left: 3px solid #cbd5e1;
+            font-size: 0.9rem;
+        }
+        /* Sangría progresiva por nivel de anidación (cap visual a 5 niveles) */
+        .respuesta-card .respuesta-card { margin-left: 24px; border-left-color: #94a3b8; }
+        .respuesta-card .respuesta-card .respuesta-card { border-left-color: #64748b; }
+        .respuesta-card .respuesta-card .respuesta-card .respuesta-card { border-left-color: #475569; }
+        .respuesta-card .respuesta-card .respuesta-card .respuesta-card .respuesta-card { margin-left: 12px; }
+
+        .respuesta-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+        .btn-reply {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0;
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-reply:hover { text-decoration: underline; }
+        .btn-reply.btn-reply-nested {
+            font-size: 0.78rem;
+            margin-top: 6px;
+            opacity: 0.85;
+        }
+
+        .reply-form {
+            margin-top: 15px;
+            display: none;
+        }
+        .reply-form.is-open { display: block; }
+        .reply-form textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1.5px solid #cbd5e1;
+            font-family: inherit;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            box-sizing: border-box;
+        }
+
+        /* === Voto estilo YouTube === */
+        .vote-bar {
+            display: inline-flex;
+            align-items: center;
+            gap: 0;
+            background: #f1f5f9;
+            border-radius: 50px;
+            padding: 2px;
+            margin-right: 10px;
+            border: 1px solid #e2e8f0;
+        }
+        .vote-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 6px 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 50px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: background 0.15s, color 0.15s, transform 0.12s;
+        }
+        .vote-btn:hover { background: #e2e8f0; color: var(--primary-color); }
+        .vote-btn:active { transform: scale(0.92); }
+        .vote-btn:disabled { cursor: not-allowed; opacity: 0.5; }
+        .vote-btn.is-active.like   { background: #dbeafe; color: #1d4ed8; }
+        .vote-btn.is-active.dislike{ background: #fee2e2; color: #b91c1c; }
+        .vote-divider {
+            width: 1px;
+            height: 18px;
+            background: #cbd5e1;
+            margin: 0 2px;
+            align-self: center;
+        }
+        .vote-count { min-width: 14px; text-align: left; font-variant-numeric: tabular-nums; }
+        @keyframes vote-bump {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.25); }
+            100% { transform: scale(1); }
+        }
+        .vote-btn.bump { animation: vote-bump 0.35s ease-out; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="nav-global">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: inherit;">
+                    <h1>INF<span>UNI</span></h1>
+                </a>
+            </div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <ul id="navMenu">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="busqueda.html">Buscar</a></li>
+                <li><a href="destinos.html">Destinos</a></li>
+                <li>
+                    <a href="herramientas.html">Comparador</a>
+                </li>
+                <li>
+                    <a href="comunidad.html" class="active">Comunidad ▾</a>
+                    <ul>
+                        <li><a href="comunidad.html#foro">Foro</a></li>
+                        <li><a href="busqueda.html#comunidad">Añadir ciudad</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="ayuda-ahp.html" title="Ayuda sobre el método AHP">Ayuda </a>
+                </li>
+                <li>
+                    <a href="login.html" class="btn-login" id="btnSesion">Inicia Sesión 👤</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>🗣️ Comunidad INFUNI</h2>
+        <p class="texto-largo">Lee las experiencias de estudiantes reales o aporta tu granito de arena.</p>
+
+        <div class="comunidad-grid">
+
+            <div>
+                <!-- SELECTOR DE FORO: REGIÓN / PAÍS / CIUDAD -->
+                <div class="foro-tabs" id="foroTabs">
+                    <div class="foro-tabs-label">📍 Filtrar foro por:</div>
+                    <div class="foro-filtros-row">
+                        <div class="foro-filtro">
+                            <label for="filtroRegion">🌍 Región</label>
+                            <select id="filtroRegion">
+                                <option value="">Todas las regiones</option>
+                            </select>
+                        </div>
+                        <div class="foro-filtro">
+                            <label for="filtroPais">🏳️ País</label>
+                            <select id="filtroPais">
+                                <option value="">Todos los países</option>
+                            </select>
+                        </div>
+                        <div class="foro-filtro">
+                            <label for="filtroCiudad">📍 Ciudad</label>
+                            <select id="filtroCiudad">
+                                <option value="">Todas las ciudades</option>
+                            </select>
+                        </div>
+                        <div class="foro-filtro">
+                            <label for="filtroCategoria">🏷️ Tema</label>
+                            <select id="filtroCategoria">
+                                <option value="">Todos los temas</option>
+                                <option value="General">🗣️ General</option>
+                                <option value="Transporte">🚌 Transporte</option>
+                                <option value="Ocio y Turismo">🎭 Ocio y Turismo</option>
+                                <option value="Vida Nocturna">🌃 Vida Nocturna</option>
+                                <option value="Seguridad">🛡️ Seguridad</option>
+                                <option value="Calidad Académica">🎓 Calidad Académica</option>
+                                <option value="Asequibilidad">💰 Asequibilidad (Coste)</option>
+                                <option value="Gastronomía">🍴 Gastronomía</option>
+                                <option value="Conectividad">📶 Conectividad</option>
+                            </select>
+                        </div>
+                        <button type="button" id="btnResetFiltrosForo" class="btn-reset-foro" title="Restablecer filtros">↩ Reset</button>
+                    </div>
+                    <div class="foro-filtros-status" id="foroFiltrosStatus">Mostrando todos los hilos.</div>
+                </div>
+
+                <!-- FORO / HILOS -->
+                <div class="foro-contenedor" id="foro"></div>
+            </div>
+
+            <!-- MENSAJE LOGIN REQUERIDO -->
+            <aside class="sidebar-form" id="msgLoginRequired" style="display: none; text-align: center; border-left: 4px solid var(--accent-color);">
+                <h3>Escribir a la Comunidad</h3>
+                <p style="margin-bottom: 20px; color: var(--text-dark);">Solo los estudiantes registrados pueden compartir sus experiencias.</p>
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <p style="font-size: 0.9rem; font-weight: 600;">Regístrate o inicia sesión para participar en el foro.</p>
+                </div>
+                <button onclick="location.href='login.html'" class="btn-submit" style="width: 100%;">Ir al Login 👤</button>
+            </aside>
+
+            <!-- FORMULARIO RESEÑAS -->
+            <aside class="sidebar-form" id="escribir">
+                <h3>Escribir a la Comunidad</h3>
+                <form id="formResena">
+                    <label>Ciudad de la que hablas</label>
+                    <select id="ciudadForo" required>
+                        <option value="">Selecciona...</option>
+                        <option value="madrid">Madrid</option>
+                        <option value="granada">Granada</option>
+                        <option value="sevilla">Sevilla</option>
+                        <option value="valencia">Valencia</option>
+                        <option value="salamanca">Salamanca</option>
+                    </select>
+
+                    <label>Tu valoración</label>
+                    <select id="valForo" required>
+                        <option value="5">⭐⭐⭐⭐⭐ Increíble</option>
+                        <option value="4">⭐⭐⭐⭐ Muy buena</option>
+                        <option value="3">⭐⭐⭐ Normal</option>
+                        <option value="2">⭐⭐ Regular</option>
+                        <option value="1">⭐ Problemática</option>
+                    </select>
+
+                    <label>Tu experiencia / Duda</label>
+                    <textarea placeholder="Cuéntale al resto de futuros estudiantes..." required id="textoForo"></textarea>
+
+                    <label>Tema principal</label>
+                    <select id="categoriaForo" required>
+                        <option value="General">🗣️ General</option>
+                        <option value="Transporte">🚌 Transporte</option>
+                        <option value="Ocio y Turismo">🎭 Ocio y Turismo</option>
+                        <option value="Vida Nocturna">🌃 Vida Nocturna</option>
+                        <option value="Seguridad">🛡️ Seguridad</option>
+                        <option value="Calidad Académica">🎓 Calidad Académica</option>
+                        <option value="Asequibilidad">💰 Asequibilidad (Coste)</option>
+                        <option value="Gastronomía">🍴 Gastronomía</option>
+                        <option value="Conectividad">📶 Conectividad</option>
+                    </select>
+
+                    <button type="submit" class="btn-submit" style="margin-top: 15px; width: 100%;">Publicar Hilo</button>
+                    <p id="foroFeedback" style="margin-top: 10px; font-weight: bold; text-align: center;"></p>
+                </form>
+            </aside>
+
+        </div>
+    </main>
+
+    <script>
+        const API_BASE = '';
+        const foroContainer = document.getElementById('foro');
+        const selectCiudades = document.getElementById('ciudadForo');
+        const filtroRegion = document.getElementById('filtroRegion');
+        const filtroPais = document.getElementById('filtroPais');
+        const filtroCiudad = document.getElementById('filtroCiudad');
+        const filtroCategoria = document.getElementById('filtroCategoria');
+        const btnResetFiltrosForo = document.getElementById('btnResetFiltrosForo');
+        const foroFiltrosStatus = document.getElementById('foroFiltrosStatus');
+
+        // Estado del foro: filtros activos y cachés
+        let foroOpinionesCache = [];
+        let foroCiudadesCache = [];
+
+        // Mapa País → Región (continente / sub-región europea). Las ciudades cuyo
+        // país no aparezca en el mapa caen en "Otros".
+        const PAIS_A_REGION = {
+            'España': 'Europa del Sur',
+            'Italia': 'Europa del Sur',
+            'Portugal': 'Europa del Sur',
+            'Grecia': 'Europa del Sur',
+            'Malta': 'Europa del Sur',
+            'Francia': 'Europa Occidental',
+            'Alemania': 'Europa Occidental',
+            'Países Bajos': 'Europa Occidental',
+            'Holanda': 'Europa Occidental',
+            'Bélgica': 'Europa Occidental',
+            'Luxemburgo': 'Europa Occidental',
+            'Suiza': 'Europa Occidental',
+            'Austria': 'Europa Occidental',
+            'Reino Unido': 'Islas Británicas',
+            'Irlanda': 'Islas Británicas',
+            'Suecia': 'Europa del Norte',
+            'Noruega': 'Europa del Norte',
+            'Dinamarca': 'Europa del Norte',
+            'Finlandia': 'Europa del Norte',
+            'Islandia': 'Europa del Norte',
+            'Polonia': 'Europa del Este',
+            'República Checa': 'Europa del Este',
+            'Chequia': 'Europa del Este',
+            'Hungría': 'Europa del Este',
+            'Rumanía': 'Europa del Este',
+            'Eslovaquia': 'Europa del Este',
+            'Croacia': 'Europa del Este'
+        };
+        const regionDePais = (pais) => PAIS_A_REGION[pais] || 'Otros';
+
+        // 1. Cargar Ciudades para los selectores (formulario, filtros)
+        async function cargarCiudadesSelector() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ciudades`);
+                foroCiudadesCache = await res.json();
+
+                selectCiudades.innerHTML = '<option value="">Selecciona...</option>' +
+                    foroCiudadesCache.map(c => `<option value="${c._id}">${c.nombre}</option>`).join('');
+
+                poblarFiltroRegion();
+                poblarFiltroPais();
+                poblarFiltroCiudad();
+
+                filtroRegion.addEventListener('change', () => {
+                    filtroPais.value = '';
+                    filtroCiudad.value = '';
+                    poblarFiltroPais();
+                    poblarFiltroCiudad();
+                    renderOpiniones();
+                });
+                filtroPais.addEventListener('change', () => {
+                    filtroCiudad.value = '';
+                    poblarFiltroCiudad();
+                    renderOpiniones();
+                });
+                filtroCiudad.addEventListener('change', () => {
+                    renderOpiniones();
+                    if (filtroCiudad.value) {
+                        selectCiudades.value = filtroCiudad.value;
+                    }
+                });
+                filtroCategoria.addEventListener('change', renderOpiniones);
+                btnResetFiltrosForo.addEventListener('click', () => {
+                    filtroRegion.value = '';
+                    filtroPais.value = '';
+                    filtroCiudad.value = '';
+                    filtroCategoria.value = '';
+                    poblarFiltroPais();
+                    poblarFiltroCiudad();
+                    renderOpiniones();
+                    selectCiudades.value = ''; // Sincronizar reseteo con el formulario
+                });
+            } catch (err) { console.error("Error ciudades:", err); }
+        }
+
+        function poblarFiltroRegion() {
+            const regiones = [...new Set(foroCiudadesCache.map(c => regionDePais(c.pais)))].sort();
+            filtroRegion.innerHTML = '<option value="">Todas las regiones</option>' +
+                regiones.map(r => `<option value="${r}">${r}</option>`).join('');
+        }
+
+        function poblarFiltroPais() {
+            const region = filtroRegion.value;
+            const fuente = region
+                ? foroCiudadesCache.filter(c => regionDePais(c.pais) === region)
+                : foroCiudadesCache;
+            const paises = [...new Set(fuente.map(c => c.pais).filter(Boolean))].sort();
+            filtroPais.innerHTML = '<option value="">Todos los países</option>' +
+                paises.map(p => `<option value="${p}">${p}</option>`).join('');
+            filtroPais.disabled = paises.length === 0;
+        }
+
+        function poblarFiltroCiudad() {
+            const region = filtroRegion.value;
+            const pais = filtroPais.value;
+            const fuente = foroCiudadesCache.filter(c =>
+                (!region || regionDePais(c.pais) === region) &&
+                (!pais || c.pais === pais)
+            );
+            filtroCiudad.innerHTML = '<option value="">Todas las ciudades</option>' +
+                fuente.map(c => `<option value="${c._id}">${c.nombre}</option>`).join('');
+            filtroCiudad.disabled = fuente.length === 0;
+        }
+
+        function actualizarStatusFiltros() {
+            const region = filtroRegion.value;
+            const pais = filtroPais.value;
+            const ciudadId = filtroCiudad.value;
+            const categoria = filtroCategoria.value;
+            const partes = [];
+            if (region) partes.push(region);
+            if (pais) partes.push(pais);
+            if (ciudadId) {
+                const c = foroCiudadesCache.find(x => String(x._id) === String(ciudadId));
+                if (c) partes.push(c.nombre);
+            }
+            if (categoria) partes.push(`Tema: ${categoria}`);
+            if (partes.length) {
+                foroFiltrosStatus.textContent = `Foro filtrado: ${partes.join(' › ')}`;
+                foroFiltrosStatus.classList.add('is-active');
+            } else {
+                foroFiltrosStatus.textContent = 'Mostrando todos los hilos.';
+                foroFiltrosStatus.classList.remove('is-active');
+            }
+        }
+
+        // 2. Cargar Opiniones Recientes
+        async function cargarOpiniones() {
+            try {
+                const res = await fetch(`${API_BASE}/api/opiniones`);
+                foroOpinionesCache = await res.json();
+                renderOpiniones();
+            } catch (err) {
+                foroContainer.innerHTML = '<p>Error cargando la comunidad.</p>';
+            }
+        }
+
+        function renderOpiniones() {
+            try {
+                actualizarStatusFiltros();
+                const region = filtroRegion.value;
+                const pais = filtroPais.value;
+                const ciudadId = filtroCiudad.value;
+                const categoria = filtroCategoria.value;
+
+                // Mapa rápido id ciudad → datos para resolver país/región de cada opinión
+                const ciudadById = new Map(foroCiudadesCache.map(c => [String(c._id), c]));
+
+                const opiniones = foroOpinionesCache.filter(op => {
+                    const cid = op.id_ciudad?._id || op.id_ciudad;
+                    if (ciudadId && String(cid) !== String(ciudadId)) return false;
+                    
+                    if (categoria && op.categoria !== categoria) return false;
+
+                    if (pais || region) {
+                        const ciudadFull = ciudadById.get(String(cid));
+                        const paisOp = ciudadFull?.pais || op.id_ciudad?.pais;
+                        if (pais && paisOp !== pais) return false;
+                        if (region && regionDePais(paisOp) !== region) return false;
+                    }
+                    return true;
+                });
+
+                if (opiniones.length === 0) {
+                    const filtrando = !!(region || pais || ciudadId || categoria);
+                    const msg = filtrando
+                        ? 'Aún no hay hilos en este foro. ¡Inaugúralo tú!'
+                        : 'No hay hilos todavía. ¡Sé el primero en preguntar!';
+                    foroContainer.innerHTML = `<p style="text-align:center; padding:40px;">${msg}</p>`;
+                    return;
+                }
+
+                const localUser = JSON.parse(localStorage.getItem('usuarioInfo') || '{}');
+                const userLoggedIn = !!localUser.id || !!localUser._id;
+                const currentUid = localUser.id || localUser._id || null;
+                const escapeHtml = (s) => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+                // Devuelve la barra de votos (👍 / 👎) para una opinión o respuesta.
+                // `target` debe traer arrays .likes y .dislikes (de usuarioIds).
+                function renderVoteBar(opinionId, target, respuestaId) {
+                    const likes    = (target.likes    || []).map(u => String(u._id || u));
+                    const dislikes = (target.dislikes || []).map(u => String(u._id || u));
+                    const miVoto = currentUid && likes.includes(String(currentUid))
+                        ? 'like'
+                        : (currentUid && dislikes.includes(String(currentUid)) ? 'dislike' : null);
+
+                    const dataAttrs = `data-opinion="${opinionId}"${respuestaId ? ` data-respuesta="${respuestaId}"` : ''}`;
+                    const disabled = userLoggedIn ? '' : 'disabled title="Inicia sesión para votar"';
+                    return `
+                        <div class="vote-bar" ${dataAttrs}>
+                            <button class="vote-btn like ${miVoto === 'like' ? 'is-active' : ''}" ${disabled} onclick="votarComentario(event, '${opinionId}', '${respuestaId || ''}', 'like')">
+                                👍 <span class="vote-count">${likes.length}</span>
+                            </button>
+                            <span class="vote-divider"></span>
+                            <button class="vote-btn dislike ${miVoto === 'dislike' ? 'is-active' : ''}" ${disabled} onclick="votarComentario(event, '${opinionId}', '${respuestaId || ''}', 'dislike')">
+                                👎 <span class="vote-count">${dislikes.length}</span>
+                            </button>
+                        </div>`;
+                }
+
+                // Construye el árbol de respuestas a partir de la lista plana usando parent_id
+                function renderRespuestas(respuestas, opinionId, parentId) {
+                    const hijos = (respuestas || []).filter(r => {
+                        const rp = r.parent_id ? String(r.parent_id) : null;
+                        return rp === (parentId ? String(parentId) : null);
+                    });
+                    if (!hijos.length) return '';
+                    return hijos.map(r => {
+                        const autor = r.id_usuario ? (r.id_usuario.nombre || 'Estudiante') : 'Anónimo';
+                        const fecha = new Date(r.fecha).toLocaleDateString('es-ES');
+                        const replyBtn = userLoggedIn ? `
+                            <button class="btn-reply btn-reply-nested" onclick="toggleReplyForm('${opinionId}','${r._id}')">↩️ Responder</button>
+                            <div class="reply-form" id="form-reply-${opinionId}-${r._id}">
+                                <textarea id="text-reply-${opinionId}-${r._id}" placeholder="Responder a ${escapeHtml(autor)}…"></textarea>
+                                <button class="btn-submit" style="width: auto; padding: 8px 15px; font-size: 0.85rem;" onclick="enviarRespuesta('${opinionId}','${r._id}')">Enviar</button>
+                            </div>` : '';
+                        return `
+                            <div class="respuesta-card">
+                                <div class="respuesta-header">
+                                    <span>💬 ${escapeHtml(autor)}</span>
+                                    <span style="font-size: 0.75rem;">${fecha}</span>
+                                </div>
+                                <div>${escapeHtml(r.texto_respuesta)}</div>
+                                <div style="margin-top: 8px; display: flex; align-items: center; flex-wrap: wrap;">
+                                    ${renderVoteBar(opinionId, r, r._id)}
+                                    ${replyBtn}
+                                </div>
+                                ${renderRespuestas(respuestas, opinionId, r._id)}
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                foroContainer.innerHTML = opiniones.map(op => {
+                    const p = op.pesos || { transporte: 5, ocio: 5, ocioNocturno: 5, seguridad: 5, calidadAcademica: 5 };
+                    const respuestasHTML = renderRespuestas(op.respuestas || [], op._id, null);
+
+                    return `
+                    <div class="hilo-card">
+                        <div class="hilo-header">
+                            <div class="hilo-autor">👤 ${escapeHtml(op.id_usuario ? (op.id_usuario.nombre || 'Estudiante') : 'Anónimo')}</div>
+                            <div class="hilo-ciudad">📍 ${escapeHtml(op.id_ciudad ? op.id_ciudad.nombre : 'General')}</div>
+                        </div>
+                        <div class="hilo-texto">${escapeHtml(op.texto_opinion)}</div>
+
+                        <div class="pesos-tag-container">
+                            ${op.categoria ? `<span class="peso-tag" style="background:#fef08a; color:#854d0e; font-size:0.8rem; padding: 4px 10px;">🏷️ ${escapeHtml(op.categoria)}</span>` : ''}
+                        </div>
+
+                        <div class="hilo-footer" style="align-items:center; flex-wrap:wrap;">
+                            ${renderVoteBar(op._id, op)}
+                            <span>${'⭐'.repeat(op.puntuacion)} ${op.puntuacion}/5</span>
+                            <span>🕒 ${new Date(op.fecha_publicacion).toLocaleDateString('es-ES')}</span>
+                        </div>
+
+                        <div id="respuestas-${op._id}">
+                            ${respuestasHTML}
+                        </div>
+
+                        ${userLoggedIn ? `
+                            <button class="btn-reply" onclick="toggleReplyForm('${op._id}')">↩️ Responder</button>
+                            <div class="reply-form" id="form-reply-${op._id}">
+                                <textarea id="text-reply-${op._id}" placeholder="Escribe tu respuesta..."></textarea>
+                                <button class="btn-submit" style="width: auto; padding: 8px 15px; font-size: 0.85rem;" onclick="enviarRespuesta('${op._id}')">Enviar</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `}).join('');
+            } catch (err) { 
+                foroContainer.innerHTML = '<p>Error cargando la comunidad.</p>';
+            }
+        }
+
+        function toggleReplyForm(opinionId, replyId) {
+            const suffix = replyId ? `${opinionId}-${replyId}` : opinionId;
+            const form = document.getElementById(`form-reply-${suffix}`);
+            if (!form) return;
+            form.classList.toggle('is-open');
+            if (form.classList.contains('is-open')) {
+                const ta = document.getElementById(`text-reply-${suffix}`);
+                if (ta) ta.focus();
+            }
+        }
+
+        async function votarComentario(ev, opinionId, respuestaId, tipo) {
+            ev?.stopPropagation?.();
+            const localUser = JSON.parse(localStorage.getItem('usuarioInfo') || '{}');
+            const usuarioId = localUser.id || localUser._id;
+            if (!usuarioId) {
+                alert("Inicia sesión para votar.");
+                return;
+            }
+
+            // Encontrar la barra correspondiente para actualización in-situ
+            const selector = respuestaId
+                ? `.vote-bar[data-opinion="${opinionId}"][data-respuesta="${respuestaId}"]`
+                : `.vote-bar[data-opinion="${opinionId}"]:not([data-respuesta])`;
+            const bar = document.querySelector(selector);
+            if (!bar) return;
+
+            const btnLike    = bar.querySelector('.vote-btn.like');
+            const btnDislike = bar.querySelector('.vote-btn.dislike');
+
+            try {
+                const body = { tipo, usuarioId };
+                if (respuestaId) body.respuestaId = respuestaId;
+                const res = await fetch(`${API_BASE}/api/opiniones/${opinionId}/voto`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                if (!res.ok) {
+                    const sesionInvalida = await verificarSesion(res);
+                    if (sesionInvalida) return;
+
+                    let detalle = '';
+                    try {
+                        const err = await res.json();
+                        detalle = err.error || JSON.stringify(err);
+                    } catch (_) {
+                        detalle = await res.text().catch(() => '');
+                    }
+                    if (res.status === 404) {
+                        alert("Endpoint /voto no encontrado. Reinicia el servidor (node server.js) para cargar el nuevo código.");
+                    } else {
+                        alert(`No se pudo registrar el voto (HTTP ${res.status}). ${detalle}`);
+                    }
+                    return;
+                }
+
+                const data = await res.json();
+                btnLike.querySelector('.vote-count').textContent    = data.likes;
+                btnDislike.querySelector('.vote-count').textContent = data.dislikes;
+
+                btnLike.classList.toggle('is-active',    data.miVoto === 'like');
+                btnDislike.classList.toggle('is-active', data.miVoto === 'dislike');
+
+                // Animación visual del botón pulsado
+                const pulsed = tipo === 'like' ? btnLike : btnDislike;
+                pulsed.classList.remove('bump');
+                void pulsed.offsetWidth;
+                pulsed.classList.add('bump');
+            } catch (err) {
+                alert("Error de conexión.");
+            }
+        }
+
+        async function enviarRespuesta(opinionId, replyId) {
+            const suffix = replyId ? `${opinionId}-${replyId}` : opinionId;
+            const textoInput = document.getElementById(`text-reply-${suffix}`);
+            const texto = textoInput.value.trim();
+            const localUser = JSON.parse(localStorage.getItem('usuarioInfo') || '{}');
+            const usuarioId = localUser.id || localUser._id;
+
+            if (!texto) return alert("Escribe algo para responder.");
+
+            try {
+                const body = { texto, usuarioId };
+                if (replyId) body.parentId = replyId;
+                const res = await fetch(`${API_BASE}/api/opiniones/${opinionId}/respuestas`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                if (res.ok) {
+                    textoInput.value = "";
+                    cargarOpiniones();
+                } else {
+                    const sesionInvalida = await verificarSesion(res);
+                    if (!sesionInvalida) {
+                        const err = await res.json();
+                        alert(err.error || "Error al enviar la respuesta.");
+                    }
+                }
+            } catch (err) {
+                alert("Error de conexión.");
+            }
+        }
+
+        // 3. Enviar nueva Opinión
+        document.getElementById('formResena').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const feedback = document.getElementById('foroFeedback');
+            
+            const localUser = JSON.parse(localStorage.getItem('usuarioInfo') || '{}');
+
+            const payload = {
+                ciudadId: document.getElementById('ciudadForo').value,
+                valoracion: document.getElementById('valForo').value,
+                texto: document.getElementById('textoForo').value,
+                usuarioId: localUser.id || localUser._id || null,
+                categoria: document.getElementById('categoriaForo').value
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/api/opiniones`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    feedback.style.color = "#10b981";
+                    feedback.innerText = "¡Hilo publicado con éxito!";
+                    this.reset();
+                    cargarOpiniones(); // Recargar lista
+                } else {
+                    const sesionInvalida = await verificarSesion(res);
+                    if (!sesionInvalida) {
+                        const error = await res.json();
+                        feedback.style.color = "#ef4444";
+                        feedback.innerText = error.error || "Error al publicar. Revisa los datos.";
+                    }
+                }
+            } catch (err) {
+                feedback.innerText = "Error de conexión con el servidor.";
+            }
+        });
+
+        // Inicializar
+        function checkAuth() {
+            const user = localStorage.getItem('usuarioInfo');
+            if (user) {
+                document.getElementById('escribir').style.display = 'block';
+                document.getElementById('msgLoginRequired').style.display = 'none';
+            } else {
+                document.getElementById('escribir').style.display = 'none';
+                document.getElementById('msgLoginRequired').style.display = 'block';
+            }
+        }
+
+        checkAuth();
+        cargarCiudadesSelector();
+        cargarOpiniones();
+    </script>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Guías de Destino</h4>
+                <ul>
+                    <li><a href="ayuda-ahp.html">Primeros pasos</a></li>
+                    <li><a href="destinos.html">Explorar destinos</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Comunidad</h4>
+                <ul>
+                    <li><a href="comunidad.html#foro">Foro</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacidad.html">Política de Privacidad</a></li>
+                    <li><a href="terminos.html">Términos y Condiciones</a></li>
+                    <li><a href="cookies.html">Política de Cookies</a></li>
+                </ul>
+            </div>
+        </div>
+        <p>&copy; 2026 INFUNI S.L. - Jóvenes por el mundo</p>
+    </footer>
+<script src="../js/auth.js"></script>
+<script src="../js/responsive.js"></script>
+</body>
+</html>

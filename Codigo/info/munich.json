@@ -1,0 +1,43 @@
+{
+    "id": "munich",
+    "nombre": "Múnich",
+    "etiquetas": {
+        "historia": "🏛️ Tradición Bávara y Tecnología",
+        "transporte": "🚆 Eficiencia Alemana (U-Bahn)",
+        "alojamiento": "🏠 Calidad de Vida Premium"
+    },
+    "historia": "Capital de Baviera, combina edificios imperiales con centros de innovación tecnológica mundial. Es famosa por su orden, seguridad y, por supuesto, el Oktoberfest.",
+    "alojamiento": "Es el mercado más caro de Alemania (800€-1100€). Es vital buscar con mucha antelación, especialmente en residencias de estudiantes (Studentenwerk).",
+    "barrios": "Maxvorstadt es el barrio de las universidades y museos. Schwabing es el distrito bohemio y artístico junto al Jardín Inglés.",
+    "universidades": [
+        {
+            "nombre": "Ludwig-Maximilians-Universität (LMU)",
+            "descripcion": "Una de las universidades con más premios Nobel de Europa."
+        },
+        {
+            "nombre": "Technische Universität München (TUM)",
+            "descripcion": "Líder en ingeniería, informática y ciencias naturales."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Marienplatz",
+            "categoria": "cultura",
+            "descripcion": "Plaza central con el Nuevo Ayuntamiento y su famoso carillón."
+        },
+        {
+            "nombre": "Englischer Garten",
+            "categoria": "ocio",
+            "descripcion": "Parque urbano inmenso donde se puede hacer surf en el río Eisbach."
+        },
+        {
+            "nombre": "Kultfabrik",
+            "categoria": "ocioNocturno",
+            "descripcion": "Antigua zona industrial convertida en uno de los complejos de ocio más grandes de Europa."
+        }
+    ],
+    "imagenes": [
+        "../img/munich_1.jpg",
+        "../img/munich_2.jpg"
+    ]
+}

@@ -1,0 +1,47 @@
+{
+    "id": "barcelona",
+    "nombre": "Barcelona",
+    "etiquetas": {
+        "historia": "🏛️ Modernismo y Mediterráneo",
+        "transporte": "🚲 Bicing y Red Urbana",
+        "alojamiento": "🏠 Alquiler al Lado del Mar"
+    },
+    "historia": "Ciudad cosmopolita y capital de Cataluña, Barcelona combina su pasado romano y medieval con el innovador modernismo de Gaudí. Es uno de los principales hubs tecnológicos del sur de Europa.",
+    "alojamiento": "Precios elevados similares a Madrid (600€-900€). Gràcia y Poblenou son barrios con mucha personalidad y demanda estudiantil.",
+    "barrios": "El Eixample destaca por su arquitectura en cuadrícula. El Gótico es el corazón histórico. La Barceloneta es ideal para estar cerca de la playa.",
+    "universidades": [
+        {
+            "nombre": "Universitat de Barcelona (UB)",
+            "descripcion": "Líder en investigación con facultades repartidas por toda la ciudad."
+        },
+        {
+            "nombre": "Universitat Politècnica de Catalunya (UPC)",
+            "descripcion": "Excelencia técnica e ingenierías de alto nivel."
+        },
+        {
+            "nombre": "Universitat Pompeu Fabra (UPF)",
+            "descripcion": "Enfoque internacional y muy bien posicionada en rankings de ciencias sociales."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Sagrada Familia",
+            "categoria": "cultura",
+            "descripcion": "La obra inacabada de Gaudí y símbolo de la ciudad."
+        },
+        {
+            "nombre": "Park Güell",
+            "categoria": "ocio",
+            "descripcion": "Parque público con jardines y elementos arquitectónicos únicos."
+        },
+        {
+            "nombre": "Razzmatazz",
+            "categoria": "ocioNocturno",
+            "descripcion": "Mítica sala de conciertos y discoteca con múltiples ambientes."
+        }
+    ],
+    "imagenes": [
+        "../img/barcelona_1.jpg",
+        "../img/barcelona_2.jpg"
+    ]
+}

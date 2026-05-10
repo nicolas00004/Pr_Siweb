@@ -1,0 +1,53 @@
+{
+    "id": "lovania",
+    "nombre": "Lovaina",
+    "pais": "Bélgica",
+    "etiquetas": {
+        "historia": "🍺 Capital de la Cerveza",
+        "transporte": "🚲 Ciudad Peatonal",
+        "alojamiento": "🏠 Residencias y Kots"
+    },
+    "historia": "Lovaina es una de las ciudades universitarias más antiguas y dinámicas de Europa. Su universidad, la KU Leuven (fundada en 1425), es líder mundial en investigación e innovación. La ciudad es prácticamente un campus gigante donde la bicicleta es el rey y la historia medieval se mezcla con una vida estudiantil internacional vibrante.",
+    "alojamiento": "El alojamiento típico se llama 'Kot' (habitaciones en casas compartidas solo para estudiantes). Los precios rondan los 400€ - 550€. Debido a la alta demanda, la propia universidad gestiona muchas residencias. El centro es compacto, por lo que casi cualquier sitio dentro del 'Ring' (la carretera circular que rodea la ciudad) es perfecto para vivir.",
+    "barrios": "Todo ocurre dentro del 'Ring'. El centro histórico es donde está la vida social. Heverlee es la zona más verde y tranquila, donde se encuentran las facultades de ingeniería y ciencias. La zona de la estación es muy práctica para viajar por Bélgica en tren.",
+    "universidades": [
+        {
+            "nombre": "KU Leuven (Katholieke Universiteit Leuven)",
+            "descripcion": "Constantemente premiada como la universidad más innovadora de Europa, con edificios repartidos por todo el casco histórico."
+        },
+        {
+            "nombre": "UC Leuven-Limburg (UCLL)",
+            "descripcion": "Universidad de ciencias aplicadas con un enfoque muy internacional y práctico."
+        },
+        {
+            "nombre": "Biblioteca Universitaria de Lovaina",
+            "descripcion": "Un edificio renacentista icónico en Ladeuzeplein, símbolo de la resiliencia de la ciudad tras las guerras mundiales."
+        }
+    ],
+    "sitios": [
+        {
+            "nombre": "Oude Markt",
+            "categoria": "ocio",
+            "descripcion": "Conocido como 'la barra de bar más larga del mundo' por la cantidad de pubs que rodean la plaza, uno junto a otro."
+        },
+        {
+            "nombre": "Groot Begijnhof (Gran Beguinaje)",
+            "categoria": "cultura",
+            "descripcion": "Un barrio medieval de calles empedradas y casas de ladrillo rojo, hoy reconvertido en residencia universitaria y Patrimonio de la Humanidad."
+        },
+        {
+            "nombre": "Stadhuis (Ayuntamiento)",
+            "categoria": "cultura",
+            "descripcion": "Una obra maestra del gótico tardío con 236 estatuas en su fachada; posiblemente el edificio más bonito de Bélgica."
+        },
+        {
+            "nombre": "Stella Artois Brewery",
+            "categoria": "ocio",
+            "descripcion": "La fábrica original de la cerveza más famosa de Bélgica, situada a las afueras del centro."
+        }
+    ],
+    "imagenes": [
+        "../img/lovaina_1.jpg",
+        "../img/lovaina_2.jpg"
+    ]
+}

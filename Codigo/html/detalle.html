@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles - INFUNI</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="nav-global">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: inherit;">
+                    <h1>INF<span>UNI</span></h1>
+                </a>
+            </div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <ul id="navMenu">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="busqueda.html">Buscar</a></li>
+                <li><a href="destinos.html">Destinos</a></li>
+                <li>
+                    <a href="herramientas.html">Comparador</a>
+                </li>
+                <li>
+                    <a href="comunidad.html">Comunidad ▾</a>
+                    <ul>
+                        <li><a href="comunidad.html#foro">Foro</a></li>
+                        <li><a href="busqueda.html#comunidad">Añadir ciudad</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="ayuda-ahp.html" title="Ayuda sobre el método AHP">Ayuda </a>
+                </li>
+                <li>
+                    <a href="login.html" class="btn-login" id="btnSesion">Inicia Sesión 👤</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <nav class="breadcrumbs-detalle">
+        <div class="container-breadcrumbs">
+            <a href="index.html">Inicio</a> &gt; <a href="destinos.html">Destinos</a> &gt; <span id="breadcrumb-ciudad">Cargando...</span>
+        </div>
+    </nav>
+
+    <main class="detalle-principal">
+        <div id="detalle-header-seccion">
+            <!-- Título y Tabs se inyectarán aquí -->
+             <div class="skeleton-title"></div>
+             <div class="tabs-container-skeleton"></div>
+        </div>
+
+        <div id="detalle-contenido" class="secciones-alternas">
+            <p style="text-align: center; padding: 40px;">Cargando información del destino...</p>
+        </div>
+    </main>
+
+    <script src="../js/detalle.js"></script>
+    <script src="../js/guias-logic.js"></script>
+    <script src="../js/auth.js"></script>
+</body>
+</html>

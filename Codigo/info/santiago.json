@@ -1,0 +1,24 @@
+{
+    "id": "santiago",
+    "nombre": "Santiago de Compostela",
+    "etiquetas": {
+        "historia": "🏛️ Patrimonio y Universidad de 500 años",
+        "transporte": "🚶 Ciudad Peatonal",
+        "alojamiento": "🏠 Muy Asequible"
+    },
+    "historia": "Capital de Galicia y meta del Camino de Santiago. Su universidad (USC) es una de las más antiguas del mundo, convirtiendo a la ciudad en un campus viviente con un casco histórico protegido por la UNESCO.",
+    "alojamiento": "Es de las ciudades más baratas de España. Una habitación en el Ensanche o cerca de la Plaza Roja suele costar entre 180€ y 260€.",
+    "barrios": "El Ensanche es la zona de vida estudiantil. La Zona Vieja es donde se concentran los bares tradicionales y la cultura. Campus Norte y Sur dividen las facultades.",
+    "universidades": [
+        { "nombre": "Universidad de Santiago de Compostela (USC)", "descripcion": "Líder en Ciencias de la Salud y Humanidades." }
+    ],
+    "sitios": [
+        { "nombre": "Catedral de Santiago", "categoria": "cultura", "descripcion": "Obra cumbre del románico y barroco." },
+        { "nombre": "Parque de la Alameda", "categoria": "ocio", "descripcion": "El mejor mirador urbano de la ciudad." },
+        { "nombre": "Rúa do Franco", "categoria": "ocioNocturno", "descripcion": "Calle mítica de tapas y vinos universitarios." }
+    ],
+    "imagenes": [
+        "../img/santiago_1.jpg",
+        "../img/santiago_2.jpg"
+    ]
+}

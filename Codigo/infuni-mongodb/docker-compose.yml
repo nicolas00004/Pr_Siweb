@@ -1,0 +1,163 @@
+version: "3.8"
+
+# ============================================================
+#   INFUNI — MongoDB Sharded Cluster
+#   Arquitectura:
+#    - 3 Config Servers  (replicasetbdd)
+#    - Shard 1: 3 nodos  (replicasetshard1)
+#    - Shard 2: 3 nodos  (replicasetshard2)
+#    - Shard 3: 3 nodos  (replicasetshard3)
+#    - 1 Router mongos   (mongorouter1)
+# ============================================================
+
+networks:
+  infuni-net:
+    driver: bridge
+
+# ── Volúmenes persistentes ───────────────────────────────────
+# Corregido: Cada volumen debe ir en su propia línea
+volumes:
+  cfg1-data:
+  cfg2-data:
+  cfg3-data:
+  s1n1-data:
+  s1n2-data:
+  s1n3-data:
+  s2n1-data:
+  s2n2-data:
+  s2n3-data:
+  s3n1-data:
+  s3n2-data:
+  s3n3-data:
+
+services:
+
+  # ── CONFIG SERVERS ────────────────────────────────────────
+  mongoserver1:
+    image: mongo:7.0
+    container_name: mongoserver1
+    command: mongod --configsvr --replSet replicasetbdd --port 27019 --bind_ip_all
+    volumes:
+      - cfg1-data:/data/db
+    networks: [infuni-net]
+    restart: unless-stopped
+
+  mongoserver2:
+    image: mongo:7.0
+    container_name: mongoserver2
+    command: mongod --configsvr --replSet replicasetbdd --port 27019 --bind_ip_all
+    volumes:
+      - cfg2-data:/data/db
+    networks: [infuni-net]
+    restart: unless-stopped
+
+  mongoserver3:
+    image: mongo:7.0
+    container_name: mongoserver3
+    command: mongod --configsvr --replSet replicasetbdd --port 27019 --bind_ip_all
+    volumes:
+      - cfg3-data:/data/db
+    networks: [infuni-net]
+    restart: unless-stopped
+
+  # ── SHARD 1 ───────────────────────────────────────────────
+  mongoshard1nodo1:
+    image: mongo:7.0
+    container_name: mongoshard1nodo1
+    command: mongod --shardsvr --replSet replicasetshard1 --port 27018 --bind_ip_all
+    volumes:
+      - s1n1-data:/data/db
+    networks: [infuni-net]
+    restart: unless-stopped
+
+  mongoshard1nodo2:
+    image: mongo:7.0
+    container_name: mongoshard1nodo2
+    command: mongod --shardsvr --replSet replicasetshard1 --port 27018 --bind_ip_all
+    volumes:
+      - s1n2-data:/data/db
+    networks: [infuni-net]
+    restart: unless-stopped
+
+  mongoshard1nodo3:
+    image: mongo:7.0
+    container_name: mongoshard1nodo3
+    command: mongod --shardsvr --replSet replicasetshard1 --port 27018 --bind_ip_all
+    volumes:
+      - s1n3-data:/data/db
+    networks: [infuni-net]
+    restart: unless-stopped
+
+  # ── SHARD 2 ───────────────────────────────────────────────
+  mongoshard2nodo1:
+    image: mongo:7.0
+    container_name: mongoshard2nodo1
+    command: mongod --shardsvr --replSet replicasetshard2 --port 27018 --bind_ip_all
+    volumes:
+      - s2n1-data:/data/db
+    networks: [infuni-net]
+    restart: unless-stopped
+
+  mongoshard2nodo2:
+    image: mongo:7.0
+    container_name: mongoshard2nodo2
+    command: mongod --shardsvr --replSet replicasetshard2 --port 27018 --bind_ip_all
+    volumes:
+      - s2n2-data:/data/db
+    networks: [infuni-net]
+    restart: unless-stopped
+
+  mongoshard2nodo3:
+    image: mongo:7.0
+    container_name: mongoshard2nodo3
+    command: mongod --shardsvr --replSet replicasetshard2 --port 27018 --bind_ip_all
+    volumes:
+      - s2n3-data:/data/db
+    networks: [infuni-net]
+    restart: unless-stopped
+
+  # ── SHARD 3 ───────────────────────────────────────────────
+  mongoshard3nodo1:
+    image: mongo:7.0
+    container_name: mongoshard3nodo1
+    command: mongod --shardsvr --replSet replicasetshard3 --port 27018 --bind_ip_all
+    volumes:
+      - s3n1-data:/data/db
+    networks: [infuni-net]
+    restart: unless-stopped
+
+  mongoshard3nodo2:
+    image: mongo:7.0
+    container_name: mongoshard3nodo2
+    command: mongod --shardsvr --replSet replicasetshard3 --port 27018 --bind_ip_all
+    volumes:
+      - s3n2-data:/data/db
+    networks: [infuni-net]
+    restart: unless-stopped
+
+  mongoshard3nodo3:
+    image: mongo:7.0
+    container_name: mongoshard3nodo3
+    command: mongod --shardsvr --replSet replicasetshard3 --port 27018 --bind_ip_all
+    volumes:
+      - s3n3-data:/data/db
+    networks: [infuni-net]
+    restart: unless-stopped
+
+  # ── ROUTER (mongos) ───────────────────────────────────────
+  mongorouter1:
+    image: mongo:7.0
+    container_name: mongorouter1
+    command: >
+      mongos
+      --configdb replicasetbdd/mongoserver1:27019,mongoserver2:27019,mongoserver3:27019
+      --port 27017
+      --bind_ip_all
+    ports:
+      - "27017:27017"
+    networks: [infuni-net]
+    depends_on:
+      - mongoserver1
+      - mongoserver2
+      - mongoserver3
+    restart: unless-stopped

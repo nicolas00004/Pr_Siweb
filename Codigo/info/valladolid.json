@@ -1,0 +1,31 @@
+{
+    "id": "valladolid",
+    "nombre": "Valladolid",
+    "etiquetas": {
+      "historia": "👑 Corte Real y Cine",
+      "transporte": "🚌 Red de buses AUvasa",
+      "alojamiento": "🏠 Precios moderados"
+    },
+    "historia": "Antigua sede de la corte española y lugar donde murió Cristóbal Colón. Hoy es un motor industrial y cultural.",
+    "alojamiento": "Zona de la Rondilla y zona de la Catedral son clásicas para estudiantes. Precios: 250€-400€.",
+    "barrios": "Barrio de San Martín para salir de cañas. El centro es monumental y muy comercial.",
+    "universidades": [
+      {
+        "nombre": "Universidad de Valladolid (UVa)",
+        "descripcion": "Una de las más antiguas de Europa, con gran tradición en derecho y letras."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Museo Nacional de Escultura",
+        "categoria": "cultura",
+        "descripcion": "Una de las colecciones de imaginería religiosa más importantes del mundo."
+      },
+      {
+        "nombre": "Campo Grande",
+        "categoria": "ocio",
+        "descripcion": "Gran parque romántico en el centro con pavos reales libres."
+      }
+    ],
+    "imagenes": ["../img/valladolid_1.jpg", "../img/valladolid_2.jpg"]
+  }

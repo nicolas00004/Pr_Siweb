@@ -1,0 +1,31 @@
+{
+    "id": "la-laguna",
+    "nombre": "San Cristóbal de La Laguna",
+    "etiquetas": {
+      "historia": "🏘️ Patrimonio UNESCO",
+      "transporte": "🚋 Tranvía de Tenerife",
+      "alojamiento": "🏠 Espíritu joven"
+    },
+    "historia": "Primera ciudad colonial sin murallas, cuyo trazado sirvió de modelo para las ciudades de Hispano America.",
+    "alojamiento": "Es la ciudad universitaria por excelencia de Canarias. Zona centro y Guajara son ideales. Precios 250€-400€.",
+    "barrios": "El casco histórico es peatonal y lleno de cafeterías. La Cuesta es una zona concurrida que conecta con la capital.",
+    "universidades": [
+      {
+        "nombre": "Universidad de La Laguna (ULL)",
+        "descripcion": "La universidad más antigua de Canarias, con gran peso en astrofísica y humanidades."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Catedral de La Laguna",
+        "categoria": "cultura",
+        "descripcion": "Icono neogótico en el corazón de la ciudad Patrimonio de la Humanidad."
+      },
+      {
+        "nombre": "Plaza del Adelantado",
+        "categoria": "ocio",
+        "descripcion": "Punto de encuentro central rodeado de edificios históricos."
+      }
+    ],
+    "imagenes": ["../img/lalaguna_1.jpg", "../img/lalaguna_2.jpg"]
+  }

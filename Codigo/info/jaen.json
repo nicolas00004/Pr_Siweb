@@ -1,0 +1,31 @@
+{
+        "id": "jaen",
+        "nombre": "Jaén",
+        "etiquetas": {
+            "historia": "🏰 Castillo y Olivos",
+            "transporte": "🚌 Autobuses y Cuestas",
+            "alojamiento": "🏠 Vivienda y Barrios"
+        },
+        "historia": "Conocida como la Capital del Santo Reino, Jaén es el mayor productor de aceite de oliva del mundo. Su catedral renacentista y sus baños árabes son de los más importantes de España.",
+        "alojamiento": "Es una de las capitales más baratas de España. Una habitación puede costar entre 180€ y 230€. La zona por excelencia es la Avenida de Andalucía y el barrio de Las Fuentezuelas.",
+        "barrios": "El centro histórico es bonito pero con muchas cuestas. La zona de la Avenida es donde está toda la vida comercial y juvenil. San Felipe es un barrio tradicional y tranquilo.",
+        "universidades": [
+            {
+                "nombre": "Universidad de Jaén (UJA) - Campus Las Lagunillas",
+                "descripcion": "Un campus moderno y concentrado donde se encuentran casi todas las facultades."
+            }
+        ],
+        "sitios": [
+            {
+                "nombre": "Castillo de Santa Catalina",
+                "categoria": "cultura",
+                "descripcion": "Fortaleza con las mejores vistas de la ciudad y el mar de olivos."
+            },
+            {
+                "nombre": "Barrio de las Tascas",
+                "categoria": "ocio",
+                "descripcion": "Zona del casco antiguo famosa por sus tapas generosas."
+            }
+        ],
+        "imagenes": ["../img/jaen_1.jpg", "../img/jaen_2.jpg"]
+    }

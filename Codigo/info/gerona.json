@@ -1,0 +1,31 @@
+{
+    "id": "gerona",
+    "nombre": "Gerona",
+    "etiquetas": {
+      "historia": "🐉 Ciudad de los Sitios",
+      "transporte": "🚲 Girocleta",
+      "alojamiento": "🏠 Encanto medieval"
+    },
+    "historia": "Ciudad medieval con uno de los barrios judíos mejor conservados de Europa. Escenario recurrente de series como Juego de Tronos.",
+    "alojamiento": "Barri Vell es caro pero precioso. La zona de Montilivi es donde se concentran los estudiantes. Precios: 350€-550€.",
+    "barrios": "Eixample para el día a día. El Barri Vell para perderse entre piedras milenarias.",
+    "universidades": [
+      {
+        "nombre": "Universitat de Girona (UdG)",
+        "descripcion": "Destaca en investigación de aguas y artes visuales con campus integrados."
+      }
+    ],
+    "sitios": [
+      {
+        "nombre": "Catedral de Santa María",
+        "categoria": "cultura",
+        "descripcion": "Famosa por tener la nave gótica más ancha del mundo."
+      },
+      {
+        "nombre": "Casas del Oñar",
+        "categoria": "ocio",
+        "descripcion": "Casas de colores colgadas sobre el río que definen el skyline de la ciudad."
+      }
+    ],
+    "imagenes": ["../img/gerona_1.jpg", "../img/gerona_2.jpg"]
+  }

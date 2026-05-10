@@ -1,0 +1,39 @@
+{
+        "id": "palma",
+        "nombre": "Palma de Mallorca",
+        "etiquetas": {
+            "historia": "🏰 Perla del Mediterráneo",
+            "transporte": "🚌 Red de Buses y Metro",
+            "alojamiento": "🏠 Costa y Ciudad"
+        },
+        "historia": "Fundada como campamento romano, Palma ha sido influenciada por bizantinos, moros y cristianos. Su catedral, situada frente al mar, es un emblema del gótico levantino con intervenciones de Gaudí y Barceló.",
+        "alojamiento": "Es una de las ciudades más caras de España debido al turismo. Una habitación en piso compartido difícilmente baja de los 450€ - 500€. Los estudiantes suelen buscar en la zona de Plaza de Toros o Archiduque por cercanía al transporte al campus.",
+        "barrios": "Santa Catalina es el barrio de moda y ocio. El Casco Antiguo es señorial y tranquilo pero muy costoso. Son Espanyolet es una opción residencial más equilibrada.",
+        "universidades": [
+            {
+                "nombre": "Universitat de les Illes Balears (UIB)",
+                "descripcion": "Campus integrado a las afueras de la ciudad, conectado por una línea de metro propia."
+            }
+        ],
+        "sitios": [
+            {
+                "nombre": "Catedral de Mallorca (La Seu)",
+                "categoria": "cultura",
+                "descripcion": "Famosa por su enorme rosetón y su ubicación privilegiada sobre la bahía."
+            },
+            {
+                "nombre": "Castillo de Bellver",
+                "categoria": "cultura",
+                "descripcion": "Singular castillo de planta circular con vistas panorámicas de toda la isla."
+            },
+            {
+                "nombre": "Paseo Marítimo",
+                "categoria": "ocioNocturno",
+                "descripcion": "Zona principal de discotecas, bares y vida nocturna frente al puerto."
+            }
+        ],
+        "imagenes": [
+            "../img/palma_1.jpg",
+            "../img/palma_2.jpg"
+        ]
+    }
